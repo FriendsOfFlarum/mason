@@ -14,7 +14,7 @@ return [
             $table->boolean('user_values_allowed')->default(false);
             $table->string('validation')->nullable();
             $table->string('icon')->nullable();
-            $table->integer('sort')->nullable();
+            $table->integer('sort')->nullable()->index();
             $table->timestamps();
             $table->softDeletes();
         });

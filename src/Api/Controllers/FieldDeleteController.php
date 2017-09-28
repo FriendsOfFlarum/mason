@@ -2,8 +2,6 @@
 
 namespace Flagrow\Mason\Api\Controllers;
 
-use Flagrow\Mason\Api\Serializers\FieldSerializer;
-use Flagrow\Mason\Field;
 use Flagrow\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Core\Access\AssertPermissionTrait;
@@ -13,8 +11,6 @@ use Psr\Http\Message\ServerRequestInterface;
 class FieldDeleteController extends AbstractDeleteController
 {
     use AssertPermissionTrait;
-
-    public $serializer = FieldSerializer::class;
 
     /**
      * @var FieldRepository
@@ -32,7 +28,7 @@ class FieldDeleteController extends AbstractDeleteController
 
         $id = Arr::get($request->getQueryParams(), 'id');
 
-        $field = Field::findOrFail($id);
+        $field = $this->fields->findOrFail($id);
 
         $this->fields->delete($field);
     }

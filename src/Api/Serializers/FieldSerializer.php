@@ -3,9 +3,10 @@
 namespace Flagrow\Mason\Api\Serializers;
 
 use Flagrow\Mason\Field;
+use Flagrow\Mason\Repositories\AnswerRepository;
 use Flarum\Api\Serializer\AbstractSerializer;
+use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
-use Tobscure\JsonApi\Resource;
 
 class FieldSerializer extends AbstractSerializer
 {
@@ -33,21 +34,33 @@ class FieldSerializer extends AbstractSerializer
      * @param Field $model
      * @return Relationship
      */
-    public function answer($model)
+    public function suggested_answers($model)
     {
-        if (!$this->getActor()) {
+        /**
+         * @var AnswerRepository
+         */
+        $answers = app(AnswerRepository::class);
+
+        return new Relationship(new Collection($answers->suggested($model), app(AnswerSerializer::class)));
+    }
+
+    /**
+     * @param Field $model
+     * @return Relationship
+     */
+    public function all_answers($model)
+    {
+        $actor = $this->getActor();
+
+        if (!$actor || !$actor->isAdmin()) {
             return null;
         }
 
-        $for = $model->for ? $model->for : $this->getActor()->id;
+        /**
+         * @var AnswerRepository
+         */
+        $answers = app(AnswerRepository::class);
 
-        if ($answer = $model->answers()->where('user_id', $for)->first()) {
-            return new Relationship(new Resource(
-                $answer,
-                new AnswerSerializer
-            ));
-        } else {
-            return null;
-        }
+        return new Relationship(new Collection($answers->all($model), app(AnswerSerializer::class)));
     }
 }

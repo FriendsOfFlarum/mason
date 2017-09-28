@@ -3,7 +3,6 @@
 namespace Flagrow\Mason\Api\Controllers;
 
 use Flagrow\Mason\Api\Serializers\FieldSerializer;
-use Flagrow\Mason\Field;
 use Flagrow\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractResourceController;
 use Flarum\Core\Access\AssertPermissionTrait;
@@ -16,6 +15,10 @@ class FieldUpdateController extends AbstractResourceController
     use AssertPermissionTrait;
 
     public $serializer = FieldSerializer::class;
+
+    public $include = [
+        'all_answers',
+    ];
 
     /**
      * @var FieldRepository
@@ -33,7 +36,7 @@ class FieldUpdateController extends AbstractResourceController
 
         $id = Arr::get($request->getQueryParams(), 'id');
 
-        $field = Field::findOrFail($id);
+        $field = $this->fields->findOrFail($id);
 
         $attributes = Arr::get($request->getParsedBody(), 'attributes', []);
 

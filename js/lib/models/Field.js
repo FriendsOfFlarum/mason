@@ -12,7 +12,8 @@ export default class Field extends mixin(Model, {
     icon: Model.attribute('icon'),
     sort: Model.attribute('sort'),
     deleted_at: Model.attribute('deleted_at', Model.transformDate),
-    answer: Model.hasMany('answers'),
+    all_answers: Model.hasMany('all_answers'),
+    suggested_answers: Model.hasMany('suggested_answers'),
 }) {
     /**
      * Construct a path to the API endpoint for this resource.

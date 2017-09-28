@@ -4,6 +4,9 @@ flagrow-mason:
             add-field: Add field
             edit-field: Edit field
             delete-field: Delete field
+            add-answer: Add answer
+            edit-answer: Edit answer
+            delete-answer: Delete answer
         menu:
             description: >
                 Configure custom discussion fields.
@@ -22,6 +25,7 @@ flagrow-mason:
             user_values_allowed-help: >
                 If enabled, users can add their own values instead of the ones defined by the admin.
                 These values will be checked against the "Validation" setting.
+                If disabled they will only be able to use "suggested" answers.
             validation: Validation
             validation-help: >
                 Check the supported <a>Laravel validation rules</a>. Eg:
@@ -31,5 +35,5 @@ flagrow-mason:
                 Shows an icon in front of values entered by the user. For a reference of
                 available icons, check the <a>FontAwesome website</a>. Use "info" without
                 the "fa-" prefix.
-            options: Options
-            option-new: New option
+            save-field-for-options: Save the field to add options
+            is_suggested: Suggest answer to users

@@ -43,52 +43,12 @@ System.register('flagrow/mason/addMasonFieldsPane', ['flarum/extend', 'flarum/ap
         execute: function () {}
     };
 });;
-"use strict";
-
-System.register("flagrow/mason/addProfileConfigurePane", ["flarum/extend", "flarum/components/AdminNav", "flarum/components/AdminLinkButton", "flagrow/masquerade/panes/ProfileConfigurePane"], function (_export, _context) {
-    "use strict";
-
-    var extend, AdminNav, AdminLinkButton, ProfileConfigurePane;
-
-    _export("default", function () {
-        // create the route
-        app.routes['flagrow-masquerade-configure-profile'] = { path: '/flagrow/masquerade/configure', component: ProfileConfigurePane.component() };
-
-        // bind the route we created to the three dots settings button
-        app.extensionSettings['flagrow-masquerade'] = function () {
-            return m.route(app.route('flagrow-masquerade-configure-profile'));
-        };
-
-        extend(AdminNav.prototype, 'items', function (items) {
-            // add the Image Upload tab to the admin navigation menu
-            items.add('flagrow-masquerade-configure-profile', AdminLinkButton.component({
-                href: app.route('flagrow-masquerade-configure-profile'),
-                icon: 'id-card-o',
-                children: 'Masquerade',
-                description: app.translator.trans('flagrow-masquerade.admin.menu.description')
-            }));
-        });
-    });
-
-    return {
-        setters: [function (_flarumExtend) {
-            extend = _flarumExtend.extend;
-        }, function (_flarumComponentsAdminNav) {
-            AdminNav = _flarumComponentsAdminNav.default;
-        }, function (_flarumComponentsAdminLinkButton) {
-            AdminLinkButton = _flarumComponentsAdminLinkButton.default;
-        }, function (_flagrowMasqueradePanesProfileConfigurePane) {
-            ProfileConfigurePane = _flagrowMasqueradePanesProfileConfigurePane.default;
-        }],
-        execute: function () {}
-    };
-});;
 'use strict';
 
-System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch', 'flagrow/mason/models/Field'], function (_export, _context) {
+System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch', 'flagrow/mason/models/Field', 'flagrow/mason/components/FieldAnswersEdit'], function (_export, _context) {
     "use strict";
 
-    var app, Component, Button, Switch, Field, FieldEdit;
+    var app, Component, Button, Switch, Field, FieldAnswersEdit, FieldEdit;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -100,6 +60,8 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Com
             Switch = _flarumComponentsSwitch.default;
         }, function (_flagrowMasonModelsField) {
             Field = _flagrowMasonModelsField.default;
+        }, function (_flagrowMasonComponentsFieldAnswersEdit) {
+            FieldAnswersEdit = _flagrowMasonComponentsFieldAnswersEdit.default;
         }],
         execute: function () {
             FieldEdit = function (_Component) {
@@ -181,7 +143,9 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Com
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon'))
                         }), m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.icon-help', {
                             a: m('a[href=http://fontawesome.io/icons/][_target=blank]')
-                        }))]), m('li.ButtonGroup', [Button.component({
+                        }))]), m('li', FieldAnswersEdit.component({
+                            field: this.field
+                        })), m('li.ButtonGroup', [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
                             children: app.translator.trans('flagrow-mason.admin.buttons.' + (this.field.exists ? 'edit' : 'add') + '-field'),
@@ -312,12 +276,14 @@ System.register('flagrow/mason/models/Answer', ['flarum/app', 'flarum/Model', 'f
                 babelHelpers.createClass(Answer, [{
                     key: 'apiEndpoint',
                     value: function apiEndpoint() {
-                        return app.forum.attribute('apiUrl') + '/flagrow/mason/answer' + (this.exists ? '/' + this.data.id : '');
+                        return app.forum.attribute('apiUrl') + '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
                     }
                 }]);
                 return Answer;
             }(mixin(Model, {
                 content: Model.attribute('content'),
+                is_suggested: Model.attribute('is_suggested'),
+                sort: Model.attribute('sort'),
                 field: Model.hasOne('field'),
                 userId: Model.attribute('user_id')
             }));
@@ -366,7 +332,8 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
                 icon: Model.attribute('icon'),
                 sort: Model.attribute('sort'),
                 deleted_at: Model.attribute('deleted_at', Model.transformDate),
-                answer: Model.hasMany('answers')
+                all_answers: Model.hasMany('all_answers'),
+                suggested_answers: Model.hasMany('suggested_answers')
             }));
 
             _export('default', Field);
@@ -408,20 +375,58 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
                         });
                     }
                 }, {
+                    key: 'config',
+                    value: function config() {
+                        var _this2 = this;
+
+                        this.$('.Existing--Fields').sortable({
+                            handle: '.Field--Handle'
+                        }).on('sortupdate', function () {
+                            var sorting = _this2.$('.Existing--Fields > .Field').map(function () {
+                                return $(this).data('id');
+                            }).get();
+
+                            _this2.updateSort(sorting);
+                        });
+                    }
+                }, {
                     key: 'view',
                     value: function view() {
                         var fields = app.store.all('flagrow-mason-field');
 
-                        return m('.ProfileConfigurePane', [m('.container', [fields.map(function (field) {
-                            return m('div', {
-                                key: field.id()
-                            }, FieldEdit.component({
+                        var fieldsList = [];
+
+                        fields.sort(function (a, b) {
+                            return a.sort() - b.sort();
+                        }).forEach(function (field) {
+                            // Build array of fields to show.
+                            fieldsList.push(m('.Field', {
+                                key: field.id(),
+                                'data-id': field.id()
+                            }, [m('span.fa.fa-arrows.Field--Handle'), FieldEdit.component({
                                 field: field
-                            }));
-                        }), FieldEdit.component({
+                            })]));
+                        });
+
+                        return m('.ProfileConfigurePane', [m('.container', [m('.Existing--Fields', fieldsList), FieldEdit.component({
                             //key: 'new',
                             field: null
                         })])]);
+                    }
+                }, {
+                    key: 'updateSort',
+                    value: function updateSort(sorting) {
+                        app.request({
+                            method: 'POST',
+                            url: app.forum.attribute('apiUrl') + '/flagrow/mason/fields/order',
+                            data: {
+                                sort: sorting
+                            }
+                        }).then(function (result) {
+                            // Update sort attributes
+                            app.store.pushPayload(result);
+                            m.redraw();
+                        });
                     }
                 }]);
                 return MasonFieldsPane;
@@ -431,54 +436,47 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
         }
     };
 });;
-"use strict";
+'use strict';
 
-System.register("flagrow/mason/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Select", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings", "flagrow/masquerade/components/SelectFieldOptionEditor"], function (_export, _context) {
+System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit'], function (_export, _context) {
     "use strict";
 
-    var Component, Select, Switch, Button, saveSettings, SelectFieldOptionEditor, ProfileConfigurePane;
+    var app, Component, Button, AnswerEdit, FieldAnswersEdit;
     return {
-        setters: [function (_flarumComponent) {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
             Component = _flarumComponent.default;
-        }, function (_flarumComponentsSelect) {
-            Select = _flarumComponentsSelect.default;
-        }, function (_flarumComponentsSwitch) {
-            Switch = _flarumComponentsSwitch.default;
         }, function (_flarumComponentsButton) {
             Button = _flarumComponentsButton.default;
-        }, function (_flarumUtilsSaveSettings) {
-            saveSettings = _flarumUtilsSaveSettings.default;
-        }, function (_flagrowMasqueradeComponentsSelectFieldOptionEditor) {
-            SelectFieldOptionEditor = _flagrowMasqueradeComponentsSelectFieldOptionEditor.default;
+        }, function (_flagrowMasonComponentsAnswerEdit) {
+            AnswerEdit = _flagrowMasonComponentsAnswerEdit.default;
         }],
         execute: function () {
-            ProfileConfigurePane = function (_Component) {
-                babelHelpers.inherits(ProfileConfigurePane, _Component);
+            FieldAnswersEdit = function (_Component) {
+                babelHelpers.inherits(FieldAnswersEdit, _Component);
 
-                function ProfileConfigurePane() {
-                    babelHelpers.classCallCheck(this, ProfileConfigurePane);
-                    return babelHelpers.possibleConstructorReturn(this, (ProfileConfigurePane.__proto__ || Object.getPrototypeOf(ProfileConfigurePane)).apply(this, arguments));
+                function FieldAnswersEdit() {
+                    babelHelpers.classCallCheck(this, FieldAnswersEdit);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldAnswersEdit.__proto__ || Object.getPrototypeOf(FieldAnswersEdit)).apply(this, arguments));
                 }
 
-                babelHelpers.createClass(ProfileConfigurePane, [{
-                    key: "init",
+                babelHelpers.createClass(FieldAnswersEdit, [{
+                    key: 'init',
                     value: function init() {
-                        this.resetNew();
-                        this.loading = false;
-                        this.existing = [];
-                        this.loadExisting();
-                        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] == 1);
-                        this.disableUserBio = m.prop(app.data.settings['masquerade.disable-user-bio'] == 1);
+                        this.field = this.props.field;
+                        this.processing = false;
+                        this.new_content = '';
                     }
                 }, {
-                    key: "config",
+                    key: 'config',
                     value: function config() {
                         var _this2 = this;
 
-                        this.$('.Existing--Fields').sortable({
-                            cancel: ''
-                        }).on('sortupdate', function (e, ui) {
-                            var sorting = _this2.$('.Existing--Fields > .Field').map(function () {
+                        this.$('.Answers').sortable({
+                            handle: '.Answer--Handle'
+                        }).on('sortupdate', function () {
+                            var sorting = _this2.$('.Answers > .Answer').map(function () {
                                 return $(this).data('id');
                             }).get();
 
@@ -486,266 +484,207 @@ System.register("flagrow/mason/panes/ProfileConfigurePane", ["flarum/Component",
                         });
                     }
                 }, {
-                    key: "view",
+                    key: 'view',
                     value: function view() {
                         var _this3 = this;
 
-                        var fields = [];
+                        if (!this.field.exists) {
+                            return m('div', app.translator('flagrow-mason.admin.fields.save-field-for-options'));
+                        }
 
-                        this.existing.sort(function (a, b) {
+                        var answersList = [];
+
+                        console.log(this.field.all_answers());
+
+                        this.field.all_answers().sort(function (a, b) {
                             return a.sort() - b.sort();
-                        }).forEach(function (field) {
+                        }).forEach(function (answer) {
                             // Build array of fields to show.
-                            fields.push(_this3.addField(field));
+                            answersList.push(m('.Answer', {
+                                key: answer.id(),
+                                'data-id': answer.id()
+                            }, AnswerEdit.component({
+                                answer: answer
+                            })));
                         });
 
-                        return m('div', {
-                            className: 'ProfileConfigurePane'
-                        }, [m('div', { className: 'container' }, [m('form', {
-                            className: 'Configuration'
-                        }, [m('label', ''), [Switch.component({
-                            state: this.enforceProfileCompletion(),
-                            onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.force-user-to-completion')
-                        }), m('br')], m('label', ''), [Switch.component({
-                            state: this.disableUserBio(),
-                            onchange: this.updateSetting.bind(this, this.disableUserBio, 'masquerade.disable-user-bio'),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.disable-user-bio')
-                        }), m('br')]]), m('form', {
-                            className: 'Existing--Fields'
-                        }, fields), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
-                    }
-                }, {
-                    key: "updateSetting",
-                    value: function updateSetting(prop, setting, value) {
-                        saveSettings(babelHelpers.defineProperty({}, setting, value));
-
-                        prop(value);
-                    }
-                }, {
-                    key: "addField",
-                    value: function addField(field) {
-                        var _this4 = this;
-
-                        var exists = field.id();
-
-                        return m('fieldset', {
-                            className: 'Field',
-                            'data-id': field.id()
-                        }, [m('legend', [exists ? m('div', { className: 'ButtonGroup pull-right' }, [Button.component({
-                            className: 'Button Button--icon Button--danger',
-                            icon: "trash",
-                            onclick: this.deleteField.bind(this, field)
-                        })]) : null, m('span', {
-                            className: 'title',
-                            onclick: function onclick(e) {
-                                return _this4.toggleField(e);
-                            }
-                        }, app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                            field: field.name()
-                        }))]), m('ul', [m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')), m('input', {
-                            className: 'FormControl',
-                            value: field.name(),
-                            oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))
-                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.name-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')), m('input', {
-                            className: 'FormControl',
-                            value: field.description(),
-                            oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))
-                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.description-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')), m('input', {
-                            className: 'FormControl',
-                            value: field.icon(),
-                            oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
-                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
-                            a: m("a", { href: "http://fontawesome.io/icons/", target: "_blank" })
-                        }))]),
-                        // @todo Disabled for now, wasn't really showing up nicely.
-                        // m('li', [
-                        //     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
-                        //     m('input', {
-                        //         className: 'FormControl',
-                        //         value: field.prefix(),
-                        //         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
-                        //     }),
-                        //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
-                        // ]),
-                        m('li', [m('label', ''), [Switch.component({
-                            state: field.on_bio(),
-                            onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.on_bio')
-                        }), m('br')]]), m('li', [m('label', ''), [Switch.component({
-                            state: field.required(),
-                            onchange: this.updateExistingFieldInput.bind(this, 'required', field),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.required')
-                        }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.type')), Select.component({
-                            onchange: function onchange(value) {
-                                if (value === 'null') {
-                                    value = null;
-                                }
-
-                                _this4.updateExistingFieldInput('type', field, value);
-                            },
-                            options: this.availableTypes(),
-                            value: field.type()
-                        })]), field.type() === 'select' ? SelectFieldOptionEditor.component({
-                            onchange: function onchange(value) {
-                                _this4.updateExistingFieldInput('validation', field, value);
-                            },
-                            value: field.validation()
-                        }) : null, field.type() === null ? m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
-                            className: 'FormControl',
-                            value: field.validation(),
-                            oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
-                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
-                            a: m("a", { href: "https://laravel.com/docs/5.2/validation#available-validation-rules",
-                                target: "_blank" })
-                        }))]) : null, m('li', { className: 'ButtonGroup' }, [Button.component({
+                        return m('div', [m('.Answers', answersList), m('form', [m('input.FormControl', {
+                            value: this.new_content,
+                            oninput: m.withAttr('value', function (value) {
+                                _this3.new_content = value;
+                            })
+                        }), Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
-                            children: app.translator.trans('flagrow-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
-                            loading: this.loading,
-                            disabled: !this.readyToAdd(field),
-                            onclick: this.updateExistingField.bind(this, field)
-                        }), exists ? Button.component({
-                            type: 'submit',
-                            className: 'Button Button--danger',
-                            children: app.translator.trans('flagrow-masquerade.admin.buttons.delete-field'),
-                            loading: this.loading,
-                            onclick: this.deleteField.bind(this, field)
-                        }) : ''])])]);
+                            children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
+                            loading: this.processing,
+                            disabled: !this.new_content,
+                            onclick: this.saveField.bind(this)
+                        })])]);
                     }
                 }, {
-                    key: "updateExistingFieldInput",
-                    value: function updateExistingFieldInput(what, field, value) {
-                        var exists = field.id();
+                    key: 'saveField',
+                    value: function saveField() {
+                        var _this4 = this;
 
-                        if (exists) {
-                            field.pushAttributes(babelHelpers.defineProperty({}, what, value));
-                        } else {
-                            field[what](value);
-                        }
-                    }
-                }, {
-                    key: "updateSort",
-                    value: function updateSort(sorting) {
-                        var data = {
-                            sort: sorting
-                        };
+                        this.processing = true;
 
                         app.request({
                             method: 'POST',
-                            url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
-                            data: data
+                            url: this.field.apiEndpoint() + '/answers',
+                            data: {
+                                attributes: {
+                                    content: this.new_content,
+                                    is_suggested: true
+                                }
+                            }
+                        }).then(function (result) {
+                            app.store.pushPayload(result);
+
+                            _this4.processing = false;
+                            m.redraw();
                         });
                     }
                 }, {
-                    key: "toggleField",
-                    value: function toggleField(e) {
-                        $(e.target).parents('.Field').toggleClass('active');
-                    }
-                }, {
-                    key: "deleteField",
-                    value: function deleteField(field) {
-                        app.request({
-                            method: 'DELETE',
-                            url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id()
-                        }).then(this.requestSuccess.bind(this));
-                    }
-                }, {
-                    key: "submitAddField",
-                    value: function submitAddField(e) {
-                        e.preventDefault();
-
-                        var data = this.new;
-
-                        // @todo xhr call app.request
+                    key: 'updateSort',
+                    value: function updateSort(sorting) {
                         app.request({
                             method: 'POST',
-                            url: app.forum.attribute('apiUrl') + '/masquerade/fields',
-                            data: data
-                        }).then(this.requestSuccess.bind(this));
-
-                        this.resetNew();
-
-                        m.redraw();
-                    }
-                }, {
-                    key: "updateExistingField",
-                    value: function updateExistingField(field) {
-                        if (!field.id()) return;
-
-                        var data = field.data;
-
-                        app.request({
-                            method: 'POST',
-                            url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
-                            data: data
-                        }).then(this.requestSuccess.bind(this));
-                    }
-                }, {
-                    key: "requestSuccess",
-                    value: function requestSuccess(result) {
-                        var model = app.store.pushPayload(result);
-
-                        // In case we've updated/deleted one instance delete it if necessary.
-                        if (!(model instanceof Array) && model.deleted_at()) {
-                            app.store.remove(model);
-                        }
-
-                        this.existing = app.store.all('masquerade-field');
-
-                        this.loading = false;
-                        m.redraw();
-                    }
-                }, {
-                    key: "loadExisting",
-                    value: function loadExisting() {
-                        this.loading = true;
-
-                        return app.request({
-                            method: 'GET',
-                            url: app.forum.attribute('apiUrl') + '/masquerade/fields'
-                        }).then(this.requestSuccess.bind(this));
-                    }
-                }, {
-                    key: "resetNew",
-                    value: function resetNew() {
-                        this.new = {
-                            'id': m.prop(),
-                            'name': m.prop(''),
-                            'description': m.prop(''),
-                            'prefix': m.prop(''),
-                            'icon': m.prop(''),
-                            'required': m.prop(false),
-                            'on_bio': m.prop(false),
-                            'type': m.prop(null),
-                            'validation': m.prop('')
-                        };
-                    }
-                }, {
-                    key: "readyToAdd",
-                    value: function readyToAdd(field) {
-                        if (field.name()) {
-                            return true;
-                        }
-
-                        return false;
-                    }
-                }, {
-                    key: "availableTypes",
-                    value: function availableTypes() {
-                        return {
-                            url: app.translator.trans('flagrow-masquerade.admin.types.url'),
-                            email: app.translator.trans('flagrow-masquerade.admin.types.email'),
-                            boolean: app.translator.trans('flagrow-masquerade.admin.types.boolean'),
-                            select: app.translator.trans('flagrow-masquerade.admin.types.select'),
-                            null: app.translator.trans('flagrow-masquerade.admin.types.advanced')
-                        };
+                            url: this.field.apiEndpoint() + '/answers/order',
+                            data: {
+                                sort: sorting
+                            }
+                        }).then(function (result) {
+                            // Update sort attributes
+                            app.store.pushPayload(result);
+                            m.redraw();
+                        });
                     }
                 }]);
-                return ProfileConfigurePane;
+                return FieldAnswersEdit;
             }(Component);
 
-            _export("default", ProfileConfigurePane);
+            _export('default', FieldAnswersEdit);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, Button, Switch, FieldEdit;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flarumComponentsSwitch) {
+            Switch = _flarumComponentsSwitch.default;
+        }],
+        execute: function () {
+            FieldEdit = function (_Component) {
+                babelHelpers.inherits(FieldEdit, _Component);
+
+                function FieldEdit() {
+                    babelHelpers.classCallCheck(this, FieldEdit);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldEdit.__proto__ || Object.getPrototypeOf(FieldEdit)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldEdit, [{
+                    key: 'init',
+                    value: function init() {
+                        this.answer = this.props.answer;
+                        this.dirty = false;
+                        this.processing = false;
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        return m('form', [m('span.fa.fa-arrows.Answer--Handle'), m('span', {
+                            onclick: function onclick() {
+                                var newContent = prompt('Edit content', _this2.answer.content());
+
+                                if (newContent) {
+                                    _this2.updateAttribute('content', newContent);
+                                }
+                            }
+                        }, ' ' + this.answer.content() + ' '), Switch.component({
+                            state: this.answer.is_suggested(),
+                            onchange: this.updateAttribute.bind(this, 'is_suggested'),
+                            children: app.translator.trans('flagrow-mason.admin.fields.is_suggested')
+                        }), Button.component({
+                            type: 'submit',
+                            className: 'Button Button--primary',
+                            children: app.translator.trans('flagrow-mason.admin.buttons.edit-answer'),
+                            loading: this.processing,
+                            disabled: !this.readyToSave(),
+                            onclick: this.saveField.bind(this)
+                        }), Button.component({
+                            type: 'submit',
+                            className: 'Button Button--danger',
+                            children: app.translator.trans('flagrow-mason.admin.buttons.delete-answer'),
+                            loading: this.processing,
+                            onclick: this.deleteField.bind(this)
+                        })]);
+                    }
+                }, {
+                    key: 'updateAttribute',
+                    value: function updateAttribute(attribute, value) {
+                        this.answer.pushAttributes(babelHelpers.defineProperty({}, attribute, value));
+
+                        this.dirty = true;
+                    }
+                }, {
+                    key: 'readyToSave',
+                    value: function readyToSave() {
+                        return this.dirty;
+                    }
+                }, {
+                    key: 'saveField',
+                    value: function saveField() {
+                        var _this3 = this;
+
+                        this.processing = true;
+
+                        app.request({
+                            method: 'PATCH',
+                            url: this.answer.apiEndpoint(),
+                            data: this.answer.data
+                        }).then(function (result) {
+                            app.store.pushPayload(result);
+
+                            _this3.processing = false;
+                            _this3.dirty = false;
+                            m.redraw();
+                        });
+                    }
+                }, {
+                    key: 'deleteField',
+                    value: function deleteField() {
+                        var _this4 = this;
+
+                        this.processing = true;
+
+                        app.request({
+                            method: 'DELETE',
+                            url: this.answer.apiEndpoint()
+                        }).then(function () {
+                            app.store.remove(_this4.answer);
+
+                            _this4.processing = false;
+                            m.redraw();
+                        });
+                    }
+                }]);
+                return FieldEdit;
+            }(Component);
+
+            _export('default', FieldEdit);
         }
     };
 });

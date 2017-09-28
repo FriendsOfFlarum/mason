@@ -10,6 +10,7 @@ return [
             $table->unsignedInteger('field_id');
             $table->text('content');
             $table->boolean('is_suggested')->default(false);
+            $table->integer('sort')->nullable()->index();
             $table->timestamps();
 
             $table->foreign('field_id')->references('id')->on('flagrow_mason_fields');

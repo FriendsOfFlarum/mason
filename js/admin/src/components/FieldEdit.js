@@ -3,6 +3,7 @@ import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import Switch from 'flarum/components/Switch';
 import Field from 'flagrow/mason/models/Field';
+import FieldAnswersEdit from 'flagrow/mason/components/FieldAnswersEdit';
 
 export default class FieldEdit extends Component {
     init() {
@@ -107,6 +108,9 @@ export default class FieldEdit extends Component {
                     a: m('a[href=http://fontawesome.io/icons/][_target=blank]'),
                 })),
             ]),
+            m('li', FieldAnswersEdit.component({
+                field: this.field,
+            })),
             m('li.ButtonGroup', [
                 Button.component({
                     type: 'submit',

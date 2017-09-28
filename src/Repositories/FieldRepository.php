@@ -46,6 +46,15 @@ class FieldRepository
     }
 
     /**
+     * @param $id
+     * @return Field
+     */
+    public function findOrFail($id)
+    {
+        return $this->field->newQuery()->findOrFail($id);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Collection|Field[]
      */
     public function all()
@@ -88,5 +97,12 @@ class FieldRepository
     public function delete(Field $field)
     {
         $field->delete();
+    }
+
+    public function sorting(array $sorting)
+    {
+        foreach ($sorting as $i => $fieldId) {
+            $this->field->where('id', $fieldId)->update(['sort' => $i]);
+        }
     }
 }

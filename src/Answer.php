@@ -11,6 +11,8 @@ use Flarum\Database\AbstractModel;
  * @property int $field_id
  * @property Field $field
  * @property string $content
+ * @property bool $is_suggested
+ * @property bool $sort
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|Discussion[] $discussions
@@ -21,7 +23,20 @@ class Answer extends AbstractModel
 
     protected $table = 'flagrow_mason_answers';
 
-    protected $fillable = ['*'];
+    protected $casts = [
+        'is_suggested' => 'boolean',
+    ];
+
+    protected $visible = [
+        'content',
+        'is_suggested',
+        'sort',
+    ];
+
+    protected $fillable = [
+        'content',
+        'is_suggested',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
