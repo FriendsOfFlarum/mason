@@ -1,0 +1,67 @@
+<?php
+
+namespace Flagrow\Mason;
+
+use Carbon\Carbon;
+use Flarum\Database\AbstractModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $description
+ * @property int $min_answers_count
+ * @property int $max_answers_count
+ * @property bool $user_values_allowed
+ * @property string $validation
+ * @property string $icon
+ * @property integer $sort
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|Answer[] $answers
+ */
+class Field extends AbstractModel
+{
+    use SoftDeletes;
+
+    public $timestamps = true;
+
+    protected $table = 'flagrow_mason_fields';
+
+    protected $casts = [
+        'min_answers_count' => 'integer',
+        'max_answers_count' => 'integer',
+        'user_values_allowed' => 'boolean',
+    ];
+
+    protected $visible = [
+        'name',
+        'description',
+        'min_answers_count',
+        'max_answers_count',
+        'user_values_allowed',
+        'validation',
+        'icon',
+        'sort',
+    ];
+
+    protected $fillable = [
+        'name',
+        'description',
+        'min_answers_count',
+        'max_answers_count',
+        'user_values_allowed',
+        'validation',
+        'icon',
+        'sort',
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
+}

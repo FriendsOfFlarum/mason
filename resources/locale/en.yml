@@ -1,0 +1,35 @@
+flagrow-mason:
+    admin:
+        buttons:
+            add-field: Add field
+            edit-field: Edit field
+            delete-field: Delete field
+        menu:
+            description: >
+                Configure custom discussion fields.
+        fields:
+            add: Add field {field}
+            edit: Edit field {field}
+            name: Field name
+            name-help: >
+                The publicly visible (non-translatable) field label.
+            description: Field description
+            description-help: >
+                An optional description to explain the use/need of this field.
+            min_answers_count: Minimum required answers
+            max_answers_count: Maximum allowed answers
+            user_values_allowed: User values allowed
+            user_values_allowed-help: >
+                If enabled, users can add their own values instead of the ones defined by the admin.
+                These values will be checked against the "Validation" setting.
+            validation: Validation
+            validation-help: >
+                Check the supported <a>Laravel validation rules</a>. Eg:
+                "string|min:5" or "url".
+            icon: Icon
+            icon-help: >
+                Shows an icon in front of values entered by the user. For a reference of
+                available icons, check the <a>FontAwesome website</a>. Use "info" without
+                the "fa-" prefix.
+            options: Options
+            option-new: New option
