@@ -33,11 +33,15 @@ export default class FieldAnswersEdit extends Component {
 
         let answersList = [];
 
-        console.log(this.field.all_answers());
-
         this.field.all_answers()
             .sort((a, b) => a.sort() - b.sort())
             .forEach(answer => {
+                // When answers are deleted via store.delete() they stay as an "undefined" relationship
+                // We ignore these deleted answers
+                if (typeof answer === 'undefined') {
+                    return;
+                }
+
                 // Build array of fields to show.
                 answersList.push(m('.Answer', {
                     key: answer.id(),
@@ -83,6 +87,7 @@ export default class FieldAnswersEdit extends Component {
         }).then(result => {
             app.store.pushPayload(result);
 
+            this.new_content = '';
             this.processing = false;
             m.redraw();
         });

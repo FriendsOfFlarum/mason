@@ -494,11 +494,15 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
 
                         var answersList = [];
 
-                        console.log(this.field.all_answers());
-
                         this.field.all_answers().sort(function (a, b) {
                             return a.sort() - b.sort();
                         }).forEach(function (answer) {
+                            // When answers are deleted via store.delete() they stay as an "undefined" relationship
+                            // We ignore these deleted answers
+                            if (typeof answer === 'undefined') {
+                                return;
+                            }
+
                             // Build array of fields to show.
                             answersList.push(m('.Answer', {
                                 key: answer.id(),
@@ -541,6 +545,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                         }).then(function (result) {
                             app.store.pushPayload(result);
 
+                            _this4.new_content = '';
                             _this4.processing = false;
                             m.redraw();
                         });
