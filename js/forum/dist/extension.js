@@ -116,7 +116,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                     value: function view() {
                         var _this3 = this;
 
-                        return m('ul', [this.fields.map(function (field) {
+                        return m('.Mason-Fields', [this.fields.map(function (field) {
                             var selectedAnswerIdsForThisField = [];
 
                             field.suggested_answers().forEach(function (answer) {
@@ -127,7 +127,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                                 }
                             });
 
-                            return m('li', m('.FormGroup', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), m('select', {
+                            return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), m('span.Select', [m('select.Select-input.FormControl', {
                                 multiple: field.multiple(),
                                 onchange: function onchange(event) {
                                     var ids = [];
@@ -173,7 +173,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                                     value: answer.id(),
                                     selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1
                                 }, answer.content());
-                            })]), field.description() ? m('span.helpText', field.description()) : null]));
+                            })]), icon('sort', { className: 'Select-caret' })]), field.description() ? m('.helpText', field.description()) : null]);
                         })]);
                     }
                 }, {
@@ -469,10 +469,10 @@ System.register('flagrow/mason/addFieldsOnDiscussion', ['flarum/extend', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component'], function (_export, _context) {
+System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, PostFields;
+    var app, icon, Component, Button, DiscussionFieldsModal, PostFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -480,6 +480,10 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
             icon = _flarumHelpersIcon.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flagrowMasonComponentsDiscussionFieldsModal) {
+            DiscussionFieldsModal = _flagrowMasonComponentsDiscussionFieldsModal.default;
         }],
         execute: function () {
             PostFields = function (_Component) {
@@ -501,7 +505,16 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                     value: function view() {
                         var _this2 = this;
 
-                        return m('ul', [this.fields.map(function (field) {
+                        return m('.Mason-Fields', [this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
+                            className: 'Button Mason-Fields--edit',
+                            children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
+                            icon: 'pencil',
+                            onclick: function onclick() {
+                                return app.modal.show(new DiscussionFieldsModal({
+                                    discussion: _this2.discussion
+                                }));
+                            }
+                        }) : null, m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')), this.fields.map(function (field) {
                             // Discussion answers to this field
                             var answers = _this2.discussion.flagrowMasonAnswers().filter(function (answer) {
                                 // It's necessary to compare the field() relationship
@@ -514,9 +527,9 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                                 return null;
                             }
 
-                            return m('li', m('.FormGroup', [m('strong', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), ' ', answers.map(function (answer) {
-                                return m('span', answer.content());
-                            })]));
+                            return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answers.map(function (answer) {
+                                return m('span.Mason-Inline-Answer', answer.content());
+                            }))]);
                         })]);
                     }
                 }]);

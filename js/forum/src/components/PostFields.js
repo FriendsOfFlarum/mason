@@ -1,6 +1,8 @@
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
+import Button from 'flarum/components/Button';
+import DiscussionFieldsModal from 'flagrow/mason/components/DiscussionFieldsModal';
 
 export default class PostFields extends Component {
     init() {
@@ -9,7 +11,16 @@ export default class PostFields extends Component {
     }
 
     view() {
-        return m('ul', [
+        return m('.Mason-Fields', [
+            (this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
+                className: 'Button Mason-Fields--edit',
+                children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
+                icon: 'pencil',
+                onclick: () => app.modal.show(new DiscussionFieldsModal({
+                    discussion: this.discussion,
+                })),
+            }) : null),
+            m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')),
             this.fields.map(
                 field => {
                     // Discussion answers to this field
@@ -24,14 +35,13 @@ export default class PostFields extends Component {
                         return null;
                     }
 
-                    return m('li', m('.FormGroup', [
-                        m('strong', [
+                    return m('.Mason-Field.Form-group', [
+                        m('label', [
                             (field.icon() ? [icon(field.icon()), ' '] : null),
                             field.name(),
                         ]),
-                        ' ',
-                        answers.map(answer => m('span', answer.content())),
-                    ]));
+                        m('.FormControl.Mason-Inline-Answers', answers.map(answer => m('span.Mason-Inline-Answer', answer.content()))),
+                    ]);
                 }
             ),
         ]);

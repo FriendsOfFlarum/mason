@@ -1,0 +1,35 @@
+.ComposerBody-header .item-flagrow-mason-fields {
+    display: block;
+    padding: 10px 0;
+}
+
+.Mason-Fields {
+    border: 1px solid #e8ecf3;
+    border-radius: @border-radius;
+    padding: 20px;
+}
+
+.PostStream-item .Mason-Fields {
+    margin-bottom: 20px;
+}
+
+.Mason-Fields--edit {
+    float: right;
+}
+
+.Mason-Field--title {
+    line-height: 1;
+    margin: 0 0 20px;
+    font-size: 1.1em;
+    color: @muted-color;
+}
+
+.Mason-Inline-Answer {
+    &::after {
+        content: ', ';
+    }
+
+    &:last-of-type::after {
+        content: '';
+    }
+}

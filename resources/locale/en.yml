@@ -5,6 +5,8 @@ flagrow-mason:
         answers-modal:
             edit-title: Edit fields for {title}
             save: Save fields
+        post-answers:
+            title: Custom fields
         answers:
             choose-option: Choose an option
             no-option-selected: No option selected

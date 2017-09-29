@@ -18,8 +18,9 @@ export default class DiscussionFields extends Component {
             }
         );
     }
+
     view() {
-        return m('ul', [
+        return m('.Mason-Fields', [
             this.fields.map(
                 field => {
                     let selectedAnswerIdsForThisField = [];
@@ -30,43 +31,46 @@ export default class DiscussionFields extends Component {
                         }
                     });
 
-                    return m('li', m('.FormGroup', [
+                    return m('.Mason-Field.Form-group', [
                         m('label', [
                             (field.icon() ? [icon(field.icon()), ' '] : null),
                             field.name(),
                             (field.required() ? ' *' : null),
                         ]),
-                        m('select', {
-                            multiple: field.multiple(),
-                            onchange: event => {
-                                let ids = [];
+                        m('span.Select', [
+                            m('select.Select-input.FormControl', {
+                                multiple: field.multiple(),
+                                onchange: event => {
+                                    let ids = [];
 
-                                for (let option of event.target.options) {
-                                    if (option.selected && option.value !== 'none') {
-                                        ids.push(option.value);
+                                    for (let option of event.target.options) {
+                                        if (option.selected && option.value !== 'none') {
+                                            ids.push(option.value);
+                                        }
                                     }
-                                }
 
-                                console.log(ids);
+                                    console.log(ids);
 
-                                this.updateSelection(field, ids);
-                            },
-                        }, [
-                            (field.multiple() ? null : m('option', {
-                                value: 'none',
-                                selected: selectedAnswerIdsForThisField.length === 0,
-                                disabled: field.required(),
-                                hidden: field.required(),
-                            }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected')))),
-                            field.suggested_answers().map(
-                                answer => m('option', {
-                                    value: answer.id(),
-                                    selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,
-                                }, answer.content())
-                            ),
+                                    this.updateSelection(field, ids);
+                                },
+                            }, [
+                                (field.multiple() ? null : m('option', {
+                                    value: 'none',
+                                    selected: selectedAnswerIdsForThisField.length === 0,
+                                    disabled: field.required(),
+                                    hidden: field.required(),
+                                }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected')))),
+                                field.suggested_answers().map(
+                                    answer => m('option', {
+                                        value: answer.id(),
+                                        selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,
+                                    }, answer.content())
+                                ),
+                            ]),
+                            icon('sort', {className: 'Select-caret'}),
                         ]),
-                        (field.description() ? m('span.helpText', field.description()) : null),
-                    ]));
+                        (field.description() ? m('.helpText', field.description()) : null),
+                    ]);
                 }
             ),
         ]);
