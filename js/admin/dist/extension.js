@@ -173,10 +173,10 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/he
 });;
 'use strict';
 
-System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit'], function (_export, _context) {
+System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, Component, Button, AnswerEdit, FieldAnswersEdit;
+    var app, Component, Button, AnswerEdit, sortByAttribute, FieldAnswersEdit;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -186,6 +186,8 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
             Button = _flarumComponentsButton.default;
         }, function (_flagrowMasonComponentsAnswerEdit) {
             AnswerEdit = _flagrowMasonComponentsAnswerEdit.default;
+        }, function (_flagrowMasonHelpersSortByAttribute) {
+            sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
         }],
         execute: function () {
             FieldAnswersEdit = function (_Component) {
@@ -229,9 +231,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
 
                         var answersList = [];
 
-                        this.field.all_answers().sort(function (a, b) {
-                            return a.sort() - b.sort();
-                        }).forEach(function (answer) {
+                        sortByAttribute(this.field.all_answers()).forEach(function (answer) {
                             // When answers are deleted via store.delete() they stay as an "undefined" relationship
                             // We ignore these deleted answers
                             if (typeof answer === 'undefined') {
@@ -644,10 +644,10 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
 });;
 'use strict';
 
-System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Component', 'flagrow/mason/components/FieldEdit'], function (_export, _context) {
+System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Component', 'flagrow/mason/components/FieldEdit', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, Component, FieldEdit, MasonFieldsPane;
+    var app, Component, FieldEdit, sortByAttribute, MasonFieldsPane;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -655,6 +655,8 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
             Component = _flarumComponent.default;
         }, function (_flagrowMasonComponentsFieldEdit) {
             FieldEdit = _flagrowMasonComponentsFieldEdit.default;
+        }, function (_flagrowMasonHelpersSortByAttribute) {
+            sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
         }],
         execute: function () {
             MasonFieldsPane = function (_Component) {
@@ -698,9 +700,7 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
 
                         var fieldsList = [];
 
-                        fields.sort(function (a, b) {
-                            return a.sort() - b.sort();
-                        }).forEach(function (field) {
+                        sortByAttribute(fields).forEach(function (field) {
                             // Build array of fields to show.
                             fieldsList.push(m('.js-field-data', {
                                 key: field.id(),
@@ -736,5 +736,23 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
 
             _export('default', MasonFieldsPane);
         }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/helpers/sortByAttribute', [], function (_export, _context) {
+    "use strict";
+
+    _export('default', function (items) {
+        var attr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'sort';
+
+        return items.sort(function (a, b) {
+            return a[attr]() - b[attr]();
+        });
+    });
+
+    return {
+        setters: [],
+        execute: function () {}
     };
 });

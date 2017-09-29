@@ -1,6 +1,7 @@
 import app from 'flarum/app';
 import Component from 'flarum/Component';
 import FieldEdit from 'flagrow/mason/components/FieldEdit';
+import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 
 export default class MasonFieldsPane extends Component {
     init() {
@@ -34,8 +35,7 @@ export default class MasonFieldsPane extends Component {
 
         let fieldsList = [];
 
-        fields
-            .sort((a, b) => a.sort() - b.sort())
+        sortByAttribute(fields)
             .forEach(field => {
                 // Build array of fields to show.
                 fieldsList.push(m('.js-field-data', {

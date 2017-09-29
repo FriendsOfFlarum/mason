@@ -1,10 +1,11 @@
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
+import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 
 export default class DiscussionFields extends Component {
     init() {
-        this.fields = app.store.all('flagrow-mason-field');
+        this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
 
         // Index to quickly do a reverse lookup from answer to field
         this.answerToFieldIndex = [];
@@ -60,7 +61,7 @@ export default class DiscussionFields extends Component {
                                     disabled: field.required(),
                                     hidden: field.required(),
                                 }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected')))),
-                                field.suggested_answers().map(
+                                sortByAttribute(field.suggested_answers()).map(
                                     answer => m('option', {
                                         value: answer.id(),
                                         selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,

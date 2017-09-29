@@ -75,10 +75,10 @@ System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component'], function (_export, _context) {
+System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, DiscussionFields;
+    var app, icon, Component, sortByAttribute, DiscussionFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -86,6 +86,8 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
             icon = _flarumHelpersIcon.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
+        }, function (_flagrowMasonHelpersSortByAttribute) {
+            sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
         }],
         execute: function () {
             DiscussionFields = function (_Component) {
@@ -101,7 +103,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                     value: function init() {
                         var _this2 = this;
 
-                        this.fields = app.store.all('flagrow-mason-field');
+                        this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
 
                         // Index to quickly do a reverse lookup from answer to field
                         this.answerToFieldIndex = [];
@@ -168,7 +170,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                                 selected: selectedAnswerIdsForThisField.length === 0,
                                 disabled: field.required(),
                                 hidden: field.required()
-                            }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected'))), field.suggested_answers().map(function (answer) {
+                            }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected'))), sortByAttribute(field.suggested_answers()).map(function (answer) {
                                 return m('option', {
                                     value: answer.id(),
                                     selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1
@@ -470,10 +472,10 @@ System.register('flagrow/mason/addFieldsOnDiscussion', ['flarum/extend', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal'], function (_export, _context) {
+System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, Button, DiscussionFieldsModal, PostFields;
+    var app, icon, Component, Button, DiscussionFieldsModal, sortByAttribute, PostFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -485,6 +487,8 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
             Button = _flarumComponentsButton.default;
         }, function (_flagrowMasonComponentsDiscussionFieldsModal) {
             DiscussionFieldsModal = _flagrowMasonComponentsDiscussionFieldsModal.default;
+        }, function (_flagrowMasonHelpersSortByAttribute) {
+            sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
         }],
         execute: function () {
             PostFields = function (_Component) {
@@ -498,7 +502,7 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                 babelHelpers.createClass(PostFields, [{
                     key: 'init',
                     value: function init() {
-                        this.fields = app.store.all('flagrow-mason-field');
+                        this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
                         this.discussion = this.props.discussion;
                     }
                 }, {
@@ -517,11 +521,11 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                             }
                         }) : null, m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')), this.fields.map(function (field) {
                             // Discussion answers to this field
-                            var answers = _this2.discussion.flagrowMasonAnswers().filter(function (answer) {
+                            var answers = sortByAttribute(_this2.discussion.flagrowMasonAnswers().filter(function (answer) {
                                 // It's necessary to compare the field() relationship
                                 // Because field.suggested_answers() won't contain new and user answers
                                 return answer.field().id() === field.id();
-                            });
+                            }));
 
                             var answer_list = answers.map(function (answer) {
                                 return m('span.Mason-Inline-Answer', answer.content());
@@ -545,5 +549,23 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
 
             _export('default', PostFields);
         }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/helpers/sortByAttribute', [], function (_export, _context) {
+    "use strict";
+
+    _export('default', function (items) {
+        var attr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'sort';
+
+        return items.sort(function (a, b) {
+            return a[attr]() - b[attr]();
+        });
+    });
+
+    return {
+        setters: [],
+        execute: function () {}
     };
 });

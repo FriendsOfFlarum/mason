@@ -2,6 +2,7 @@ import app from 'flarum/app';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import AnswerEdit from 'flagrow/mason/components/AnswerEdit';
+import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 
 export default class FieldAnswersEdit extends Component {
     init() {
@@ -33,8 +34,7 @@ export default class FieldAnswersEdit extends Component {
 
         let answersList = [];
 
-        this.field.all_answers()
-            .sort((a, b) => a.sort() - b.sort())
+        sortByAttribute(this.field.all_answers())
             .forEach(answer => {
                 // When answers are deleted via store.delete() they stay as an "undefined" relationship
                 // We ignore these deleted answers

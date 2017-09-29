@@ -3,10 +3,11 @@ import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import DiscussionFieldsModal from 'flagrow/mason/components/DiscussionFieldsModal';
+import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 
 export default class PostFields extends Component {
     init() {
-        this.fields = app.store.all('flagrow-mason-field');
+        this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
         this.discussion = this.props.discussion;
     }
 
@@ -24,11 +25,11 @@ export default class PostFields extends Component {
             this.fields.map(
                 field => {
                     // Discussion answers to this field
-                    const answers = this.discussion.flagrowMasonAnswers().filter(answer => {
+                    const answers = sortByAttribute(this.discussion.flagrowMasonAnswers().filter(answer => {
                         // It's necessary to compare the field() relationship
                         // Because field.suggested_answers() won't contain new and user answers
                         return answer.field().id() === field.id();
-                    });
+                    }));
 
                     let answer_list = answers.map(answer => m('span.Mason-Inline-Answer', answer.content()));
 
