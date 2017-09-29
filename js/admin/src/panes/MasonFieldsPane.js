@@ -46,14 +46,12 @@ export default class MasonFieldsPane extends Component {
                 })));
             });
 
-        return m('.ProfileConfigurePane', [
-            m('.container', [
-                m('.Mason-Container.js-fields-container', fieldsList),
-                FieldEdit.component({
-                    //key: 'new',
-                    field: null,
-                }),
-            ]),
+        return m('.container', [
+            m('.Mason-Container.js-fields-container', fieldsList),
+            FieldEdit.component({
+                key: 'new',
+                field: null,
+            }),
         ]);
     }
 

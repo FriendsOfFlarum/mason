@@ -710,10 +710,10 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
                             })));
                         });
 
-                        return m('.ProfileConfigurePane', [m('.container', [m('.Mason-Container.js-fields-container', fieldsList), FieldEdit.component({
-                            //key: 'new',
+                        return m('.container', [m('.Mason-Container.js-fields-container', fieldsList), FieldEdit.component({
+                            key: 'new',
                             field: null
-                        })])]);
+                        })]);
                     }
                 }, {
                     key: 'updateSort',
