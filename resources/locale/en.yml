@@ -7,6 +7,7 @@ flagrow-mason:
             save: Save fields
         post-answers:
             title: Custom fields
+            no-answer: No answer
         answers:
             choose-option: Choose an option
             no-option-selected: No option selected
@@ -33,12 +34,15 @@ flagrow-mason:
                 An optional description to explain the use/need of this field.
             min_answers_count: Minimum required answers
             max_answers_count: Maximum allowed answers
+            show_when_empty: Show when empty
+            show_when_empty-help:
+                Whether to show the field on the discussion when it has no answer
+            validation: Validation for user values
             user_values_allowed: User values allowed
             user_values_allowed-help: >
                 If enabled, users can add their own values instead of the ones defined by the admin.
                 These values will be checked against the "Validation" setting.
                 If disabled they will only be able to use "suggested" answers.
-            validation: Validation
             validation-help: >
                 Check the supported <a>Laravel validation rules</a>. Eg:
                 "string|min:5" or "url".

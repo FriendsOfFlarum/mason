@@ -8,6 +8,7 @@ export default class Field extends mixin(Model, {
     description: Model.attribute('description'),
     min_answers_count: Model.attribute('min_answers_count'),
     max_answers_count: Model.attribute('max_answers_count'),
+    show_when_empty: Model.attribute('show_when_empty'),
     user_values_allowed: Model.attribute('user_values_allowed'),
     validation: Model.attribute('validation'),
     icon: Model.attribute('icon'),

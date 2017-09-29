@@ -11,6 +11,7 @@ return [
             $table->string('description')->nullable();
             $table->unsignedSmallInteger('min_answers_count')->default(1);
             $table->unsignedSmallInteger('max_answers_count')->default(1);
+            $table->boolean('show_when_empty')->default(false);
             $table->boolean('user_values_allowed')->default(false);
             $table->string('validation')->nullable();
             $table->string('icon')->nullable();

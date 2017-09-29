@@ -363,6 +363,7 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             min_answers_count: 0,
                             max_answers_count: 1,
                             user_values_allowed: false,
+                            show_when_empty: false,
                             validation: '',
                             icon: ''
                         });
@@ -404,7 +405,12 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             state: this.field.user_values_allowed(),
                             onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
                             children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed')
-                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
+                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', [Switch.component({
+                            state: this.field.show_when_empty(),
+                            onchange: this.updateAttribute.bind(this, 'show_when_empty'),
+                            children: app.translator.trans('flagrow-mason.admin.fields.show_when_empty')
+                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.show_when_empty-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
+                            disabled: true, // TODO: remove when user answers is ready
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation'))
                         }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
@@ -616,6 +622,7 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
                 description: Model.attribute('description'),
                 min_answers_count: Model.attribute('min_answers_count'),
                 max_answers_count: Model.attribute('max_answers_count'),
+                show_when_empty: Model.attribute('show_when_empty'),
                 user_values_allowed: Model.attribute('user_values_allowed'),
                 validation: Model.attribute('validation'),
                 icon: Model.attribute('icon'),

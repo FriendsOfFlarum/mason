@@ -410,6 +410,7 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
                 description: Model.attribute('description'),
                 min_answers_count: Model.attribute('min_answers_count'),
                 max_answers_count: Model.attribute('max_answers_count'),
+                show_when_empty: Model.attribute('show_when_empty'),
                 user_values_allowed: Model.attribute('user_values_allowed'),
                 validation: Model.attribute('validation'),
                 icon: Model.attribute('icon'),
@@ -522,14 +523,20 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                                 return answer.field().id() === field.id();
                             });
 
-                            // If the field has no answer we don't show it
+                            var answer_list = answers.map(function (answer) {
+                                return m('span.Mason-Inline-Answer', answer.content());
+                            });
+
                             if (answers.length === 0) {
-                                return null;
+                                if (field.show_when_empty()) {
+                                    answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
+                                } else {
+                                    // If the field has no answer and the setting is off we don't show it
+                                    return null;
+                                }
                             }
 
-                            return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answers.map(function (answer) {
-                                return m('span.Mason-Inline-Answer', answer.content());
-                            }))]);
+                            return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]);
                         })]);
                     }
                 }]);

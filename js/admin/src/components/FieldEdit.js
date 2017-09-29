@@ -27,6 +27,7 @@ export default class FieldEdit extends Component {
             min_answers_count: 0,
             max_answers_count: 1,
             user_values_allowed: false,
+            show_when_empty: false,
             validation: '',
             icon: '',
         });
@@ -104,8 +105,19 @@ export default class FieldEdit extends Component {
                         m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help')),
                     ]),
                     m('.Form-group', [
+                        m('label', [
+                            Switch.component({
+                                state: this.field.show_when_empty(),
+                                onchange: this.updateAttribute.bind(this, 'show_when_empty'),
+                                children: app.translator.trans('flagrow-mason.admin.fields.show_when_empty'),
+                            }),
+                        ]),
+                        m('.helpText', app.translator.trans('flagrow-mason.admin.fields.show_when_empty-help')),
+                    ]),
+                    m('.Form-group', [
                         m('label', app.translator.trans('flagrow-mason.admin.fields.validation')),
                         m('input.FormControl', {
+                            disabled: true, // TODO: remove when user answers is ready
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation')),
                         }),

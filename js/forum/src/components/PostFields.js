@@ -30,9 +30,15 @@ export default class PostFields extends Component {
                         return answer.field().id() === field.id();
                     });
 
-                    // If the field has no answer we don't show it
+                    let answer_list = answers.map(answer => m('span.Mason-Inline-Answer', answer.content()));
+
                     if (answers.length === 0) {
-                        return null;
+                        if (field.show_when_empty()) {
+                            answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
+                        } else {
+                            // If the field has no answer and the setting is off we don't show it
+                            return null;
+                        }
                     }
 
                     return m('.Mason-Field.Form-group', [
@@ -40,7 +46,7 @@ export default class PostFields extends Component {
                             (field.icon() ? [icon(field.icon()), ' '] : null),
                             field.name(),
                         ]),
-                        m('.FormControl.Mason-Inline-Answers', answers.map(answer => m('span.Mason-Inline-Answer', answer.content()))),
+                        m('.FormControl.Mason-Inline-Answers', answer_list),
                     ]);
                 }
             ),

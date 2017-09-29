@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $description
  * @property int $min_answers_count
  * @property int $max_answers_count
+ * @property bool $show_when_empty
  * @property bool $user_values_allowed
  * @property string $validation
  * @property string $icon
@@ -32,6 +33,7 @@ class Field extends AbstractModel
     protected $casts = [
         'min_answers_count' => 'integer',
         'max_answers_count' => 'integer',
+        'show_when_empty' => 'boolean',
         'user_values_allowed' => 'boolean',
     ];
 
@@ -40,6 +42,7 @@ class Field extends AbstractModel
         'description',
         'min_answers_count',
         'max_answers_count',
+        'show_when_empty',
         'user_values_allowed',
         'validation',
         'icon',
@@ -51,6 +54,7 @@ class Field extends AbstractModel
         'description',
         'min_answers_count',
         'max_answers_count',
+        'show_when_empty',
         'user_values_allowed',
         'validation',
         'icon',
