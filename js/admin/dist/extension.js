@@ -45,13 +45,15 @@ System.register('flagrow/mason/addMasonFieldsPane', ['flarum/extend', 'flarum/ap
 });;
 'use strict';
 
-System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch'], function (_export, _context) {
+System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch'], function (_export, _context) {
     "use strict";
 
-    var app, Component, Button, Switch, FieldEdit;
+    var app, icon, Component, Button, Switch, FieldEdit;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
         }, function (_flarumComponentsButton) {
@@ -80,7 +82,7 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Co
                     value: function view() {
                         var _this2 = this;
 
-                        return m('form', [m('span.fa.fa-arrows.Answer--Handle'), m('span', {
+                        return m('form.Mason-Box', [m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'), ' ', m('span', {
                             onclick: function onclick() {
                                 var newContent = prompt('Edit content', _this2.answer.content());
 
@@ -88,24 +90,24 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Co
                                     _this2.updateAttribute('content', newContent);
                                 }
                             }
-                        }, ' ' + this.answer.content() + ' '), Switch.component({
+                        }, [this.answer.content(), ' ', icon('pencil')]), Switch.component({
                             state: this.answer.is_suggested(),
                             onchange: this.updateAttribute.bind(this, 'is_suggested'),
                             children: app.translator.trans('flagrow-mason.admin.fields.is_suggested')
-                        }), Button.component({
+                        }), m('.ButtonGroup', [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
-                            children: app.translator.trans('flagrow-mason.admin.buttons.edit-answer'),
+                            children: app.translator.trans('flagrow-mason.admin.buttons.save-answer'),
                             loading: this.processing,
                             disabled: !this.readyToSave(),
-                            onclick: this.saveField.bind(this)
+                            onclick: this.saveAnswer.bind(this)
                         }), Button.component({
                             type: 'submit',
                             className: 'Button Button--danger',
                             children: app.translator.trans('flagrow-mason.admin.buttons.delete-answer'),
                             loading: this.processing,
-                            onclick: this.deleteField.bind(this)
-                        })]);
+                            onclick: this.deleteAnswer.bind(this)
+                        })])]);
                     }
                 }, {
                     key: 'updateAttribute',
@@ -120,8 +122,8 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Co
                         return this.dirty;
                     }
                 }, {
-                    key: 'saveField',
-                    value: function saveField() {
+                    key: 'saveAnswer',
+                    value: function saveAnswer() {
                         var _this3 = this;
 
                         this.processing = true;
@@ -139,9 +141,15 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Co
                         });
                     }
                 }, {
-                    key: 'deleteField',
-                    value: function deleteField() {
+                    key: 'deleteAnswer',
+                    value: function deleteAnswer() {
                         var _this4 = this;
+
+                        if (!confirm(app.translator.trans('flagrow-mason.admin.messages.delete-answer-confirmation', {
+                            content: this.answer.content()
+                        }))) {
+                            return;
+                        }
 
                         this.processing = true;
 
@@ -200,10 +208,10 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                     value: function config() {
                         var _this2 = this;
 
-                        this.$('.Answers').sortable({
-                            handle: '.Answer--Handle'
+                        this.$('.js-answers-container').sortable({
+                            handle: '.js-answer-handle'
                         }).on('sortupdate', function () {
-                            var sorting = _this2.$('.Answers > .Answer').map(function () {
+                            var sorting = _this2.$('.js-answer-data').map(function () {
                                 return $(this).data('id');
                             }).get();
 
@@ -216,7 +224,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                         var _this3 = this;
 
                         if (!this.field.exists) {
-                            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-options'));
+                            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-answers'));
                         }
 
                         var answersList = [];
@@ -231,7 +239,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                             }
 
                             // Build array of fields to show.
-                            answersList.push(m('.Answer', {
+                            answersList.push(m('.js-answer-data', {
                                 key: answer.id(),
                                 'data-id': answer.id()
                             }, AnswerEdit.component({
@@ -239,19 +247,20 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                             })));
                         });
 
-                        return m('div', [m('.Answers', answersList), m('form', [m('input.FormControl', {
+                        return m('div', [m('.Mason-Container.js-answers-container', answersList), m('form', [m('.Form-group', [m('label', 'New answer'), m('input.FormControl', {
                             value: this.new_content,
                             oninput: m.withAttr('value', function (value) {
                                 _this3.new_content = value;
-                            })
-                        }), Button.component({
+                            }),
+                            placeholder: 'Some text'
+                        })]), m('.Form-group', [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
                             children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
                             loading: this.processing,
                             disabled: !this.new_content,
                             onclick: this.saveField.bind(this)
-                        })])]);
+                        })])])]);
                     }
                 }, {
                     key: 'saveField',
@@ -302,13 +311,15 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
 });;
 'use strict';
 
-System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch', 'flagrow/mason/models/Field', 'flagrow/mason/components/FieldAnswersEdit'], function (_export, _context) {
+System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch', 'flagrow/mason/models/Field', 'flagrow/mason/components/FieldAnswersEdit'], function (_export, _context) {
     "use strict";
 
-    var app, Component, Button, Switch, Field, FieldAnswersEdit, FieldEdit;
+    var app, icon, Component, Button, Switch, Field, FieldAnswersEdit, FieldEdit;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
         }, function (_flarumComponentsButton) {
@@ -361,51 +372,54 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Com
                     value: function view() {
                         var _this2 = this;
 
-                        return m('form', [m('.Button.Button-block', {
+                        return m('.Mason-Box', [this.field.exists ? m('span.fa.fa-arrows.Mason-Box--handle.js-field-handle') : null, m('.Button.Button--block.Mason-Box-Header', {
                             onclick: function onclick() {
                                 _this2.toggleFields = !_this2.toggleFields;
                             }
-                        }, this.field.name() + ' - Show/hide'), this.toggleFields ? this.viewFields() : null]);
+                        }, [m('.Mason-Box-Header-Title', this.field.name()), m('div', [app.translator.trans('flagrow-mason.admin.buttons.edit-field'), ' ', icon(this.toggleFields ? 'chevron-up' : 'chevron-down')])]), this.toggleFields ? this.viewFields() : null]);
                     }
                 }, {
                     key: 'viewFields',
                     value: function viewFields() {
-                        return m('ul', [m('li', [m('label', app.translator.trans('flagrow-mason.admin.fields.name')), m('input.FormControl', {
+                        return m('form', [m('.Mason-Box--row', [m('.Mason-Box--column', [m('h4', 'Field settings'), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.name')), m('input.FormControl', {
                             value: this.field.name(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'name'))
-                        }), m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.name-help'))]), m('li', [m('label', app.translator.trans('flagrow-mason.admin.fields.description')), m('input.FormControl', {
+                        }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.name-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.description')), m('input.FormControl', {
                             value: this.field.description(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'description'))
-                        }), m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help'))]), m('li', [m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')), m('input.FormControl', {
+                        }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')), m('input.FormControl', {
                             type: 'number',
                             min: 0,
+                            max: 1, // TODO: remove when multiple answers is ready
                             value: this.field.min_answers_count(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'min_answers_count'))
-                        })]), m('li', [m('label', app.translator.trans('flagrow-mason.admin.fields.max_answers_count')), m('input.FormControl', {
+                        })]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.max_answers_count')), m('input.FormControl', {
                             type: 'number',
                             min: 1,
+                            disabled: true, // TODO: remove when multiple answers is ready
                             value: this.field.max_answers_count(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count'))
-                        })]), m('li', [m('label', [Switch.component({
+                        })]), m('.Form-group', [m('label', [Switch.component({
+                            disabled: true, // TODO: remove when user answers is ready
                             state: this.field.user_values_allowed(),
                             onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
                             children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed')
-                        })]), m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('li', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
+                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation'))
-                        }), m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
+                        }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
                             a: m('a[href=https://laravel.com/docs/5.1/validation#available-validation-rules][_target=blank]')
-                        }))]), m('li', [m('label', app.translator.trans('flagrow-mason.admin.fields.icon')), m('input.FormControl', {
+                        }))]), m('.Form-group', [m('label', [app.translator.trans('flagrow-mason.admin.fields.icon'), this.iconPreview(this.field.icon())]), m('input.FormControl', {
                             value: this.field.icon(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon'))
-                        }), m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.icon-help', {
+                        }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.icon-help', {
                             a: m('a[href=http://fontawesome.io/icons/][_target=blank]')
-                        }))]), m('li', FieldAnswersEdit.component({
+                        }))])]), m('.Mason-Box--column', [m('h4', 'Field answers'), m('.Form-group', FieldAnswersEdit.component({
                             field: this.field
-                        })), m('li.ButtonGroup', [Button.component({
+                        }))])]), m('li.ButtonGroup', [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
-                            children: app.translator.trans('flagrow-mason.admin.buttons.' + (this.field.exists ? 'edit' : 'add') + '-field'),
+                            children: app.translator.trans('flagrow-mason.admin.buttons.' + (this.field.exists ? 'save' : 'add') + '-field'),
                             loading: this.processing,
                             disabled: !this.readyToSave(),
                             onclick: this.saveField.bind(this)
@@ -460,6 +474,12 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Com
                     value: function deleteField() {
                         var _this4 = this;
 
+                        if (!confirm(app.translator.trans('flagrow-mason.admin.messages.delete-field-confirmation', {
+                            name: this.field.name()
+                        }))) {
+                            return;
+                        }
+
                         this.processing = true;
 
                         app.request({
@@ -471,6 +491,17 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Com
                             _this4.processing = false;
                             m.redraw();
                         });
+                    }
+                }, {
+                    key: 'iconPreview',
+                    value: function iconPreview(value) {
+                        if (!value) {
+                            return '';
+                        }
+
+                        return [' (', app.translator.trans('flagrow-mason.admin.fields.icon-preview', {
+                            preview: icon(value)
+                        }), ')'];
                     }
                 }]);
                 return FieldEdit;
@@ -541,8 +572,7 @@ System.register('flagrow/mason/models/Answer', ['flarum/app', 'flarum/Model', 'f
                 content: Model.attribute('content'),
                 is_suggested: Model.attribute('is_suggested'),
                 sort: Model.attribute('sort'),
-                field: Model.hasOne('field'),
-                userId: Model.attribute('user_id')
+                field: Model.hasOne('field')
             }));
 
             _export('default', Answer);
@@ -551,10 +581,10 @@ System.register('flagrow/mason/models/Answer', ['flarum/app', 'flarum/Model', 'f
 });;
 'use strict';
 
-System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'flarum/utils/mixin'], function (_export, _context) {
+System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'flarum/utils/mixin', 'flarum/utils/computed'], function (_export, _context) {
     "use strict";
 
-    var app, Model, mixin, Field;
+    var app, Model, mixin, computed, Field;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -562,6 +592,8 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
             Model = _flarumModel.default;
         }, function (_flarumUtilsMixin) {
             mixin = _flarumUtilsMixin.default;
+        }, function (_flarumUtilsComputed) {
+            computed = _flarumUtilsComputed.default;
         }],
         execute: function () {
             Field = function (_mixin) {
@@ -590,7 +622,13 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
                 sort: Model.attribute('sort'),
                 deleted_at: Model.attribute('deleted_at', Model.transformDate),
                 all_answers: Model.hasMany('all_answers'),
-                suggested_answers: Model.hasMany('suggested_answers')
+                suggested_answers: Model.hasMany('suggested_answers'),
+                required: computed('min_answers_count', function (min_answers_count) {
+                    return min_answers_count > 0;
+                }),
+                multiple: computed('max_answers_count', function (max_answers_count) {
+                    return max_answers_count > 1;
+                })
             }));
 
             _export('default', Field);
@@ -636,10 +674,10 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
                     value: function config() {
                         var _this2 = this;
 
-                        this.$('.Existing--Fields').sortable({
-                            handle: '.Field--Handle'
+                        this.$('.js-fields-container').sortable({
+                            handle: '.js-field-handle'
                         }).on('sortupdate', function () {
-                            var sorting = _this2.$('.Existing--Fields > .Field').map(function () {
+                            var sorting = _this2.$('.js-field-data').map(function () {
                                 return $(this).data('id');
                             }).get();
 
@@ -657,15 +695,15 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
                             return a.sort() - b.sort();
                         }).forEach(function (field) {
                             // Build array of fields to show.
-                            fieldsList.push(m('.Field', {
+                            fieldsList.push(m('.js-field-data', {
                                 key: field.id(),
                                 'data-id': field.id()
-                            }, [m('span.fa.fa-arrows.Field--Handle'), FieldEdit.component({
+                            }, FieldEdit.component({
                                 field: field
-                            })]));
+                            })));
                         });
 
-                        return m('.ProfileConfigurePane', [m('.container', [m('.Existing--Fields', fieldsList), FieldEdit.component({
+                        return m('.ProfileConfigurePane', [m('.container', [m('.Mason-Container.js-fields-container', fieldsList), FieldEdit.component({
                             //key: 'new',
                             field: null
                         })])]);

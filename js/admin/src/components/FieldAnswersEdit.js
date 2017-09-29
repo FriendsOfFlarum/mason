@@ -11,12 +11,12 @@ export default class FieldAnswersEdit extends Component {
     }
 
     config() {
-        this.$('.Answers')
+        this.$('.js-answers-container')
             .sortable({
-                handle: '.Answer--Handle',
+                handle: '.js-answer-handle',
             })
             .on('sortupdate', () => {
-                const sorting = this.$('.Answers > .Answer')
+                const sorting = this.$('.js-answer-data')
                     .map(function () {
                         return $(this).data('id');
                     })
@@ -28,7 +28,7 @@ export default class FieldAnswersEdit extends Component {
 
     view() {
         if (!this.field.exists) {
-            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-options'));
+            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-answers'));
         }
 
         let answersList = [];
@@ -43,7 +43,7 @@ export default class FieldAnswersEdit extends Component {
                 }
 
                 // Build array of fields to show.
-                answersList.push(m('.Answer', {
+                answersList.push(m('.js-answer-data', {
                     key: answer.id(),
                     'data-id': answer.id(),
                 }, AnswerEdit.component({
@@ -52,22 +52,28 @@ export default class FieldAnswersEdit extends Component {
             });
 
         return m('div', [
-            m('.Answers', answersList),
+            m('.Mason-Container.js-answers-container', answersList),
             m('form', [
-                m('input.FormControl', {
-                    value: this.new_content,
-                    oninput: m.withAttr('value', value => {
-                        this.new_content = value;
+                m('.Form-group', [
+                    m('label', 'New answer'),
+                    m('input.FormControl', {
+                        value: this.new_content,
+                        oninput: m.withAttr('value', value => {
+                            this.new_content = value;
+                        }),
+                        placeholder: 'Some text',
                     }),
-                }),
-                Button.component({
-                    type: 'submit',
-                    className: 'Button Button--primary',
-                    children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
-                    loading: this.processing,
-                    disabled: !this.new_content,
-                    onclick: this.saveField.bind(this),
-                }),
+                ]),
+                m('.Form-group', [
+                    Button.component({
+                        type: 'submit',
+                        className: 'Button Button--primary',
+                        children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
+                        loading: this.processing,
+                        disabled: !this.new_content,
+                        onclick: this.saveField.bind(this),
+                    }),
+                ]),
             ]),
         ]);
     }

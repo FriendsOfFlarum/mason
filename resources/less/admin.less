@@ -1,0 +1,42 @@
+.Mason-Container {
+    border: 1px solid #e8ecf3;
+    border-radius: @border-radius;
+    padding: 20px;
+}
+
+.Mason-Box {
+    position: relative;
+    padding: 10px 0;
+    padding-left: 50px;
+    margin: 10px 0;
+    border-left: 5px solid #eee;
+}
+
+.Mason-Box-Header {
+    text-align: left;
+    display: flex;
+}
+
+.Mason-Box-Header-Title {
+    flex-grow: 1;
+}
+
+.Mason-Box--handle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: move;
+    color: @muted-color;
+    font-size: 20px;
+}
+
+@media (min-width: @screen-tablet) {
+    .Mason-Box--row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .Mason-Box--column {
+        width: 48%;
+    }
+}

@@ -13,10 +13,11 @@ flagrow-mason:
     admin:
         buttons:
             add-field: Add field
-            edit-field: Edit field
+            save-field: Save field changes
             delete-field: Delete field
+            edit-field: Click to edit field
             add-answer: Add answer
-            edit-answer: Edit answer
+            save-answer: Save answer changes
             delete-answer: Delete answer
         menu:
             description: >
@@ -46,5 +47,16 @@ flagrow-mason:
                 Shows an icon in front of values entered by the user. For a reference of
                 available icons, check the <a>FontAwesome website</a>. Use "info" without
                 the "fa-" prefix.
-            save-field-for-options: Save the field to add options
+            icon-preview: preview: {preview}
+            save-field-for-answers: Save the field to add answers
             is_suggested: Suggest answer to users
+        messages:
+            delete-answer-confirmation: >
+                Are you sure you want to delete answer "{content}" ?
+                It will be removed from all discussions that use it.
+                If you want to keep existing answers disable answer suggestion instead.
+                Delete answer ?
+            delete-field-confirmation: >
+                Are you sure you want to delete field "{name}" ?
+                The field and its answers will be removed from all discussions that use them.
+                Delete field ?

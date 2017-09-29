@@ -1,4 +1,5 @@
 import app from 'flarum/app';
+import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import Switch from 'flarum/components/Switch';
@@ -32,90 +33,112 @@ export default class FieldEdit extends Component {
     }
 
     view() {
-        return m('form', [
-            m('.Button.Button-block', {
+        return m('.Mason-Box', [
+            (this.field.exists ? m('span.fa.fa-arrows.Mason-Box--handle.js-field-handle') : null),
+            m('.Button.Button--block.Mason-Box-Header', {
                 onclick: () => {
                     this.toggleFields = !this.toggleFields;
                 },
-            }, this.field.name() + ' - Show/hide'),
+            }, [
+                m('.Mason-Box-Header-Title', this.field.name()),
+                m('div', [
+                    app.translator.trans('flagrow-mason.admin.buttons.edit-field'),
+                    ' ',
+                    icon(this.toggleFields ? 'chevron-up' : 'chevron-down'),
+                ]),
+            ]),
             (this.toggleFields ? this.viewFields() : null),
         ]);
     }
 
     viewFields() {
-        return m('ul', [
-            m('li', [
-                m('label', app.translator.trans('flagrow-mason.admin.fields.name')),
-                m('input.FormControl', {
-                    value: this.field.name(),
-                    oninput: m.withAttr('value', this.updateAttribute.bind(this, 'name')),
-                }),
-                m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.name-help')),
-            ]),
-            m('li', [
-                m('label', app.translator.trans('flagrow-mason.admin.fields.description')),
-                m('input.FormControl', {
-                    value: this.field.description(),
-                    oninput: m.withAttr('value', this.updateAttribute.bind(this, 'description')),
-                }),
-                m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help')),
-            ]),
-            m('li', [
-                m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')),
-                m('input.FormControl', {
-                    type: 'number',
-                    min: 0,
-                    value: this.field.min_answers_count(),
-                    oninput: m.withAttr('value', this.updateAttribute.bind(this, 'min_answers_count')),
-                }),
-            ]),
-            m('li', [
-                m('label', app.translator.trans('flagrow-mason.admin.fields.max_answers_count')),
-                m('input.FormControl', {
-                    type: 'number',
-                    min: 1,
-                    value: this.field.max_answers_count(),
-                    oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count')),
-                }),
-            ]),
-            m('li', [
-                m('label', [
-                    Switch.component({
-                        state: this.field.user_values_allowed(),
-                        onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
-                        children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed'),
-                    }),
+        return m('form', [
+            m('.Mason-Box--row', [
+                m('.Mason-Box--column', [
+                    m('h4', 'Field settings'),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('flagrow-mason.admin.fields.name')),
+                        m('input.FormControl', {
+                            value: this.field.name(),
+                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'name')),
+                        }),
+                        m('.helpText', app.translator.trans('flagrow-mason.admin.fields.name-help')),
+                    ]),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('flagrow-mason.admin.fields.description')),
+                        m('input.FormControl', {
+                            value: this.field.description(),
+                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'description')),
+                        }),
+                        m('.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help')),
+                    ]),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')),
+                        m('input.FormControl', {
+                            type: 'number',
+                            min: 0,
+                            max: 1, // TODO: remove when multiple answers is ready
+                            value: this.field.min_answers_count(),
+                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'min_answers_count')),
+                        }),
+                    ]),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('flagrow-mason.admin.fields.max_answers_count')),
+                        m('input.FormControl', {
+                            type: 'number',
+                            min: 1,
+                            disabled: true, // TODO: remove when multiple answers is ready
+                            value: this.field.max_answers_count(),
+                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count')),
+                        }),
+                    ]),
+                    m('.Form-group', [
+                        m('label', [
+                            Switch.component({
+                                disabled: true, // TODO: remove when user answers is ready
+                                state: this.field.user_values_allowed(),
+                                onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
+                                children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed'),
+                            }),
+                        ]),
+                        m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help')),
+                    ]),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('flagrow-mason.admin.fields.validation')),
+                        m('input.FormControl', {
+                            value: this.field.validation(),
+                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation')),
+                        }),
+                        m('.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
+                            a: m('a[href=https://laravel.com/docs/5.1/validation#available-validation-rules][_target=blank]'),
+                        })),
+                    ]),
+                    m('.Form-group', [
+                        m('label', [
+                            app.translator.trans('flagrow-mason.admin.fields.icon'),
+                            this.iconPreview(this.field.icon()),
+                        ]),
+                        m('input.FormControl', {
+                            value: this.field.icon(),
+                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon')),
+                        }),
+                        m('.helpText', app.translator.trans('flagrow-mason.admin.fields.icon-help', {
+                            a: m('a[href=http://fontawesome.io/icons/][_target=blank]'),
+                        })),
+                    ]),
                 ]),
-                m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help')),
+                m('.Mason-Box--column', [
+                    m('h4', 'Field answers'),
+                    m('.Form-group', FieldAnswersEdit.component({
+                        field: this.field,
+                    })),
+                ]),
             ]),
-            m('li', [
-                m('label', app.translator.trans('flagrow-mason.admin.fields.validation')),
-                m('input.FormControl', {
-                    value: this.field.validation(),
-                    oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation')),
-                }),
-                m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
-                    a: m('a[href=https://laravel.com/docs/5.1/validation#available-validation-rules][_target=blank]'),
-                })),
-            ]),
-            m('li', [
-                m('label', app.translator.trans('flagrow-mason.admin.fields.icon')),
-                m('input.FormControl', {
-                    value: this.field.icon(),
-                    oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon')),
-                }),
-                m('span.helpText', app.translator.trans('flagrow-mason.admin.fields.icon-help', {
-                    a: m('a[href=http://fontawesome.io/icons/][_target=blank]'),
-                })),
-            ]),
-            m('li', FieldAnswersEdit.component({
-                field: this.field,
-            })),
             m('li.ButtonGroup', [
                 Button.component({
                     type: 'submit',
                     className: 'Button Button--primary',
-                    children: app.translator.trans('flagrow-mason.admin.buttons.' + (this.field.exists ? 'edit' : 'add') + '-field'),
+                    children: app.translator.trans('flagrow-mason.admin.buttons.' + (this.field.exists ? 'save' : 'add') + '-field'),
                     loading: this.processing,
                     disabled: !this.readyToSave(),
                     onclick: this.saveField.bind(this),
@@ -126,8 +149,8 @@ export default class FieldEdit extends Component {
                     children: app.translator.trans('flagrow-mason.admin.buttons.delete-field'),
                     loading: this.processing,
                     onclick: this.deleteField.bind(this),
-                }) : '')
-            ])
+                }) : ''),
+            ]),
         ]);
     }
 
@@ -167,6 +190,12 @@ export default class FieldEdit extends Component {
     }
 
     deleteField() {
+        if (!confirm(app.translator.trans('flagrow-mason.admin.messages.delete-field-confirmation', {
+                name: this.field.name(),
+            }))) {
+            return;
+        }
+
         this.processing = true;
 
         app.request({
@@ -178,5 +207,19 @@ export default class FieldEdit extends Component {
             this.processing = false;
             m.redraw();
         });
+    }
+
+    iconPreview(value) {
+        if (!value) {
+            return '';
+        }
+
+        return [
+            ' (',
+            app.translator.trans('flagrow-mason.admin.fields.icon-preview', {
+                preview: icon(value),
+            }),
+            ')',
+        ];
     }
 }

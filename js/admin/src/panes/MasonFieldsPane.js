@@ -14,12 +14,12 @@ export default class MasonFieldsPane extends Component {
     }
 
     config() {
-        this.$('.Existing--Fields')
+        this.$('.js-fields-container')
             .sortable({
-                handle: '.Field--Handle',
+                handle: '.js-field-handle',
             })
             .on('sortupdate', () => {
-                const sorting = this.$('.Existing--Fields > .Field')
+                const sorting = this.$('.js-field-data')
                     .map(function () {
                         return $(this).data('id');
                     })
@@ -38,20 +38,17 @@ export default class MasonFieldsPane extends Component {
             .sort((a, b) => a.sort() - b.sort())
             .forEach(field => {
                 // Build array of fields to show.
-                fieldsList.push(m('.Field', {
+                fieldsList.push(m('.js-field-data', {
                     key: field.id(),
                     'data-id': field.id(),
-                }, [
-                    m('span.fa.fa-arrows.Field--Handle'),
-                    FieldEdit.component({
-                        field,
-                    }),
-                ]));
+                }, FieldEdit.component({
+                    field,
+                })));
             });
 
         return m('.ProfileConfigurePane', [
             m('.container', [
-                m('.Existing--Fields', fieldsList),
+                m('.Mason-Container.js-fields-container', fieldsList),
                 FieldEdit.component({
                     //key: 'new',
                     field: null,
