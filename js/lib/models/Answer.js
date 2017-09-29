@@ -7,7 +7,6 @@ export default class Answer extends mixin(Model, {
     is_suggested: Model.attribute('is_suggested'),
     sort: Model.attribute('sort'),
     field: Model.hasOne('field'),
-    userId: Model.attribute('user_id')
 }) {
     /**
      * Construct a path to the API endpoint for this resource.

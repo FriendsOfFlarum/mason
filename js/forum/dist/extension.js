@@ -294,10 +294,10 @@ System.register('flagrow/mason/components/DiscussionFieldsModal', ['flarum/app',
 });;
 'use strict';
 
-System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/models/Discussion', 'flagrow/mason/models/Answer', 'flagrow/mason/models/Field', 'flagrow/mason/addComposerFields', 'flagrow/mason/addFieldUpdateControl'], function (_export, _context) {
+System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/models/Discussion', 'flagrow/mason/models/Answer', 'flagrow/mason/models/Field', 'flagrow/mason/addComposerFields', 'flagrow/mason/addFieldUpdateControl', 'flagrow/mason/addFieldsOnDiscussion'], function (_export, _context) {
     "use strict";
 
-    var app, Model, Discussion, Answer, Field, addComposerFields, addFieldUpdateControl;
+    var app, Model, Discussion, Answer, Field, addComposerFields, addFieldUpdateControl, addFieldsOnDiscussion;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -313,6 +313,8 @@ System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/mod
             addComposerFields = _flagrowMasonAddComposerFields.default;
         }, function (_flagrowMasonAddFieldUpdateControl) {
             addFieldUpdateControl = _flagrowMasonAddFieldUpdateControl.default;
+        }, function (_flagrowMasonAddFieldsOnDiscussion) {
+            addFieldsOnDiscussion = _flagrowMasonAddFieldsOnDiscussion.default;
         }],
         execute: function () {
 
@@ -324,6 +326,7 @@ System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/mod
                 Discussion.prototype.canUpdateFlagrowMasonAnswers = Model.attribute('canUpdateFlagrowMasonAnswers');
 
                 addComposerFields();
+                addFieldsOnDiscussion();
                 addFieldUpdateControl();
             });
         }
@@ -363,8 +366,7 @@ System.register('flagrow/mason/models/Answer', ['flarum/app', 'flarum/Model', 'f
                 content: Model.attribute('content'),
                 is_suggested: Model.attribute('is_suggested'),
                 sort: Model.attribute('sort'),
-                field: Model.hasOne('field'),
-                userId: Model.attribute('user_id')
+                field: Model.hasOne('field')
             }));
 
             _export('default', Answer);
@@ -424,6 +426,104 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
             }));
 
             _export('default', Field);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/addFieldsOnDiscussion', ['flarum/extend', 'flarum/components/CommentPost', 'flagrow/mason/components/PostFields'], function (_export, _context) {
+    "use strict";
+
+    var extend, CommentPost, PostFields;
+
+    _export('default', function () {
+        extend(CommentPost.prototype, 'content', function (content) {
+            // We only add fields to the first post
+            // TODO: what if the first post is deleted ?
+            if (this.props.post.number() !== 1) {
+                return;
+            }
+
+            var postHeaderIndex = content.findIndex(function (item) {
+                return item.attrs && item.attrs.className === 'Post-header';
+            });
+
+            // Insert the new content just after the header
+            // or at the very beginning if the header is not found
+            content.splice(postHeaderIndex === -1 ? 0 : postHeaderIndex + 1, 0, PostFields.component({
+                discussion: this.props.post.discussion()
+            }));
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            extend = _flarumExtend.extend;
+        }, function (_flarumComponentsCommentPost) {
+            CommentPost = _flarumComponentsCommentPost.default;
+        }, function (_flagrowMasonComponentsPostFields) {
+            PostFields = _flagrowMasonComponentsPostFields.default;
+        }],
+        execute: function () {}
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component'], function (_export, _context) {
+    "use strict";
+
+    var app, icon, Component, PostFields;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }],
+        execute: function () {
+            PostFields = function (_Component) {
+                babelHelpers.inherits(PostFields, _Component);
+
+                function PostFields() {
+                    babelHelpers.classCallCheck(this, PostFields);
+                    return babelHelpers.possibleConstructorReturn(this, (PostFields.__proto__ || Object.getPrototypeOf(PostFields)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(PostFields, [{
+                    key: 'init',
+                    value: function init() {
+                        this.fields = app.store.all('flagrow-mason-field');
+                        this.discussion = this.props.discussion;
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        return m('ul', [this.fields.map(function (field) {
+                            // Discussion answers to this field
+                            var answers = _this2.discussion.flagrowMasonAnswers().filter(function (answer) {
+                                // It's necessary to compare the field() relationship
+                                // Because field.suggested_answers() won't contain new and user answers
+                                return answer.field().id() === field.id();
+                            });
+
+                            // If the field has no answer we don't show it
+                            if (answers.length === 0) {
+                                return null;
+                            }
+
+                            return m('li', m('.FormGroup', [m('strong', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), ' ', answers.map(function (answer) {
+                                return m('span', answer.content());
+                            })]));
+                        })]);
+                    }
+                }]);
+                return PostFields;
+            }(Component);
+
+            _export('default', PostFields);
         }
     };
 });

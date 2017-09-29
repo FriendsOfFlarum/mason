@@ -36,8 +36,9 @@ class AnswerSerializer extends AbstractSerializer
     public function field($model)
     {
         return $this->hasOne(
-            $model->field,
-            FieldSerializer::class
+            $model,
+            FieldSerializer::class,
+            'field'
         );
     }
 }
