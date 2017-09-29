@@ -535,7 +535,7 @@ System.register('flagrow/mason/main', ['flarum/app', 'flagrow/mason/models/Answe
         }],
         execute: function () {
 
-            app.initializers.add('flagrow-masquerade', function (app) {
+            app.initializers.add('flagrow-mason', function (app) {
                 app.store.models['flagrow-mason-field'] = Field;
                 app.store.models['flagrow-mason-answer'] = Answer;
 

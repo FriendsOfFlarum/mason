@@ -12,9 +12,6 @@ use Validator;
 
 class FieldRepository
 {
-    const CACHE_KEY_ALL_FIELDS = 'masquerade.fields.all';
-    const CACHE_KEY_UNCOMPLETED = 'masquerade.uncompleted.u.%d';
-
     /**
      * @var Field
      */
