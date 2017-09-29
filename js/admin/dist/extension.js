@@ -401,15 +401,15 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             value: this.field.max_answers_count(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count'))
                         })]), m('.Form-group', [m('label', [Switch.component({
+                            state: this.field.show_when_empty(),
+                            onchange: this.updateAttribute.bind(this, 'show_when_empty'),
+                            children: app.translator.trans('flagrow-mason.admin.fields.show_when_empty')
+                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.show_when_empty-help'))]), m('.Form-group', [m('label', [Switch.component({
                             disabled: true, // TODO: remove when user answers is ready
                             state: this.field.user_values_allowed(),
                             onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
                             children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed')
-                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', [Switch.component({
-                            state: this.field.show_when_empty(),
-                            onchange: this.updateAttribute.bind(this, 'show_when_empty'),
-                            children: app.translator.trans('flagrow-mason.admin.fields.show_when_empty')
-                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.show_when_empty-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
+                        })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
                             disabled: true, // TODO: remove when user answers is ready
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation'))
