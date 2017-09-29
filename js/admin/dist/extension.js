@@ -45,6 +45,263 @@ System.register('flagrow/mason/addMasonFieldsPane', ['flarum/extend', 'flarum/ap
 });;
 'use strict';
 
+System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, Button, Switch, FieldEdit;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flarumComponentsSwitch) {
+            Switch = _flarumComponentsSwitch.default;
+        }],
+        execute: function () {
+            FieldEdit = function (_Component) {
+                babelHelpers.inherits(FieldEdit, _Component);
+
+                function FieldEdit() {
+                    babelHelpers.classCallCheck(this, FieldEdit);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldEdit.__proto__ || Object.getPrototypeOf(FieldEdit)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldEdit, [{
+                    key: 'init',
+                    value: function init() {
+                        this.answer = this.props.answer;
+                        this.dirty = false;
+                        this.processing = false;
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        return m('form', [m('span.fa.fa-arrows.Answer--Handle'), m('span', {
+                            onclick: function onclick() {
+                                var newContent = prompt('Edit content', _this2.answer.content());
+
+                                if (newContent) {
+                                    _this2.updateAttribute('content', newContent);
+                                }
+                            }
+                        }, ' ' + this.answer.content() + ' '), Switch.component({
+                            state: this.answer.is_suggested(),
+                            onchange: this.updateAttribute.bind(this, 'is_suggested'),
+                            children: app.translator.trans('flagrow-mason.admin.fields.is_suggested')
+                        }), Button.component({
+                            type: 'submit',
+                            className: 'Button Button--primary',
+                            children: app.translator.trans('flagrow-mason.admin.buttons.edit-answer'),
+                            loading: this.processing,
+                            disabled: !this.readyToSave(),
+                            onclick: this.saveField.bind(this)
+                        }), Button.component({
+                            type: 'submit',
+                            className: 'Button Button--danger',
+                            children: app.translator.trans('flagrow-mason.admin.buttons.delete-answer'),
+                            loading: this.processing,
+                            onclick: this.deleteField.bind(this)
+                        })]);
+                    }
+                }, {
+                    key: 'updateAttribute',
+                    value: function updateAttribute(attribute, value) {
+                        this.answer.pushAttributes(babelHelpers.defineProperty({}, attribute, value));
+
+                        this.dirty = true;
+                    }
+                }, {
+                    key: 'readyToSave',
+                    value: function readyToSave() {
+                        return this.dirty;
+                    }
+                }, {
+                    key: 'saveField',
+                    value: function saveField() {
+                        var _this3 = this;
+
+                        this.processing = true;
+
+                        app.request({
+                            method: 'PATCH',
+                            url: this.answer.apiEndpoint(),
+                            data: this.answer.data
+                        }).then(function (result) {
+                            app.store.pushPayload(result);
+
+                            _this3.processing = false;
+                            _this3.dirty = false;
+                            m.redraw();
+                        });
+                    }
+                }, {
+                    key: 'deleteField',
+                    value: function deleteField() {
+                        var _this4 = this;
+
+                        this.processing = true;
+
+                        app.request({
+                            method: 'DELETE',
+                            url: this.answer.apiEndpoint()
+                        }).then(function () {
+                            app.store.remove(_this4.answer);
+
+                            _this4.processing = false;
+                            m.redraw();
+                        });
+                    }
+                }]);
+                return FieldEdit;
+            }(Component);
+
+            _export('default', FieldEdit);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, Button, AnswerEdit, FieldAnswersEdit;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flagrowMasonComponentsAnswerEdit) {
+            AnswerEdit = _flagrowMasonComponentsAnswerEdit.default;
+        }],
+        execute: function () {
+            FieldAnswersEdit = function (_Component) {
+                babelHelpers.inherits(FieldAnswersEdit, _Component);
+
+                function FieldAnswersEdit() {
+                    babelHelpers.classCallCheck(this, FieldAnswersEdit);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldAnswersEdit.__proto__ || Object.getPrototypeOf(FieldAnswersEdit)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldAnswersEdit, [{
+                    key: 'init',
+                    value: function init() {
+                        this.field = this.props.field;
+                        this.processing = false;
+                        this.new_content = '';
+                    }
+                }, {
+                    key: 'config',
+                    value: function config() {
+                        var _this2 = this;
+
+                        this.$('.Answers').sortable({
+                            handle: '.Answer--Handle'
+                        }).on('sortupdate', function () {
+                            var sorting = _this2.$('.Answers > .Answer').map(function () {
+                                return $(this).data('id');
+                            }).get();
+
+                            _this2.updateSort(sorting);
+                        });
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this3 = this;
+
+                        if (!this.field.exists) {
+                            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-options'));
+                        }
+
+                        var answersList = [];
+
+                        this.field.all_answers().sort(function (a, b) {
+                            return a.sort() - b.sort();
+                        }).forEach(function (answer) {
+                            // When answers are deleted via store.delete() they stay as an "undefined" relationship
+                            // We ignore these deleted answers
+                            if (typeof answer === 'undefined') {
+                                return;
+                            }
+
+                            // Build array of fields to show.
+                            answersList.push(m('.Answer', {
+                                key: answer.id(),
+                                'data-id': answer.id()
+                            }, AnswerEdit.component({
+                                answer: answer
+                            })));
+                        });
+
+                        return m('div', [m('.Answers', answersList), m('form', [m('input.FormControl', {
+                            value: this.new_content,
+                            oninput: m.withAttr('value', function (value) {
+                                _this3.new_content = value;
+                            })
+                        }), Button.component({
+                            type: 'submit',
+                            className: 'Button Button--primary',
+                            children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
+                            loading: this.processing,
+                            disabled: !this.new_content,
+                            onclick: this.saveField.bind(this)
+                        })])]);
+                    }
+                }, {
+                    key: 'saveField',
+                    value: function saveField() {
+                        var _this4 = this;
+
+                        this.processing = true;
+
+                        app.request({
+                            method: 'POST',
+                            url: this.field.apiEndpoint() + '/answers',
+                            data: {
+                                attributes: {
+                                    content: this.new_content,
+                                    is_suggested: true
+                                }
+                            }
+                        }).then(function (result) {
+                            app.store.pushPayload(result);
+
+                            _this4.new_content = '';
+                            _this4.processing = false;
+                            m.redraw();
+                        });
+                    }
+                }, {
+                    key: 'updateSort',
+                    value: function updateSort(sorting) {
+                        app.request({
+                            method: 'POST',
+                            url: this.field.apiEndpoint() + '/answers/order',
+                            data: {
+                                sort: sorting
+                            }
+                        }).then(function (result) {
+                            // Update sort attributes
+                            app.store.pushPayload(result);
+                            m.redraw();
+                        });
+                    }
+                }]);
+                return FieldAnswersEdit;
+            }(Component);
+
+            _export('default', FieldAnswersEdit);
+        }
+    };
+});;
+'use strict';
+
 System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch', 'flagrow/mason/models/Field', 'flagrow/mason/components/FieldAnswersEdit'], function (_export, _context) {
     "use strict";
 
@@ -433,263 +690,6 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
             }(Component);
 
             _export('default', MasonFieldsPane);
-        }
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit'], function (_export, _context) {
-    "use strict";
-
-    var app, Component, Button, AnswerEdit, FieldAnswersEdit;
-    return {
-        setters: [function (_flarumApp) {
-            app = _flarumApp.default;
-        }, function (_flarumComponent) {
-            Component = _flarumComponent.default;
-        }, function (_flarumComponentsButton) {
-            Button = _flarumComponentsButton.default;
-        }, function (_flagrowMasonComponentsAnswerEdit) {
-            AnswerEdit = _flagrowMasonComponentsAnswerEdit.default;
-        }],
-        execute: function () {
-            FieldAnswersEdit = function (_Component) {
-                babelHelpers.inherits(FieldAnswersEdit, _Component);
-
-                function FieldAnswersEdit() {
-                    babelHelpers.classCallCheck(this, FieldAnswersEdit);
-                    return babelHelpers.possibleConstructorReturn(this, (FieldAnswersEdit.__proto__ || Object.getPrototypeOf(FieldAnswersEdit)).apply(this, arguments));
-                }
-
-                babelHelpers.createClass(FieldAnswersEdit, [{
-                    key: 'init',
-                    value: function init() {
-                        this.field = this.props.field;
-                        this.processing = false;
-                        this.new_content = '';
-                    }
-                }, {
-                    key: 'config',
-                    value: function config() {
-                        var _this2 = this;
-
-                        this.$('.Answers').sortable({
-                            handle: '.Answer--Handle'
-                        }).on('sortupdate', function () {
-                            var sorting = _this2.$('.Answers > .Answer').map(function () {
-                                return $(this).data('id');
-                            }).get();
-
-                            _this2.updateSort(sorting);
-                        });
-                    }
-                }, {
-                    key: 'view',
-                    value: function view() {
-                        var _this3 = this;
-
-                        if (!this.field.exists) {
-                            return m('div', app.translator('flagrow-mason.admin.fields.save-field-for-options'));
-                        }
-
-                        var answersList = [];
-
-                        this.field.all_answers().sort(function (a, b) {
-                            return a.sort() - b.sort();
-                        }).forEach(function (answer) {
-                            // When answers are deleted via store.delete() they stay as an "undefined" relationship
-                            // We ignore these deleted answers
-                            if (typeof answer === 'undefined') {
-                                return;
-                            }
-
-                            // Build array of fields to show.
-                            answersList.push(m('.Answer', {
-                                key: answer.id(),
-                                'data-id': answer.id()
-                            }, AnswerEdit.component({
-                                answer: answer
-                            })));
-                        });
-
-                        return m('div', [m('.Answers', answersList), m('form', [m('input.FormControl', {
-                            value: this.new_content,
-                            oninput: m.withAttr('value', function (value) {
-                                _this3.new_content = value;
-                            })
-                        }), Button.component({
-                            type: 'submit',
-                            className: 'Button Button--primary',
-                            children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
-                            loading: this.processing,
-                            disabled: !this.new_content,
-                            onclick: this.saveField.bind(this)
-                        })])]);
-                    }
-                }, {
-                    key: 'saveField',
-                    value: function saveField() {
-                        var _this4 = this;
-
-                        this.processing = true;
-
-                        app.request({
-                            method: 'POST',
-                            url: this.field.apiEndpoint() + '/answers',
-                            data: {
-                                attributes: {
-                                    content: this.new_content,
-                                    is_suggested: true
-                                }
-                            }
-                        }).then(function (result) {
-                            app.store.pushPayload(result);
-
-                            _this4.new_content = '';
-                            _this4.processing = false;
-                            m.redraw();
-                        });
-                    }
-                }, {
-                    key: 'updateSort',
-                    value: function updateSort(sorting) {
-                        app.request({
-                            method: 'POST',
-                            url: this.field.apiEndpoint() + '/answers/order',
-                            data: {
-                                sort: sorting
-                            }
-                        }).then(function (result) {
-                            // Update sort attributes
-                            app.store.pushPayload(result);
-                            m.redraw();
-                        });
-                    }
-                }]);
-                return FieldAnswersEdit;
-            }(Component);
-
-            _export('default', FieldAnswersEdit);
-        }
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch'], function (_export, _context) {
-    "use strict";
-
-    var app, Component, Button, Switch, FieldEdit;
-    return {
-        setters: [function (_flarumApp) {
-            app = _flarumApp.default;
-        }, function (_flarumComponent) {
-            Component = _flarumComponent.default;
-        }, function (_flarumComponentsButton) {
-            Button = _flarumComponentsButton.default;
-        }, function (_flarumComponentsSwitch) {
-            Switch = _flarumComponentsSwitch.default;
-        }],
-        execute: function () {
-            FieldEdit = function (_Component) {
-                babelHelpers.inherits(FieldEdit, _Component);
-
-                function FieldEdit() {
-                    babelHelpers.classCallCheck(this, FieldEdit);
-                    return babelHelpers.possibleConstructorReturn(this, (FieldEdit.__proto__ || Object.getPrototypeOf(FieldEdit)).apply(this, arguments));
-                }
-
-                babelHelpers.createClass(FieldEdit, [{
-                    key: 'init',
-                    value: function init() {
-                        this.answer = this.props.answer;
-                        this.dirty = false;
-                        this.processing = false;
-                    }
-                }, {
-                    key: 'view',
-                    value: function view() {
-                        var _this2 = this;
-
-                        return m('form', [m('span.fa.fa-arrows.Answer--Handle'), m('span', {
-                            onclick: function onclick() {
-                                var newContent = prompt('Edit content', _this2.answer.content());
-
-                                if (newContent) {
-                                    _this2.updateAttribute('content', newContent);
-                                }
-                            }
-                        }, ' ' + this.answer.content() + ' '), Switch.component({
-                            state: this.answer.is_suggested(),
-                            onchange: this.updateAttribute.bind(this, 'is_suggested'),
-                            children: app.translator.trans('flagrow-mason.admin.fields.is_suggested')
-                        }), Button.component({
-                            type: 'submit',
-                            className: 'Button Button--primary',
-                            children: app.translator.trans('flagrow-mason.admin.buttons.edit-answer'),
-                            loading: this.processing,
-                            disabled: !this.readyToSave(),
-                            onclick: this.saveField.bind(this)
-                        }), Button.component({
-                            type: 'submit',
-                            className: 'Button Button--danger',
-                            children: app.translator.trans('flagrow-mason.admin.buttons.delete-answer'),
-                            loading: this.processing,
-                            onclick: this.deleteField.bind(this)
-                        })]);
-                    }
-                }, {
-                    key: 'updateAttribute',
-                    value: function updateAttribute(attribute, value) {
-                        this.answer.pushAttributes(babelHelpers.defineProperty({}, attribute, value));
-
-                        this.dirty = true;
-                    }
-                }, {
-                    key: 'readyToSave',
-                    value: function readyToSave() {
-                        return this.dirty;
-                    }
-                }, {
-                    key: 'saveField',
-                    value: function saveField() {
-                        var _this3 = this;
-
-                        this.processing = true;
-
-                        app.request({
-                            method: 'PATCH',
-                            url: this.answer.apiEndpoint(),
-                            data: this.answer.data
-                        }).then(function (result) {
-                            app.store.pushPayload(result);
-
-                            _this3.processing = false;
-                            _this3.dirty = false;
-                            m.redraw();
-                        });
-                    }
-                }, {
-                    key: 'deleteField',
-                    value: function deleteField() {
-                        var _this4 = this;
-
-                        this.processing = true;
-
-                        app.request({
-                            method: 'DELETE',
-                            url: this.answer.apiEndpoint()
-                        }).then(function () {
-                            app.store.remove(_this4.answer);
-
-                            _this4.processing = false;
-                            m.redraw();
-                        });
-                    }
-                }]);
-                return FieldEdit;
-            }(Component);
-
-            _export('default', FieldEdit);
         }
     };
 });

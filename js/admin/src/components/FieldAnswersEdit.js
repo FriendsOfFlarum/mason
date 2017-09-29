@@ -28,7 +28,7 @@ export default class FieldAnswersEdit extends Component {
 
     view() {
         if (!this.field.exists) {
-            return m('div', app.translator('flagrow-mason.admin.fields.save-field-for-options'));
+            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-options'));
         }
 
         let answersList = [];
