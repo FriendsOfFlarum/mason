@@ -1,4 +1,13 @@
 flagrow-mason:
+    forum:
+        discussion-controls:
+            edit-answers: Edit fields
+        answers-modal:
+            edit-title: Edit fields for {title}
+            save: Save fields
+        answers:
+            choose-option: Choose an option
+            no-option-selected: No option selected
     admin:
         buttons:
             add-field: Add field

@@ -52,8 +52,7 @@ class AddDiscussionAnswerRelationship
     public function prepareApiAttributes(PrepareApiAttributes $event)
     {
         if ($event->isSerializer(DiscussionSerializer::class)) {
-            // TODO: use permissions to show the edit fields in the discussion
-            //$event->attributes['canTag'] = $event->actor->can('tag', $event->model);
+            $event->attributes['canUpdateFlagrowMasonAnswers'] = $event->actor->can('updateFlagrowMasonAnswers', $event->model);
         }
     }
 }

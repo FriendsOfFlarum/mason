@@ -1,6 +1,7 @@
 import app from 'flarum/app';
 import Model from 'flarum/Model';
 import mixin from 'flarum/utils/mixin';
+import computed from 'flarum/utils/computed';
 
 export default class Field extends mixin(Model, {
     name: Model.attribute('name'),
@@ -14,6 +15,8 @@ export default class Field extends mixin(Model, {
     deleted_at: Model.attribute('deleted_at', Model.transformDate),
     all_answers: Model.hasMany('all_answers'),
     suggested_answers: Model.hasMany('suggested_answers'),
+    required: computed('min_answers_count', min_answers_count => min_answers_count > 0),
+    multiple: computed('max_answers_count', max_answers_count => max_answers_count > 1),
 }) {
     /**
      * Construct a path to the API endpoint for this resource.

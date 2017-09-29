@@ -12,5 +12,6 @@ return function (Dispatcher $events) {
     $events->subscribe(Listeners\SaveAnswersToDatabase::class);
 
     $events->subscribe(Access\AnswerPolicy::class);
+    $events->subscribe(Access\DiscussionPolicy::class);
     $events->subscribe(Access\FieldPolicy::class);
 };

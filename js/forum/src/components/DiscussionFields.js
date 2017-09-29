@@ -21,50 +21,66 @@ export default class DiscussionFields extends Component {
     view() {
         return m('ul', [
             this.fields.map(
-                field => m('li', m('.FormGroup', [
-                    m('label', [
-                        (field.icon() ? [icon(field.icon()), ' '] : null),
-                        field.name(),
-                        (field.min_answers_count() > 0 ? ' *' : null),
-                    ]),
-                    m('select', {
-                        multiple: field.min_answers_count() > 1,
-                        onchange: m.withAttr('value', value => {
-                            this.updateSelection(field, value);
-                        }),
-                    }, [
-                        m('option', {
-                            selected: true,
-                            disabled: true,
-                            hidden: true,
-                        }, 'Choose'),
-                        field.suggested_answers().map(
-                            answer => m('option', {
-                                value: answer.id(),
-                            }, answer.content())
-                        ),
-                    ]),
-                    (field.description() ? m('span.helpText', field.description()) : null),
-                ]))
+                field => {
+                    let selectedAnswerIdsForThisField = [];
+
+                    field.suggested_answers().forEach(answer => {
+                        if (this.props.answers.findIndex(a => a.id() === answer.id()) !== -1) {
+                            selectedAnswerIdsForThisField.push(answer.id());
+                        }
+                    });
+
+                    return m('li', m('.FormGroup', [
+                        m('label', [
+                            (field.icon() ? [icon(field.icon()), ' '] : null),
+                            field.name(),
+                            (field.required() ? ' *' : null),
+                        ]),
+                        m('select', {
+                            multiple: field.multiple(),
+                            onchange: event => {
+                                let ids = [];
+
+                                for (let option of event.target.options) {
+                                    if (option.selected && option.value !== 'none') {
+                                        ids.push(option.value);
+                                    }
+                                }
+
+                                console.log(ids);
+
+                                this.updateSelection(field, ids);
+                            },
+                        }, [
+                            (field.multiple() ? null : m('option', {
+                                value: 'none',
+                                selected: selectedAnswerIdsForThisField.length === 0,
+                                disabled: field.required(),
+                                hidden: field.required(),
+                            }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected')))),
+                            field.suggested_answers().map(
+                                answer => m('option', {
+                                    value: answer.id(),
+                                    selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,
+                                }, answer.content())
+                            ),
+                        ]),
+                        (field.description() ? m('span.helpText', field.description()) : null),
+                    ]));
+                }
             ),
         ]);
     }
 
-    updateSelection(field, value) {
+    updateSelection(field, answerIds) {
         // Keep only answers to other fields
         let answers = this.props.answers.filter(
             answer => this.answerToFieldIndex[answer.id()] !== field.id()
         );
 
-        console.log('filter', this.props.answers, answers);
-
-        const answerIds = Array.isArray(value) ? value : [value];
-
         answerIds.forEach(id => {
             answers.push(app.store.getById('flagrow-mason-answer', id));
         });
-
-        console.log('ids', answerIds, answers);
 
         this.props.onchange(answers);
     }

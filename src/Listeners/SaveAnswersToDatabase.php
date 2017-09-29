@@ -50,10 +50,16 @@ class SaveAnswersToDatabase
 
         $hasAnswersData = isset($event->data['relationships']['flagrowMasonAnswers']['data']);
 
-        // If we're updating a discussion and no answer data has been given we skip
-        // Handles cases like discussion renaming
-        if (!$hasAnswersData && $discussion->exists) {
-            return;
+        if ($discussion->exists) {
+            if ($hasAnswersData) {
+                if (!$actor->can('updateFlagrowMasonAnswers', $discussion)) {
+                    throw new PermissionDeniedException;
+                }
+            } else {
+                // If we're updating a discussion and no answer data has been given we skip
+                // Handles cases like discussion renaming
+                return;
+            }
         }
 
         $newAnswerIds = [];
