@@ -106,7 +106,6 @@ export default class FieldEdit extends Component {
                     m('.Form-group', [
                         m('label', [
                             Switch.component({
-                                disabled: true, // TODO: remove when user answers is ready
                                 state: this.field.user_values_allowed(),
                                 onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
                                 children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed'),
@@ -117,7 +116,6 @@ export default class FieldEdit extends Component {
                     m('.Form-group', [
                         m('label', app.translator.trans('flagrow-mason.admin.fields.validation')),
                         m('input.FormControl', {
-                            disabled: true, // TODO: remove when user answers is ready
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation')),
                         }),

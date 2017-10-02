@@ -1,7 +1,6 @@
 import app from 'flarum/app';
 import Modal from 'flarum/components/Modal';
 import Button from 'flarum/components/Button';
-import DiscussionPage from 'flarum/components/DiscussionPage';
 import DiscussionFields from 'flagrow/mason/components/DiscussionFields';
 
 export default class DiscussionFieldsModal extends Modal {
@@ -50,13 +49,12 @@ export default class DiscussionFieldsModal extends Modal {
                 flagrowMasonAnswers: this.answers,
             },
         }).then(() => {
-            if (app.current instanceof DiscussionPage) {
-                app.current.stream.update();
-            }
-
             this.processing = false;
             app.modal.close();
             m.redraw();
+        }).catch(err => {
+            this.processing = false;
+            throw err;
         });
     }
 }

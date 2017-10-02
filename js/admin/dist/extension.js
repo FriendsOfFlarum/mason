@@ -405,12 +405,10 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             onchange: this.updateAttribute.bind(this, 'show_when_empty'),
                             children: app.translator.trans('flagrow-mason.admin.fields.show_when_empty')
                         })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.show_when_empty-help'))]), m('.Form-group', [m('label', [Switch.component({
-                            disabled: true, // TODO: remove when user answers is ready
                             state: this.field.user_values_allowed(),
                             onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
                             children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed')
                         })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
-                            disabled: true, // TODO: remove when user answers is ready
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation'))
                         }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
@@ -515,6 +513,24 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
 
             _export('default', FieldEdit);
         }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/helpers/sortByAttribute', [], function (_export, _context) {
+    "use strict";
+
+    _export('default', function (items) {
+        var attr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'sort';
+
+        return items.sort(function (a, b) {
+            return a[attr]() - b[attr]();
+        });
+    });
+
+    return {
+        setters: [],
+        execute: function () {}
     };
 });;
 'use strict';
@@ -736,23 +752,5 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
 
             _export('default', MasonFieldsPane);
         }
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/helpers/sortByAttribute', [], function (_export, _context) {
-    "use strict";
-
-    _export('default', function (items) {
-        var attr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'sort';
-
-        return items.sort(function (a, b) {
-            return a[attr]() - b[attr]();
-        });
-    });
-
-    return {
-        setters: [],
-        execute: function () {}
     };
 });

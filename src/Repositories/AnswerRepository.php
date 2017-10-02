@@ -48,6 +48,21 @@ class AnswerRepository
         return $this->answer->newQuery()->findOrFail($id);
     }
 
+    public function findOrCreate(Field $field, $content)
+    {
+        $answer = $field->answers()->where('content', $content)->first();
+
+        if (!$answer) {
+            $answer = new Answer([
+                'content' => $content,
+            ]);
+            $answer->field()->associate($field);
+            $answer->save();
+        }
+
+        return $answer;
+    }
+
     /**
      * @param Field $field
      * @param array $attributes

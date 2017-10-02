@@ -2,6 +2,8 @@ import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
+import FieldEditDropdown from 'flagrow/mason/components/FieldEditDropdown';
+import FieldEditText from 'flagrow/mason/components/FieldEditText';
 
 export default class DiscussionFields extends Component {
     init() {
@@ -24,13 +26,21 @@ export default class DiscussionFields extends Component {
         return m('.Mason-Fields', [
             this.fields.map(
                 field => {
-                    let selectedAnswerIdsForThisField = [];
+                    const inputAttrs = {
+                        field,
+                        answers: this.props.answers,
+                        onchange: fieldAnswers => {
+                            // Every input component calls "onchange" with a list of answers from the store
+                            this.updateSelection(field, fieldAnswers);
+                        },
+                    };
+                    let input = null;
 
-                    field.suggested_answers().forEach(answer => {
-                        if (this.props.answers.findIndex(a => a.id() === answer.id()) !== -1) {
-                            selectedAnswerIdsForThisField.push(answer.id());
-                        }
-                    });
+                    if (field.user_values_allowed()) {
+                        input = FieldEditText.component(inputAttrs);
+                    } else {
+                        input = FieldEditDropdown.component(inputAttrs);
+                    }
 
                     return m('.Mason-Field.Form-group', [
                         m('label', [
@@ -38,38 +48,7 @@ export default class DiscussionFields extends Component {
                             field.name(),
                             (field.required() ? ' *' : null),
                         ]),
-                        m('span.Select', [
-                            m('select.Select-input.FormControl', {
-                                multiple: field.multiple(),
-                                onchange: event => {
-                                    let ids = [];
-
-                                    for (let option of event.target.options) {
-                                        if (option.selected && option.value !== 'none') {
-                                            ids.push(option.value);
-                                        }
-                                    }
-
-                                    console.log(ids);
-
-                                    this.updateSelection(field, ids);
-                                },
-                            }, [
-                                (field.multiple() ? null : m('option', {
-                                    value: 'none',
-                                    selected: selectedAnswerIdsForThisField.length === 0,
-                                    disabled: field.required(),
-                                    hidden: field.required(),
-                                }, app.translator.trans('flagrow-mason.forum.answers.' + (field.required() ? 'choose-option' : 'no-option-selected')))),
-                                sortByAttribute(field.suggested_answers()).map(
-                                    answer => m('option', {
-                                        value: answer.id(),
-                                        selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,
-                                    }, answer.content())
-                                ),
-                            ]),
-                            icon('sort', {className: 'Select-caret'}),
-                        ]),
+                        input,
                         (field.description() ? m('.helpText', field.description()) : null),
                     ]);
                 }
@@ -77,15 +56,23 @@ export default class DiscussionFields extends Component {
         ]);
     }
 
-    updateSelection(field, answerIds) {
+    updateSelection(field, fieldAnswers) {
         // Keep only answers to other fields
         let answers = this.props.answers.filter(
-            answer => this.answerToFieldIndex[answer.id()] !== field.id()
+            answer => {
+                const reverseFieldLookup = this.answerToFieldIndex[answer.id()];
+
+                // If the answer is not in the reverse lookup table it's probably a non-suggested (user) answer
+                // In that case the field should be linked in the relationship
+                if (typeof reverseFieldLookup === 'undefined') {
+                    return answer.field().id() !== field.id();
+                }
+
+                return reverseFieldLookup !== field.id();
+            }
         );
 
-        answerIds.forEach(id => {
-            answers.push(app.store.getById('flagrow-mason-answer', id));
-        });
+        answers = answers.concat(fieldAnswers);
 
         this.props.onchange(answers);
     }

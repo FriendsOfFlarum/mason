@@ -5,6 +5,7 @@ namespace Flagrow\Mason\Listeners;
 use Flagrow\Mason\Field;
 use Flagrow\Mason\Repositories\AnswerRepository;
 use Flagrow\Mason\Repositories\FieldRepository;
+use Flagrow\Mason\Validators\UserAnswerValidator;
 use Flarum\Core\Exception\PermissionDeniedException;
 use Flarum\Core\Exception\ValidationException;
 use Flarum\Event\DiscussionWillBeSaved;
@@ -72,8 +73,28 @@ class SaveAnswersToDatabase
 
             if ($id = Arr::get($answerRelation, 'id')) {
                 $answer = $this->answers->findOrFail($id);
+            } else if (isset($answerRelation['attributes']['content']) && isset($answerRelation['relationships']['field']['data']['id'])) {
+                $field = $this->fields->findOrFail($answerRelation['relationships']['field']['data']['id']);
+                $content = trim($answerRelation['attributes']['content']);
+
+                /**
+                 * @var $answerValidator UserAnswerValidator
+                 */
+                $answerValidator = app(UserAnswerValidator::class);
+                $answerValidator->setField($field);
+                $answerValidator->assertValid([
+                    $field->name => $content,
+                ]);
+
+                // If the field is empty, we skip the findOrCreate part
+                // It will also not be counted towards the field answers count
+                if ($content === null || $content === '') {
+                    continue;
+                }
+
+                $answer = $this->answers->findOrCreate($field, $content);
             } else {
-                // TODO: create custom answer. Requires to have the field relation in the payload
+                throw new \Exception('Invalid answer payload');
             }
 
             if (!$actor->can('addToDiscussion', $answer)) {
@@ -104,7 +125,7 @@ class SaveAnswersToDatabase
     {
         $min = $field->min_answers_count;
         $max = $field->max_answers_count;
-        $key = 'answer_count_' . $field->id;
+        $key = 'Answer Count ' . $field->name;
 
         $validator = $this->validator->make(
             [$key => $count],

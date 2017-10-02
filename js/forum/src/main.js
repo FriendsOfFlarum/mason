@@ -6,6 +6,7 @@ import Field from 'flagrow/mason/models/Field';
 import addComposerFields from 'flagrow/mason/addComposerFields';
 import addFieldUpdateControl from 'flagrow/mason/addFieldUpdateControl';
 import addFieldsOnDiscussion from 'flagrow/mason/addFieldsOnDiscussion';
+import patchModelIdentifier from "flagrow/mason/patchModelIdentifier";
 
 app.initializers.add('flagrow-mason', app => {
     app.store.models['flagrow-mason-field'] = Field;
@@ -17,4 +18,5 @@ app.initializers.add('flagrow-mason', app => {
     addComposerFields();
     addFieldsOnDiscussion();
     addFieldUpdateControl();
+    patchModelIdentifier();
 });
