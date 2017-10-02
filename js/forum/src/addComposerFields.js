@@ -13,6 +13,9 @@ export default function () {
             onchange: answers => {
                 this.flagrowMasonAnswers = answers;
             },
+            ontagchange: tags => {
+                this.tags = tags;
+            },
         }));
     });
 

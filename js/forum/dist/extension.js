@@ -16,6 +16,9 @@ System.register('flagrow/mason/addComposerFields', ['flarum/extend', 'flarum/app
                 answers: this.flagrowMasonAnswers,
                 onchange: function onchange(answers) {
                     _this.flagrowMasonAnswers = answers;
+                },
+                ontagchange: function ontagchange(tags) {
+                    _this.tags = tags;
                 }
             }));
         });
@@ -135,10 +138,10 @@ System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/FieldEditDropdown', 'flagrow/mason/components/FieldEditText'], function (_export, _context) {
+System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/FieldEditDropdown', 'flagrow/mason/components/FieldEditText', 'flagrow/mason/components/FieldEditTags'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, sortByAttribute, FieldEditDropdown, FieldEditText, DiscussionFields;
+    var app, icon, Component, sortByAttribute, FieldEditDropdown, FieldEditText, FieldEditTags, DiscussionFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -152,6 +155,8 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
             FieldEditDropdown = _flagrowMasonComponentsFieldEditDropdown.default;
         }, function (_flagrowMasonComponentsFieldEditText) {
             FieldEditText = _flagrowMasonComponentsFieldEditText.default;
+        }, function (_flagrowMasonComponentsFieldEditTags) {
+            FieldEditTags = _flagrowMasonComponentsFieldEditTags.default;
         }],
         execute: function () {
             DiscussionFields = function (_Component) {
@@ -186,7 +191,14 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                             onsubmit: function onsubmit(event) {
                                 event.preventDefault();
                             }
-                        }, [this.fields.map(function (field) {
+                        }, [app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
+                            discussion: this.props.discussion,
+                            onchange: function onchange(tags) {
+                                if (_this3.props.ontagchange) {
+                                    _this3.props.ontagchange(tags);
+                                }
+                            }
+                        }) : null, this.fields.map(function (field) {
                             var inputAttrs = {
                                 field: field,
                                 answers: _this3.props.answers,
@@ -269,6 +281,9 @@ System.register('flagrow/mason/components/DiscussionFieldsModal', ['flarum/app',
                         this.answers = this.props.discussion.flagrowMasonAnswers();
                         this.dirty = false;
                         this.processing = false;
+
+                        // Stays null if the feature is not used
+                        this.tags = null;
                     }
                 }, {
                     key: 'title',
@@ -280,9 +295,16 @@ System.register('flagrow/mason/components/DiscussionFieldsModal', ['flarum/app',
                 }, {
                     key: 'content',
                     value: function content() {
+                        var _this2 = this;
+
                         return [m('.Modal-body', DiscussionFields.component({
+                            discussion: this.props.discussion, // Only for the tags feature
                             answers: this.answers,
-                            onchange: this.answersChanged.bind(this)
+                            onchange: this.answersChanged.bind(this),
+                            ontagchange: function ontagchange(tags) {
+                                _this2.tags = tags;
+                                _this2.dirty = true;
+                            }
                         })), m('.Modal-footer', [Button.component({
                             className: 'Button Button--primary',
                             children: app.translator.trans('flagrow-mason.forum.answers-modal.save'),
@@ -300,20 +322,27 @@ System.register('flagrow/mason/components/DiscussionFieldsModal', ['flarum/app',
                 }, {
                     key: 'saveAnswers',
                     value: function saveAnswers() {
-                        var _this2 = this;
+                        var _this3 = this;
 
                         this.processing = true;
 
+                        var relationships = {
+                            flagrowMasonAnswers: this.answers
+                        };
+
+                        // If tag edit is enabled, take care of them here as well
+                        if (this.tags !== null) {
+                            relationships.tags = this.tags;
+                        }
+
                         this.props.discussion.save({
-                            relationships: {
-                                flagrowMasonAnswers: this.answers
-                            }
+                            relationships: relationships
                         }).then(function () {
-                            _this2.processing = false;
+                            _this3.processing = false;
                             app.modal.close();
                             m.redraw();
                         }).catch(function (err) {
-                            _this2.processing = false;
+                            _this3.processing = false;
                             throw err;
                         });
                     }
@@ -322,6 +351,327 @@ System.register('flagrow/mason/components/DiscussionFieldsModal', ['flarum/app',
             }(Modal);
 
             _export('default', DiscussionFieldsModal);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldEditDropdown', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
+    "use strict";
+
+    var app, icon, Component, sortByAttribute, FieldEditDropdown;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flagrowMasonHelpersSortByAttribute) {
+            sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
+        }],
+        execute: function () {
+            FieldEditDropdown = function (_Component) {
+                babelHelpers.inherits(FieldEditDropdown, _Component);
+
+                function FieldEditDropdown() {
+                    babelHelpers.classCallCheck(this, FieldEditDropdown);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldEditDropdown.__proto__ || Object.getPrototypeOf(FieldEditDropdown)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldEditDropdown, [{
+                    key: 'init',
+                    value: function init() {
+                        this.field = this.props.field;
+                        this.answers = this.props.answers;
+                        this.onchange = this.props.onchange;
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        var selectedAnswerIdsForThisField = [];
+
+                        this.field.suggested_answers().forEach(function (answer) {
+                            var answerIndex = _this2.answers.findIndex(function (a) {
+                                // Temporary store entries seem to turn into undefined after saving
+                                if (typeof a === 'undefined') {
+                                    return false;
+                                }
+
+                                return a.id() === answer.id();
+                            });
+
+                            if (answerIndex !== -1) {
+                                selectedAnswerIdsForThisField.push(answer.id());
+                            }
+                        });
+
+                        return m('span.Select', [m('select.Select-input.FormControl', {
+                            multiple: this.field.multiple(),
+                            onchange: function onchange(event) {
+                                var answers = [];
+
+                                var _iteratorNormalCompletion = true;
+                                var _didIteratorError = false;
+                                var _iteratorError = undefined;
+
+                                try {
+                                    for (var _iterator = event.target.options[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                        var option = _step.value;
+
+                                        if (option.selected && option.value !== 'none') {
+                                            var answerId = option.value;
+
+                                            // This will only work with suggested answers for now
+                                            // As they are the only ones registered in the store
+                                            answers.push(app.store.getById('flagrow-mason-answer', answerId));
+                                        }
+                                    }
+                                } catch (err) {
+                                    _didIteratorError = true;
+                                    _iteratorError = err;
+                                } finally {
+                                    try {
+                                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                            _iterator.return();
+                                        }
+                                    } finally {
+                                        if (_didIteratorError) {
+                                            throw _iteratorError;
+                                        }
+                                    }
+                                }
+
+                                _this2.onchange(answers);
+                            }
+                        }, [this.field.multiple() ? null : m('option', {
+                            value: 'none',
+                            selected: selectedAnswerIdsForThisField.length === 0,
+                            disabled: this.field.required(),
+                            hidden: this.field.required()
+                        }, app.translator.trans('flagrow-mason.forum.answers.' + (this.field.required() ? 'choose-option' : 'no-option-selected'))), sortByAttribute(this.field.suggested_answers()).map(function (answer) {
+                            return m('option', {
+                                value: answer.id(),
+                                selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1
+                            }, answer.content());
+                        })]), icon('sort', { className: 'Select-caret' })]);
+                    }
+                }]);
+                return FieldEditDropdown;
+            }(Component);
+
+            _export('default', FieldEditDropdown);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldEditTags', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/tags/utils/sortTags'], function (_export, _context) {
+    "use strict";
+
+    var app, icon, Component, sortTags, DiscussionFields;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumTagsUtilsSortTags) {
+            sortTags = _flarumTagsUtilsSortTags.default;
+        }],
+        execute: function () {
+            DiscussionFields = function (_Component) {
+                babelHelpers.inherits(DiscussionFields, _Component);
+
+                function DiscussionFields() {
+                    babelHelpers.classCallCheck(this, DiscussionFields);
+                    return babelHelpers.possibleConstructorReturn(this, (DiscussionFields.__proto__ || Object.getPrototypeOf(DiscussionFields)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(DiscussionFields, [{
+                    key: 'init',
+                    value: function init() {
+                        var _this2 = this;
+
+                        this.tags = app.store.all('tags');
+                        this.selectedTags = [];
+
+                        if (this.props.discussion) {
+                            this.tags = this.tags.filter(function (tag) {
+                                return tag.canAddToDiscussion() || _this2.props.discussion.tags().indexOf(tag) !== -1;
+                            });
+
+                            this.selectedTags = this.props.discussion.tags();
+                        } else {
+                            this.tags = this.tags.filter(function (tag) {
+                                return tag.canStartDiscussion();
+                            });
+                        }
+
+                        this.minPrimary = app.forum.attribute('minPrimaryTags');
+                        this.maxPrimary = app.forum.attribute('maxPrimaryTags');
+                        this.minSecondary = app.forum.attribute('minSecondaryTags');
+                        this.maxSecondary = app.forum.attribute('maxSecondaryTags');
+
+                        // If primary tags are disabled, don't offer them
+                        if (this.maxPrimary <= 0) {
+                            this.tags = this.tags.filter(function (tag) {
+                                return !tag.isPrimary();
+                            });
+                        }
+
+                        // If secondary tags are disabled, don't offer them
+                        if (this.maxSecondary <= 0) {
+                            this.tags = this.tags.filter(function (tag) {
+                                return tag.isPrimary();
+                            });
+                        }
+
+                        this.tags = sortTags(this.tags);
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this3 = this;
+
+                        if (this.maxPrimary > 1 || this.maxSecondary > 1) {
+                            return m('.Alert', app.translator.trans('flagrow-mason.forum.tags.inadequate-settings'));
+                        }
+
+                        // We take the first child selected or if none, the first parent selected
+                        // Of course this only works if a single tag or tag+parent is selected
+                        // Multiple tags are not supported on this selector
+                        var currentSelectedChild = this.selectedTags.length ? this.selectedTags.sort(function (tag) {
+                            return tag.parent() ? -1 : 1;
+                        })[0].id() : null;
+
+                        var required = this.minPrimary > 0 || this.minSecondary > 0;
+
+                        return m('.Mason-Field.Form-group', [m('label', [app.forum.attribute('flagrow.mason.tags-field-name') || app.translator.trans('flagrow-mason.forum.tags.tags-label'), required ? ' *' : null]), m('span.Select', [m('select.Select-input.FormControl', {
+                            onchange: m.withAttr('value', function (id) {
+                                _this3.selectedTags = [];
+
+                                if (id !== 'none') {
+                                    _this3.selectedTags.push(_this3.tags.find(function (tag) {
+                                        return tag.id() === id;
+                                    }));
+
+                                    var parent = _this3.selectedTags[0].parent();
+                                    if (parent) {
+                                        _this3.selectedTags.push(parent);
+                                    }
+                                }
+
+                                _this3.props.onchange(_this3.selectedTags);
+                            })
+                        }, [m('option', {
+                            value: 'none',
+                            selected: this.selectedTags.length === 0,
+                            disabled: required,
+                            hidden: required
+                        }, app.translator.trans('flagrow-mason.forum.answers.' + (required ? 'choose-option' : 'no-option-selected'))), this.tags.map(function (tag) {
+                            var parent = tag.parent();
+
+                            return m('option', {
+                                value: tag.id(),
+                                selected: tag.id() === currentSelectedChild
+                            }, (parent ? parent.name() + ' | ' : '') + tag.name());
+                        })]), icon('sort', { className: 'Select-caret' })])]);
+                    }
+                }]);
+                return DiscussionFields;
+            }(Component);
+
+            _export('default', DiscussionFields);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldEditText', ['flarum/app', 'flarum/Model', 'flarum/Component'], function (_export, _context) {
+    "use strict";
+
+    var app, Model, Component, FieldEditText;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumModel) {
+            Model = _flarumModel.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }],
+        execute: function () {
+            FieldEditText = function (_Component) {
+                babelHelpers.inherits(FieldEditText, _Component);
+
+                function FieldEditText() {
+                    babelHelpers.classCallCheck(this, FieldEditText);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldEditText.__proto__ || Object.getPrototypeOf(FieldEditText)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldEditText, [{
+                    key: 'init',
+                    value: function init() {
+                        var _this2 = this;
+
+                        this.field = this.props.field;
+                        this.answers = this.props.answers;
+                        this.onchange = this.props.onchange;
+
+                        this.content = '';
+
+                        var answersForThisField = this.answers.filter(function (answer) {
+                            // Temporary store entries seem to turn into undefined after saving
+                            if (typeof answer === 'undefined') {
+                                return false;
+                            }
+
+                            return answer.field().id() === _this2.field.id();
+                        });
+
+                        if (answersForThisField.length) {
+                            // For now we only support a single custom answer
+                            this.content = answersForThisField[0].content();
+                        }
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this3 = this;
+
+                        return m('input.FormControl', {
+                            required: this.field.required(),
+                            value: this.content,
+                            oninput: m.withAttr('value', function (value) {
+                                _this3.content = value;
+
+                                if (_this3.content === '') {
+                                    _this3.onchange([]);
+                                } else {
+                                    var answer = app.store.createRecord('flagrow-mason-answer', {
+                                        attributes: {
+                                            content: _this3.content
+                                        },
+                                        relationships: {
+                                            field: {
+                                                data: Model.getIdentifier(_this3.field)
+                                            }
+                                        }
+                                    });
+
+                                    _this3.onchange([answer]);
+                                }
+                            })
+                        });
+                    }
+                }]);
+                return FieldEditText;
+            }(Component);
+
+            _export('default', FieldEditText);
         }
     };
 });;
@@ -562,204 +912,6 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
             }));
 
             _export('default', Field);
-        }
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/components/FieldEditDropdown', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
-    "use strict";
-
-    var app, icon, Component, sortByAttribute, FieldEditDropdown;
-    return {
-        setters: [function (_flarumApp) {
-            app = _flarumApp.default;
-        }, function (_flarumHelpersIcon) {
-            icon = _flarumHelpersIcon.default;
-        }, function (_flarumComponent) {
-            Component = _flarumComponent.default;
-        }, function (_flagrowMasonHelpersSortByAttribute) {
-            sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
-        }],
-        execute: function () {
-            FieldEditDropdown = function (_Component) {
-                babelHelpers.inherits(FieldEditDropdown, _Component);
-
-                function FieldEditDropdown() {
-                    babelHelpers.classCallCheck(this, FieldEditDropdown);
-                    return babelHelpers.possibleConstructorReturn(this, (FieldEditDropdown.__proto__ || Object.getPrototypeOf(FieldEditDropdown)).apply(this, arguments));
-                }
-
-                babelHelpers.createClass(FieldEditDropdown, [{
-                    key: 'init',
-                    value: function init() {
-                        this.field = this.props.field;
-                        this.answers = this.props.answers;
-                        this.onchange = this.props.onchange;
-                    }
-                }, {
-                    key: 'view',
-                    value: function view() {
-                        var _this2 = this;
-
-                        var selectedAnswerIdsForThisField = [];
-
-                        this.field.suggested_answers().forEach(function (answer) {
-                            var answerIndex = _this2.answers.findIndex(function (a) {
-                                // Temporary store entries seem to turn into undefined after saving
-                                if (typeof a === 'undefined') {
-                                    return false;
-                                }
-
-                                return a.id() === answer.id();
-                            });
-
-                            if (answerIndex !== -1) {
-                                selectedAnswerIdsForThisField.push(answer.id());
-                            }
-                        });
-
-                        return m('span.Select', [m('select.Select-input.FormControl', {
-                            multiple: this.field.multiple(),
-                            onchange: function onchange(event) {
-                                var answers = [];
-
-                                var _iteratorNormalCompletion = true;
-                                var _didIteratorError = false;
-                                var _iteratorError = undefined;
-
-                                try {
-                                    for (var _iterator = event.target.options[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                        var option = _step.value;
-
-                                        if (option.selected && option.value !== 'none') {
-                                            var answerId = option.value;
-
-                                            // This will only work with suggested answers for now
-                                            // As they are the only ones registered in the store
-                                            answers.push(app.store.getById('flagrow-mason-answer', answerId));
-                                        }
-                                    }
-                                } catch (err) {
-                                    _didIteratorError = true;
-                                    _iteratorError = err;
-                                } finally {
-                                    try {
-                                        if (!_iteratorNormalCompletion && _iterator.return) {
-                                            _iterator.return();
-                                        }
-                                    } finally {
-                                        if (_didIteratorError) {
-                                            throw _iteratorError;
-                                        }
-                                    }
-                                }
-
-                                _this2.onchange(answers);
-                            }
-                        }, [this.field.multiple() ? null : m('option', {
-                            value: 'none',
-                            selected: selectedAnswerIdsForThisField.length === 0,
-                            disabled: this.field.required(),
-                            hidden: this.field.required()
-                        }, app.translator.trans('flagrow-mason.forum.answers.' + (this.field.required() ? 'choose-option' : 'no-option-selected'))), sortByAttribute(this.field.suggested_answers()).map(function (answer) {
-                            return m('option', {
-                                value: answer.id(),
-                                selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1
-                            }, answer.content());
-                        })]), icon('sort', { className: 'Select-caret' })]);
-                    }
-                }]);
-                return FieldEditDropdown;
-            }(Component);
-
-            _export('default', FieldEditDropdown);
-        }
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/components/FieldEditText', ['flarum/app', 'flarum/Model', 'flarum/Component'], function (_export, _context) {
-    "use strict";
-
-    var app, Model, Component, FieldEditText;
-    return {
-        setters: [function (_flarumApp) {
-            app = _flarumApp.default;
-        }, function (_flarumModel) {
-            Model = _flarumModel.default;
-        }, function (_flarumComponent) {
-            Component = _flarumComponent.default;
-        }],
-        execute: function () {
-            FieldEditText = function (_Component) {
-                babelHelpers.inherits(FieldEditText, _Component);
-
-                function FieldEditText() {
-                    babelHelpers.classCallCheck(this, FieldEditText);
-                    return babelHelpers.possibleConstructorReturn(this, (FieldEditText.__proto__ || Object.getPrototypeOf(FieldEditText)).apply(this, arguments));
-                }
-
-                babelHelpers.createClass(FieldEditText, [{
-                    key: 'init',
-                    value: function init() {
-                        var _this2 = this;
-
-                        this.field = this.props.field;
-                        this.answers = this.props.answers;
-                        this.onchange = this.props.onchange;
-
-                        this.content = '';
-
-                        var answersForThisField = this.answers.filter(function (answer) {
-                            // Temporary store entries seem to turn into undefined after saving
-                            if (typeof answer === 'undefined') {
-                                return false;
-                            }
-
-                            return answer.field().id() === _this2.field.id();
-                        });
-
-                        if (answersForThisField.length) {
-                            // For now we only support a single custom answer
-                            this.content = answersForThisField[0].content();
-                        }
-                    }
-                }, {
-                    key: 'view',
-                    value: function view() {
-                        var _this3 = this;
-
-                        return m('input.FormControl', {
-                            required: this.field.required(),
-                            value: this.content,
-                            oninput: m.withAttr('value', function (value) {
-                                _this3.content = value;
-
-                                if (_this3.content === '') {
-                                    _this3.onchange([]);
-                                } else {
-                                    var answer = app.store.createRecord('flagrow-mason-answer', {
-                                        attributes: {
-                                            content: _this3.content
-                                        },
-                                        relationships: {
-                                            field: {
-                                                data: Model.getIdentifier(_this3.field)
-                                            }
-                                        }
-                                    });
-
-                                    _this3.onchange([answer]);
-                                }
-                            })
-                        });
-                    }
-                }]);
-                return FieldEditText;
-            }(Component);
-
-            _export('default', FieldEditText);
         }
     };
 });;

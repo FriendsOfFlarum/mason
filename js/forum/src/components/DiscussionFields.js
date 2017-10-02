@@ -4,6 +4,7 @@ import Component from 'flarum/Component';
 import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 import FieldEditDropdown from 'flagrow/mason/components/FieldEditDropdown';
 import FieldEditText from 'flagrow/mason/components/FieldEditText';
+import FieldEditTags from 'flagrow/mason/components/FieldEditTags';
 
 export default class DiscussionFields extends Component {
     init() {
@@ -28,6 +29,14 @@ export default class DiscussionFields extends Component {
                 event.preventDefault();
             },
         }, [
+            (app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
+                discussion: this.props.discussion,
+                onchange: tags => {
+                    if (this.props.ontagchange) {
+                        this.props.ontagchange(tags);
+                    }
+                },
+            }) : null),
             this.fields.map(
                 field => {
                     const inputAttrs = {

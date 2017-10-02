@@ -2,6 +2,7 @@ import app from 'flarum/app';
 import Component from 'flarum/Component';
 import FieldEdit from 'flagrow/mason/components/FieldEdit';
 import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
+import MasonSettings from 'flagrow/mason/components/MasonSettings';
 
 export default class MasonFieldsPane extends Component {
     init() {
@@ -47,11 +48,16 @@ export default class MasonFieldsPane extends Component {
             });
 
         return m('.container', [
-            m('.Mason-Container.js-fields-container', fieldsList),
-            FieldEdit.component({
-                key: 'new',
-                field: null,
-            }),
+            m('h2', app.translator.trans('flagrow-mason.admin.titles.fields')),
+            m('.Mason-Container', [
+                m('.js-fields-container', fieldsList),
+                FieldEdit.component({
+                    key: 'new',
+                    field: null,
+                }),
+            ]),
+            m('h2', app.translator.trans('flagrow-mason.admin.titles.settings')),
+            MasonSettings.component(),
         ]);
     }
 

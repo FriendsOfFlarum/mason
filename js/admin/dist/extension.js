@@ -514,6 +514,7 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                                 _this4.initNewField();
                             }
 
+                            _this4.toggleFields = false;
                             _this4.processing = false;
                             _this4.dirty = false;
                             m.redraw();
@@ -706,10 +707,10 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
 });;
 'use strict';
 
-System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Component', 'flagrow/mason/components/FieldEdit', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
+System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Component', 'flagrow/mason/components/FieldEdit', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/MasonSettings'], function (_export, _context) {
     "use strict";
 
-    var app, Component, FieldEdit, sortByAttribute, MasonFieldsPane;
+    var app, Component, FieldEdit, sortByAttribute, MasonSettings, MasonFieldsPane;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -719,6 +720,8 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
             FieldEdit = _flagrowMasonComponentsFieldEdit.default;
         }, function (_flagrowMasonHelpersSortByAttribute) {
             sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
+        }, function (_flagrowMasonComponentsMasonSettings) {
+            MasonSettings = _flagrowMasonComponentsMasonSettings.default;
         }],
         execute: function () {
             MasonFieldsPane = function (_Component) {
@@ -772,10 +775,10 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
                             })));
                         });
 
-                        return m('.container', [m('.Mason-Container.js-fields-container', fieldsList), FieldEdit.component({
+                        return m('.container', [m('h2', app.translator.trans('flagrow-mason.admin.titles.fields')), m('.Mason-Container', [m('.js-fields-container', fieldsList), FieldEdit.component({
                             key: 'new',
                             field: null
-                        })]);
+                        })]), m('h2', app.translator.trans('flagrow-mason.admin.titles.settings')), MasonSettings.component()]);
                     }
                 }, {
                     key: 'updateSort',
@@ -797,6 +800,65 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
             }(Component);
 
             _export('default', MasonFieldsPane);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/MasonSettings', ['flarum/app', 'flarum/utils/saveSettings', 'flarum/Component', 'flarum/components/Switch'], function (_export, _context) {
+    "use strict";
+
+    var app, saveSettings, Component, Switch, MasonSettings;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumUtilsSaveSettings) {
+            saveSettings = _flarumUtilsSaveSettings.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumComponentsSwitch) {
+            Switch = _flarumComponentsSwitch.default;
+        }],
+        execute: function () {
+            MasonSettings = function (_Component) {
+                babelHelpers.inherits(MasonSettings, _Component);
+
+                function MasonSettings() {
+                    babelHelpers.classCallCheck(this, MasonSettings);
+                    return babelHelpers.possibleConstructorReturn(this, (MasonSettings.__proto__ || Object.getPrototypeOf(MasonSettings)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(MasonSettings, [{
+                    key: 'init',
+                    value: function init() {
+                        this.tagsAsFields = m.prop(app.data.settings['flagrow.mason.tags-as-fields'] > 0);
+                        this.tagsFieldName = m.prop(app.data.settings['flagrow.mason.tags-field-name'] || '');
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        return m('.Mason-Container', [m('.Form-group', [m('label', Switch.component({
+                            state: this.tagsAsFields(),
+                            onchange: this.updateSetting.bind(this, this.tagsAsFields, 'flagrow.mason.tags-as-fields'),
+                            children: app.translator.trans('flagrow-mason.admin.settings.tags-as-field')
+                        })), m('.helpText', app.translator.trans('flagrow-mason.admin.settings.tags-as-field-help'))]), this.tagsAsFields() ? m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.settings.tags-field-name')), m('input.FormControl', {
+                            value: this.tagsFieldName(),
+                            placeholder: app.translator.trans('flagrow-mason.admin.settings.tags-field-name-placeholder'),
+                            onchange: m.withAttr('value', this.updateSetting.bind(this, this.tagsFieldName, 'flagrow.mason.tags-field-name'))
+                        })]) : null]);
+                    }
+                }, {
+                    key: 'updateSetting',
+                    value: function updateSetting(prop, setting, value) {
+                        saveSettings(babelHelpers.defineProperty({}, setting, value));
+
+                        prop(value);
+                    }
+                }]);
+                return MasonSettings;
+            }(Component);
+
+            _export('default', MasonSettings);
         }
     };
 });

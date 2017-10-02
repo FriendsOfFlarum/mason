@@ -207,6 +207,7 @@ export default class FieldEdit extends Component {
                 this.initNewField();
             }
 
+            this.toggleFields = false;
             this.processing = false;
             this.dirty = false;
             m.redraw();

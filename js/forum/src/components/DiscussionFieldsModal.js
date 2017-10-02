@@ -10,6 +10,9 @@ export default class DiscussionFieldsModal extends Modal {
         this.answers = this.props.discussion.flagrowMasonAnswers();
         this.dirty = false;
         this.processing = false;
+
+        // Stays null if the feature is not used
+        this.tags = null;
     }
 
     title() {
@@ -21,8 +24,13 @@ export default class DiscussionFieldsModal extends Modal {
     content() {
         return [
             m('.Modal-body', DiscussionFields.component({
+                discussion: this.props.discussion, // Only for the tags feature
                 answers: this.answers,
                 onchange: this.answersChanged.bind(this),
+                ontagchange: tags => {
+                    this.tags = tags;
+                    this.dirty = true;
+                },
             })),
             m('.Modal-footer', [
                 Button.component({
@@ -44,10 +52,17 @@ export default class DiscussionFieldsModal extends Modal {
     saveAnswers() {
         this.processing = true;
 
+        let relationships = {
+            flagrowMasonAnswers: this.answers,
+        };
+
+        // If tag edit is enabled, take care of them here as well
+        if (this.tags !== null) {
+            relationships.tags = this.tags;
+        }
+
         this.props.discussion.save({
-            relationships: {
-                flagrowMasonAnswers: this.answers,
-            },
+            relationships,
         }).then(() => {
             this.processing = false;
             app.modal.close();
