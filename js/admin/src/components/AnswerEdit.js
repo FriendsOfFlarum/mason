@@ -13,8 +13,11 @@ export default class FieldEdit extends Component {
 
     view() {
         return m('form.Mason-Box', [
-            m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'),
-            ' ',
+            // Only suggested answers can be reordered
+            (this.answer.is_suggested() ? [
+                m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'),
+                ' ',
+            ] : null),
             m('span', {
                 onclick: () => {
                     const newContent = prompt('Edit content', this.answer.content());

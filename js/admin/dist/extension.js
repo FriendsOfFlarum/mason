@@ -82,7 +82,9 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/he
                     value: function view() {
                         var _this2 = this;
 
-                        return m('form.Mason-Box', [m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'), ' ', m('span', {
+                        return m('form.Mason-Box', [
+                        // Only suggested answers can be reordered
+                        this.answer.is_suggested() ? [m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'), ' '] : null, m('span', {
                             onclick: function onclick() {
                                 var newContent = prompt('Edit content', _this2.answer.content());
 
@@ -173,13 +175,15 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/he
 });;
 'use strict';
 
-System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
+System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/AnswerEdit', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, Component, Button, AnswerEdit, sortByAttribute, FieldAnswersEdit;
+    var app, icon, Component, Button, AnswerEdit, sortByAttribute, FieldAnswersEdit;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
         }, function (_flarumComponentsButton) {
@@ -204,6 +208,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                         this.field = this.props.field;
                         this.processing = false;
                         this.new_content = '';
+                        this.showUserAnswers = false;
                     }
                 }, {
                     key: 'config',
@@ -229,25 +234,45 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                             return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-answers'));
                         }
 
-                        var answersList = [];
+                        var suggestedAnswers = [];
+                        var userAnswers = [];
 
-                        sortByAttribute(this.field.all_answers()).forEach(function (answer) {
+                        this.field.all_answers().forEach(function (answer) {
                             // When answers are deleted via store.delete() they stay as an "undefined" relationship
                             // We ignore these deleted answers
                             if (typeof answer === 'undefined') {
                                 return;
                             }
 
-                            // Build array of fields to show.
-                            answersList.push(m('.js-answer-data', {
+                            if (answer.is_suggested()) {
+                                suggestedAnswers.push(answer);
+                            } else {
+                                userAnswers.push(answer);
+                            }
+                        });
+
+                        return m('div', [m('.Mason-Container.js-answers-container', sortByAttribute(suggestedAnswers).map(function (answer) {
+                            return m('.js-answer-data', {
                                 key: answer.id(),
                                 'data-id': answer.id()
                             }, AnswerEdit.component({
                                 answer: answer
-                            })));
-                        });
-
-                        return m('div', [m('.Mason-Container.js-answers-container', answersList), m('form', [m('.Form-group', [m('label', 'New answer'), m('input.FormControl', {
+                            }));
+                        })), userAnswers.length ? [m('.Button.Button--block.Mason-Box-Header', {
+                            onclick: function onclick() {
+                                _this3.showUserAnswers = !_this3.showUserAnswers;
+                            }
+                        }, [m('.Mason-Box-Header-Title', app.translator.trans('flagrow-mason.admin.buttons.show-user-answers', {
+                            count: userAnswers.length
+                        })), m('div', [icon(this.showUserAnswers ? 'chevron-up' : 'chevron-down')])]),
+                        // The list of user answers can't be re-ordered
+                        this.showUserAnswers ? m('.Mason-Container', sortByAttribute(userAnswers, 'content').map(function (answer) {
+                            return m('div', {
+                                key: answer.id()
+                            }, AnswerEdit.component({
+                                answer: answer
+                            }));
+                        })) : null] : null, m('form', [m('.Form-group', [m('label', 'New answer'), m('input.FormControl', {
                             value: this.new_content,
                             oninput: m.withAttr('value', function (value) {
                                 _this3.new_content = value;

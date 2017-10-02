@@ -20,6 +20,7 @@ flagrow-mason:
             add-answer: Add answer
             save-answer: Save answer changes
             delete-answer: Delete answer
+            show-user-answers: Show non-suggested answers ({count})
         menu:
             description: >
                 Configure custom discussion fields.

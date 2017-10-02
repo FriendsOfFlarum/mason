@@ -1,4 +1,5 @@
 import app from 'flarum/app';
+import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import AnswerEdit from 'flagrow/mason/components/AnswerEdit';
@@ -9,6 +10,7 @@ export default class FieldAnswersEdit extends Component {
         this.field = this.props.field;
         this.processing = false;
         this.new_content = '';
+        this.showUserAnswers = false;
     }
 
     config() {
@@ -32,9 +34,10 @@ export default class FieldAnswersEdit extends Component {
             return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-answers'));
         }
 
-        let answersList = [];
+        let suggestedAnswers = [];
+        let userAnswers = [];
 
-        sortByAttribute(this.field.all_answers())
+        this.field.all_answers()
             .forEach(answer => {
                 // When answers are deleted via store.delete() they stay as an "undefined" relationship
                 // We ignore these deleted answers
@@ -42,17 +45,44 @@ export default class FieldAnswersEdit extends Component {
                     return;
                 }
 
-                // Build array of fields to show.
-                answersList.push(m('.js-answer-data', {
+                if (answer.is_suggested()) {
+                    suggestedAnswers.push(answer);
+                } else {
+                    userAnswers.push(answer);
+                }
+            });
+
+        return m('div', [
+            m('.Mason-Container.js-answers-container', sortByAttribute(suggestedAnswers).map(
+                answer => m('.js-answer-data', {
                     key: answer.id(),
                     'data-id': answer.id(),
                 }, AnswerEdit.component({
                     answer,
-                })));
-            });
-
-        return m('div', [
-            m('.Mason-Container.js-answers-container', answersList),
+                }))
+            )),
+            (userAnswers.length ? [
+                m('.Button.Button--block.Mason-Box-Header', {
+                    onclick: () => {
+                        this.showUserAnswers = !this.showUserAnswers;
+                    },
+                }, [
+                    m('.Mason-Box-Header-Title', app.translator.trans('flagrow-mason.admin.buttons.show-user-answers', {
+                        count: userAnswers.length,
+                    })),
+                    m('div', [
+                        icon(this.showUserAnswers ? 'chevron-up' : 'chevron-down'),
+                    ]),
+                ]),
+                // The list of user answers can't be re-ordered
+                (this.showUserAnswers ? m('.Mason-Container', sortByAttribute(userAnswers, 'content').map(
+                    answer => m('div', {
+                        key: answer.id(),
+                    }, AnswerEdit.component({
+                        answer,
+                    }))
+                )) : null),
+            ] : null),
             m('form', [
                 m('.Form-group', [
                     m('label', 'New answer'),
