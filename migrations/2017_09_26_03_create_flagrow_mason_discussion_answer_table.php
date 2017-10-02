@@ -10,8 +10,8 @@ return [
             $table->unsignedInteger('answer_id');
             $table->timestamps();
 
-            $table->foreign('discussion_id')->references('id')->on('discussions');
-            $table->foreign('answer_id')->references('id')->on('flagrow_mason_answers');
+            $table->foreign('discussion_id')->references('id')->on('discussions')->onDelete('cascade');
+            $table->foreign('answer_id')->references('id')->on('flagrow_mason_answers')->onDelete('cascade');
         });
     },
     'down' => function (Builder $schema) {

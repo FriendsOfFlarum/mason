@@ -13,7 +13,7 @@ return [
             $table->integer('sort')->nullable()->index();
             $table->timestamps();
 
-            $table->foreign('field_id')->references('id')->on('flagrow_mason_fields');
+            $table->foreign('field_id')->references('id')->on('flagrow_mason_fields')->onDelete('cascade');
         });
     },
     'down' => function (Builder $schema) {
