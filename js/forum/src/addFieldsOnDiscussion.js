@@ -2,11 +2,30 @@ import {extend} from 'flarum/extend';
 import CommentPost from 'flarum/components/CommentPost';
 import PostFields from 'flagrow/mason/components/PostFields';
 
+function showFieldsOnPost(post) {
+    // We only add fields to the first post
+    // TODO: what if the first post is deleted ?
+    return post.number() === 1
+}
+
 export default function () {
+    extend(CommentPost.prototype, 'init', function () {
+        this.subtree.check(
+            () => {
+                if (showFieldsOnPost(this.props.post)) {
+                    // Create a string with all answer ids
+                    // If answers change this string will be different
+                    return this.props.post.discussion().flagrowMasonAnswers().map(answer => answer.id()).join(',');
+                }
+
+                // For other posts we always return the same thing
+                return '';
+            }
+        );
+    });
+
     extend(CommentPost.prototype, 'content', function (content) {
-        // We only add fields to the first post
-        // TODO: what if the first post is deleted ?
-        if (this.props.post.number() !== 1) {
+        if (!showFieldsOnPost(this.props.post)) {
             return;
         }
 

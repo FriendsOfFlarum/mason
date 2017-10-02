@@ -41,7 +41,8 @@ class AddDiscussionAnswerRelationship
     {
         if ($event->isController(Controller\ListDiscussionsController::class)
             || $event->isController(Controller\ShowDiscussionController::class)
-            || $event->isController(Controller\CreateDiscussionController::class)) {
+            || $event->isController(Controller\CreateDiscussionController::class)
+            || $event->isController(Controller\UpdateDiscussionController::class)) {
             $event->addInclude([
                 'flagrowMasonAnswers',
                 'flagrowMasonAnswers.field',

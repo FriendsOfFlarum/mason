@@ -46,11 +46,33 @@ System.register('flagrow/mason/addFieldsOnDiscussion', ['flarum/extend', 'flarum
 
     var extend, CommentPost, PostFields;
 
+
+    function showFieldsOnPost(post) {
+        // We only add fields to the first post
+        // TODO: what if the first post is deleted ?
+        return post.number() === 1;
+    }
+
     _export('default', function () {
+        extend(CommentPost.prototype, 'init', function () {
+            var _this = this;
+
+            this.subtree.check(function () {
+                if (showFieldsOnPost(_this.props.post)) {
+                    // Create a string with all answer ids
+                    // If answers change this string will be different
+                    return _this.props.post.discussion().flagrowMasonAnswers().map(function (answer) {
+                        return answer.id();
+                    }).join(',');
+                }
+
+                // For other posts we always return the same thing
+                return '';
+            });
+        });
+
         extend(CommentPost.prototype, 'content', function (content) {
-            // We only add fields to the first post
-            // TODO: what if the first post is deleted ?
-            if (this.props.post.number() !== 1) {
+            if (!showFieldsOnPost(this.props.post)) {
                 return;
             }
 
