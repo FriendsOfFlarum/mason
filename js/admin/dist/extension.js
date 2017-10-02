@@ -382,25 +382,44 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                 }, {
                     key: 'viewFields',
                     value: function viewFields() {
+                        var _this3 = this;
+
                         return m('form', [m('.Mason-Box--row', [m('.Mason-Box--column', [m('h4', 'Field settings'), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.name')), m('input.FormControl', {
                             value: this.field.name(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'name'))
                         }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.name-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.description')), m('input.FormControl', {
                             value: this.field.description(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'description'))
-                        }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')), m('input.FormControl', {
-                            type: 'number',
-                            min: 0,
-                            max: 1, // TODO: remove when multiple answers is ready
-                            value: this.field.min_answers_count(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'min_answers_count'))
-                        })]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.max_answers_count')), m('input.FormControl', {
-                            type: 'number',
-                            min: 1,
-                            disabled: true, // TODO: remove when multiple answers is ready
-                            value: this.field.max_answers_count(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count'))
-                        })]), m('.Form-group', [m('label', [Switch.component({
+                        }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help'))]), m('.Form-group', [m('label', [
+                        // TODO: while multiple answers are still in the work, show the "min answers" field as a checkbox
+                        Switch.component({
+                            state: this.field.min_answers_count() === 1,
+                            onchange: function onchange(value) {
+                                _this3.updateAttribute('min_answers_count', value ? 1 : 0);
+                            },
+                            children: app.translator.trans('flagrow-mason.admin.fields.required')
+                        })])]),
+                        /*m('.Form-group', [
+                            m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')),
+                            m('input.FormControl', {
+                                type: 'number',
+                                min: 0,
+                                max: 1, // TODO: remove when multiple answers is ready
+                                value: this.field.min_answers_count(),
+                                oninput: m.withAttr('value', this.updateAttribute.bind(this, 'min_answers_count')),
+                            }),
+                        ]),
+                        m('.Form-group', [
+                            m('label', app.translator.trans('flagrow-mason.admin.fields.max_answers_count')),
+                            m('input.FormControl', {
+                                type: 'number',
+                                min: 1,
+                                disabled: true, // TODO: remove when multiple answers is ready
+                                value: this.field.max_answers_count(),
+                                oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count')),
+                            }),
+                        ]),*/
+                        m('.Form-group', [m('label', [Switch.component({
                             state: this.field.show_when_empty(),
                             onchange: this.updateAttribute.bind(this, 'show_when_empty'),
                             children: app.translator.trans('flagrow-mason.admin.fields.show_when_empty')
@@ -409,6 +428,8 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
                             children: app.translator.trans('flagrow-mason.admin.fields.user_values_allowed')
                         })]), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.user_values_allowed-help'))]), m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.fields.validation')), m('input.FormControl', {
+                            disabled: !this.field.user_values_allowed(),
+                            placeholder: this.field.user_values_allowed() ? '' : app.translator.trans('flagrow-mason.admin.fields.enable-user-values-for-validation'),
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation'))
                         }), m('.helpText', app.translator.trans('flagrow-mason.admin.fields.validation-help', {
@@ -451,7 +472,7 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                 }, {
                     key: 'saveField',
                     value: function saveField() {
-                        var _this3 = this;
+                        var _this4 = this;
 
                         this.processing = true;
 
@@ -465,18 +486,18 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             app.store.pushPayload(result);
 
                             if (createNewRecord) {
-                                _this3.initNewField();
+                                _this4.initNewField();
                             }
 
-                            _this3.processing = false;
-                            _this3.dirty = false;
+                            _this4.processing = false;
+                            _this4.dirty = false;
                             m.redraw();
                         });
                     }
                 }, {
                     key: 'deleteField',
                     value: function deleteField() {
-                        var _this4 = this;
+                        var _this5 = this;
 
                         if (!confirm(app.translator.trans('flagrow-mason.admin.messages.delete-field-confirmation', {
                             name: this.field.name()
@@ -490,9 +511,9 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             method: 'DELETE',
                             url: this.field.apiEndpoint()
                         }).then(function () {
-                            app.store.remove(_this4.field);
+                            app.store.remove(_this5.field);
 
-                            _this4.processing = false;
+                            _this5.processing = false;
                             m.redraw();
                         });
                     }

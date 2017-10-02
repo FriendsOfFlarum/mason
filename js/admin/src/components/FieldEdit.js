@@ -74,6 +74,18 @@ export default class FieldEdit extends Component {
                         m('.helpText', app.translator.trans('flagrow-mason.admin.fields.description-help')),
                     ]),
                     m('.Form-group', [
+                        m('label', [
+                            // TODO: while multiple answers are still in the work, show the "min answers" field as a checkbox
+                            Switch.component({
+                                state: this.field.min_answers_count() === 1,
+                                onchange: value => {
+                                    this.updateAttribute('min_answers_count', value ? 1 : 0);
+                                },
+                                children: app.translator.trans('flagrow-mason.admin.fields.required'),
+                            }),
+                        ]),
+                    ]),
+                    /*m('.Form-group', [
                         m('label', app.translator.trans('flagrow-mason.admin.fields.min_answers_count')),
                         m('input.FormControl', {
                             type: 'number',
@@ -92,7 +104,7 @@ export default class FieldEdit extends Component {
                             value: this.field.max_answers_count(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count')),
                         }),
-                    ]),
+                    ]),*/
                     m('.Form-group', [
                         m('label', [
                             Switch.component({
@@ -116,6 +128,8 @@ export default class FieldEdit extends Component {
                     m('.Form-group', [
                         m('label', app.translator.trans('flagrow-mason.admin.fields.validation')),
                         m('input.FormControl', {
+                            disabled: !this.field.user_values_allowed(),
+                            placeholder: this.field.user_values_allowed() ? '' : app.translator.trans('flagrow-mason.admin.fields.enable-user-values-for-validation'),
                             value: this.field.validation(),
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation')),
                         }),
