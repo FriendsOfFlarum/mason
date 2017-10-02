@@ -23,7 +23,11 @@ export default class DiscussionFields extends Component {
     }
 
     view() {
-        return m('.Mason-Fields', [
+        return m('form.Mason-Fields', {
+            onsubmit(event) {
+                event.preventDefault();
+            },
+        }, [
             this.fields.map(
                 field => {
                     const inputAttrs = {

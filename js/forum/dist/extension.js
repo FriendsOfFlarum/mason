@@ -182,7 +182,11 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                     value: function view() {
                         var _this3 = this;
 
-                        return m('.Mason-Fields', [this.fields.map(function (field) {
+                        return m('form.Mason-Fields', {
+                            onsubmit: function onsubmit(event) {
+                                event.preventDefault();
+                            }
+                        }, [this.fields.map(function (field) {
                             var inputAttrs = {
                                 field: field,
                                 answers: _this3.props.answers,
