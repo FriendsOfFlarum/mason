@@ -252,7 +252,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                             oninput: m.withAttr('value', function (value) {
                                 _this3.new_content = value;
                             }),
-                            placeholder: 'Some text'
+                            placeholder: app.translator.trans('flagrow-mason.admin.fields.new-answer-placeholder')
                         })]), m('.Form-group', [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',

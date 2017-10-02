@@ -61,7 +61,7 @@ export default class FieldAnswersEdit extends Component {
                         oninput: m.withAttr('value', value => {
                             this.new_content = value;
                         }),
-                        placeholder: 'Some text',
+                        placeholder: app.translator.trans('flagrow-mason.admin.fields.new-answer-placeholder'),
                     }),
                 ]),
                 m('.Form-group', [

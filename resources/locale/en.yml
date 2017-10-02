@@ -56,6 +56,7 @@ flagrow-mason:
             icon-preview: preview: {preview}
             save-field-for-answers: Save the field to add answers
             is_suggested: Suggest answer to users
+            new-answer-placeholder: Some text
         messages:
             delete-answer-confirmation: >
                 Are you sure you want to delete answer "{content}" ?
