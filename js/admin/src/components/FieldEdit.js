@@ -215,9 +215,9 @@ export default class FieldEdit extends Component {
 
             if (createNewRecord) {
                 this.initNewField();
+                this.toggleFields = false;
             }
 
-            this.toggleFields = false;
             this.processing = false;
             this.dirty = false;
             m.redraw();

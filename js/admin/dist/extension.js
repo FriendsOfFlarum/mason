@@ -521,9 +521,9 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
 
                             if (createNewRecord) {
                                 _this4.initNewField();
+                                _this4.toggleFields = false;
                             }
 
-                            _this4.toggleFields = false;
                             _this4.processing = false;
                             _this4.dirty = false;
                             m.redraw();
