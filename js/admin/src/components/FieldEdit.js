@@ -51,8 +51,10 @@ export default class FieldEdit extends Component {
             }, [
                 m('.Mason-Box-Header-Title', this.boxTitle()),
                 m('div', [
-                    app.translator.trans('flagrow-mason.admin.buttons.edit-field'),
-                    ' ',
+                    (this.field.exists ? [
+                        app.translator.trans('flagrow-mason.admin.buttons.edit-field'),
+                        ' ',
+                    ] : null),
                     icon(this.toggleFields ? 'chevron-up' : 'chevron-down'),
                 ]),
             ]),

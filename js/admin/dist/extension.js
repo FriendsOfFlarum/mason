@@ -411,7 +411,7 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                             onclick: function onclick() {
                                 _this2.toggleFields = !_this2.toggleFields;
                             }
-                        }, [m('.Mason-Box-Header-Title', this.boxTitle()), m('div', [app.translator.trans('flagrow-mason.admin.buttons.edit-field'), ' ', icon(this.toggleFields ? 'chevron-up' : 'chevron-down')])]), this.toggleFields ? this.viewFields() : null]);
+                        }, [m('.Mason-Box-Header-Title', this.boxTitle()), m('div', [this.field.exists ? [app.translator.trans('flagrow-mason.admin.buttons.edit-field'), ' '] : null, icon(this.toggleFields ? 'chevron-up' : 'chevron-down')])]), this.toggleFields ? this.viewFields() : null]);
                     }
                 }, {
                     key: 'viewFields',
