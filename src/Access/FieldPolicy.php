@@ -22,13 +22,13 @@ class FieldPolicy extends AbstractPolicy
     }
 
     /**
-     * A field can only be skipped it no answer is required (or admin)
+     * A field can only be skipped if no answer is required (or admin)
      * @param User $user
      * @param Field $field
      * @return bool
      */
     public function skipField(User $user, Field $field)
     {
-        return $field->min_answers_count === 0;
+        return $field->min_answers_count === 0 || $user->can('flagrow.mason.skip-required-fields');
     }
 }

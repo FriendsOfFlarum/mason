@@ -19,4 +19,12 @@ export default function () {
             allowGuest: true,
         });
     });
+
+    extend(PermissionGrid.prototype, 'viewItems', items => {
+        items.add('flagrow-mason-skip-required-fields', {
+            icon: 'check-square',
+            label: app.translator.trans('flagrow-mason.admin.permissions.skip-required-fields'),
+            permission: 'flagrow.mason.skip-required-fields',
+        });
+    });
 }

@@ -87,3 +87,4 @@ flagrow-mason:
         permissions:
             update-own-fields: Update Mason fields of own discussion
             update-other-fields: Update Mason fields of any discussion
+            skip-required-fields: Skip required Mason fields
