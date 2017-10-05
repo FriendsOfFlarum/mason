@@ -38,7 +38,7 @@ class FieldUpdateController extends AbstractResourceController
 
         $field = $this->fields->findOrFail($id);
 
-        $attributes = Arr::get($request->getParsedBody(), 'attributes', []);
+        $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
         return $this->fields->update($field, $attributes);
     }

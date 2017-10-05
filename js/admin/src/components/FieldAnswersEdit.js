@@ -113,11 +113,13 @@ export default class FieldAnswersEdit extends Component {
 
         app.request({
             method: 'POST',
-            url: this.field.apiEndpoint() + '/answers',
+            url: app.forum.attribute('apiUrl') + this.field.apiEndpoint() + '/answers',
             data: {
-                attributes: {
-                    content: this.new_content,
-                    is_suggested: true,
+                data: {
+                    attributes: {
+                        content: this.new_content,
+                        is_suggested: true,
+                    },
                 },
             },
         }).then(result => {
@@ -132,7 +134,7 @@ export default class FieldAnswersEdit extends Component {
     updateSort(sorting) {
         app.request({
             method: 'POST',
-            url: this.field.apiEndpoint() + '/answers/order',
+            url: app.forum.attribute('apiUrl') + this.field.apiEndpoint() + '/answers/order',
             data: {
                 sort: sorting,
             },

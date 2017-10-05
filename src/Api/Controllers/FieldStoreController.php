@@ -34,7 +34,7 @@ class FieldStoreController extends AbstractCreateController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
-        $attributes = Arr::get($request->getParsedBody(), 'attributes', []);
+        $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
         return $this->fields->store($attributes);
     }

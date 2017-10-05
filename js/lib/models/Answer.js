@@ -9,12 +9,9 @@ export default class Answer extends mixin(Model, {
     field: Model.hasOne('field'),
 }) {
     /**
-     * Construct a path to the API endpoint for this resource.
-     *
-     * @return {String}
-     * @protected
+     * @inheritDoc
      */
     apiEndpoint() {
-        return app.forum.attribute('apiUrl') + '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
+        return '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
     }
 }

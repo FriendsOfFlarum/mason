@@ -19,17 +19,17 @@ export default class FieldEdit extends Component {
     }
 
     initNewField() {
-        this.field = new Field();
-
-        this.field.pushAttributes({
-            name: '',
-            description: '',
-            min_answers_count: 0,
-            max_answers_count: 1,
-            user_values_allowed: false,
-            show_when_empty: false,
-            validation: '',
-            icon: '',
+        this.field = app.store.createRecord('flagrow-mason-field', {
+            attributes: {
+                name: '',
+                description: '',
+                min_answers_count: 0,
+                max_answers_count: 1,
+                user_values_allowed: false,
+                show_when_empty: false,
+                validation: '',
+                icon: '',
+            },
         });
     }
 
@@ -206,13 +206,7 @@ export default class FieldEdit extends Component {
 
         const createNewRecord = !this.field.exists;
 
-        app.request({
-            method: createNewRecord ? 'POST' : 'PATCH',
-            url: this.field.apiEndpoint(),
-            data: this.field.data,
-        }).then(result => {
-            app.store.pushPayload(result);
-
+        this.field.save(this.field.data.attributes).then(() => {
             if (createNewRecord) {
                 this.initNewField();
                 this.toggleFields = false;
@@ -220,7 +214,12 @@ export default class FieldEdit extends Component {
 
             this.processing = false;
             this.dirty = false;
+
             m.redraw();
+        }).catch(err => {
+            this.processing = false;
+
+            throw err;
         });
     }
 
@@ -233,14 +232,14 @@ export default class FieldEdit extends Component {
 
         this.processing = true;
 
-        app.request({
-            method: 'DELETE',
-            url: this.field.apiEndpoint(),
-        }).then(() => {
-            app.store.remove(this.field);
-
+        this.field.delete().then(() => {
             this.processing = false;
+
             m.redraw();
+        }).catch(err => {
+            this.processing = false;
+
+            throw err;
         });
     }
 

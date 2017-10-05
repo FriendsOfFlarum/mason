@@ -843,7 +843,7 @@ System.register('flagrow/mason/models/Answer', ['flarum/app', 'flarum/Model', 'f
                 babelHelpers.createClass(Answer, [{
                     key: 'apiEndpoint',
                     value: function apiEndpoint() {
-                        return app.forum.attribute('apiUrl') + '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
+                        return '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
                     }
                 }]);
                 return Answer;
@@ -886,7 +886,7 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
                 babelHelpers.createClass(Field, [{
                     key: 'apiEndpoint',
                     value: function apiEndpoint() {
-                        return app.forum.attribute('apiUrl') + '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
+                        return '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
                     }
                 }]);
                 return Field;

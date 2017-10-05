@@ -20,12 +20,9 @@ export default class Field extends mixin(Model, {
     multiple: computed('max_answers_count', max_answers_count => max_answers_count > 1),
 }) {
     /**
-     * Construct a path to the API endpoint for this resource.
-     *
-     * @return {String}
-     * @protected
+     * @inheritDoc
      */
     apiEndpoint() {
-        return app.forum.attribute('apiUrl') + '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
+        return '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
     }
 }

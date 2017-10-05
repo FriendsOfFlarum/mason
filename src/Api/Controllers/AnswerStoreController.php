@@ -45,7 +45,7 @@ class AnswerStoreController extends AbstractCreateController
 
         $field = $this->fields->findOrFail($fieldId);
 
-        $attributes = Arr::get($request->getParsedBody(), 'attributes', []);
+        $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
         $this->answers->store($field, $attributes);
 

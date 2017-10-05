@@ -35,7 +35,7 @@ class AnswerUpdateController extends AbstractResourceController
 
         $answer = $this->answers->findOrFail($id);
 
-        $attributes = Arr::get($request->getParsedBody(), 'attributes', []);
+        $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
         return $this->answers->update($answer, $attributes);
     }

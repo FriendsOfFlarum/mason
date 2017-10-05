@@ -33,7 +33,13 @@ export default class FieldEdit extends Component {
             ]),
             Switch.component({
                 state: this.answer.is_suggested(),
-                onchange: this.updateAttribute.bind(this, 'is_suggested'),
+                onchange: value => {
+                    this.updateAttribute('is_suggested', value);
+
+                    // Save right away, because updating the model with immediately trigger a redraw of the UI
+                    // And the unsaved state won't be preserved because the AnswerEdit component changes its place
+                    this.saveAnswer();
+                },
                 children: app.translator.trans('flagrow-mason.admin.fields.is_suggested'),
             }),
             m('.ButtonGroup', [
@@ -71,16 +77,15 @@ export default class FieldEdit extends Component {
     saveAnswer() {
         this.processing = true;
 
-        app.request({
-            method: 'PATCH',
-            url: this.answer.apiEndpoint(),
-            data: this.answer.data,
-        }).then(result => {
-            app.store.pushPayload(result);
-
+        this.answer.save(this.answer.data.attributes).then(() => {
             this.processing = false;
             this.dirty = false;
+
             m.redraw();
+        }).catch(err => {
+            this.processing = false;
+
+            throw err;
         });
     }
 
@@ -93,14 +98,14 @@ export default class FieldEdit extends Component {
 
         this.processing = true;
 
-        app.request({
-            method: 'DELETE',
-            url: this.answer.apiEndpoint(),
-        }).then(() => {
-            app.store.remove(this.answer);
-
+        this.answer.delete().then(() => {
             this.processing = false;
+
             m.redraw();
+        }).catch(err => {
+            this.processing = false;
+
+            throw err;
         });
     }
 }

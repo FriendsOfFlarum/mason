@@ -94,7 +94,13 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/he
                             }
                         }, [this.answer.content(), ' ', icon('pencil')]), Switch.component({
                             state: this.answer.is_suggested(),
-                            onchange: this.updateAttribute.bind(this, 'is_suggested'),
+                            onchange: function onchange(value) {
+                                _this2.updateAttribute('is_suggested', value);
+
+                                // Save right away, because updating the model with immediately trigger a redraw of the UI
+                                // And the unsaved state won't be preserved because the AnswerEdit component changes its place
+                                _this2.saveAnswer();
+                            },
                             children: app.translator.trans('flagrow-mason.admin.fields.is_suggested')
                         }), m('.ButtonGroup', [Button.component({
                             type: 'submit',
@@ -130,16 +136,15 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/he
 
                         this.processing = true;
 
-                        app.request({
-                            method: 'PATCH',
-                            url: this.answer.apiEndpoint(),
-                            data: this.answer.data
-                        }).then(function (result) {
-                            app.store.pushPayload(result);
-
+                        this.answer.save(this.answer.data.attributes).then(function () {
                             _this3.processing = false;
                             _this3.dirty = false;
+
                             m.redraw();
+                        }).catch(function (err) {
+                            _this3.processing = false;
+
+                            throw err;
                         });
                     }
                 }, {
@@ -155,14 +160,14 @@ System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/he
 
                         this.processing = true;
 
-                        app.request({
-                            method: 'DELETE',
-                            url: this.answer.apiEndpoint()
-                        }).then(function () {
-                            app.store.remove(_this4.answer);
-
+                        this.answer.delete().then(function () {
                             _this4.processing = false;
+
                             m.redraw();
+                        }).catch(function (err) {
+                            _this4.processing = false;
+
+                            throw err;
                         });
                     }
                 }]);
@@ -296,11 +301,13 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
 
                         app.request({
                             method: 'POST',
-                            url: this.field.apiEndpoint() + '/answers',
+                            url: app.forum.attribute('apiUrl') + this.field.apiEndpoint() + '/answers',
                             data: {
-                                attributes: {
-                                    content: this.new_content,
-                                    is_suggested: true
+                                data: {
+                                    attributes: {
+                                        content: this.new_content,
+                                        is_suggested: true
+                                    }
                                 }
                             }
                         }).then(function (result) {
@@ -316,7 +323,7 @@ System.register('flagrow/mason/components/FieldAnswersEdit', ['flarum/app', 'fla
                     value: function updateSort(sorting) {
                         app.request({
                             method: 'POST',
-                            url: this.field.apiEndpoint() + '/answers/order',
+                            url: app.forum.attribute('apiUrl') + this.field.apiEndpoint() + '/answers/order',
                             data: {
                                 sort: sorting
                             }
@@ -380,17 +387,17 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
                 }, {
                     key: 'initNewField',
                     value: function initNewField() {
-                        this.field = new Field();
-
-                        this.field.pushAttributes({
-                            name: '',
-                            description: '',
-                            min_answers_count: 0,
-                            max_answers_count: 1,
-                            user_values_allowed: false,
-                            show_when_empty: false,
-                            validation: '',
-                            icon: ''
+                        this.field = app.store.createRecord('flagrow-mason-field', {
+                            attributes: {
+                                name: '',
+                                description: '',
+                                min_answers_count: 0,
+                                max_answers_count: 1,
+                                user_values_allowed: false,
+                                show_when_empty: false,
+                                validation: '',
+                                icon: ''
+                            }
                         });
                     }
                 }, {
@@ -512,13 +519,7 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
 
                         var createNewRecord = !this.field.exists;
 
-                        app.request({
-                            method: createNewRecord ? 'POST' : 'PATCH',
-                            url: this.field.apiEndpoint(),
-                            data: this.field.data
-                        }).then(function (result) {
-                            app.store.pushPayload(result);
-
+                        this.field.save(this.field.data.attributes).then(function () {
                             if (createNewRecord) {
                                 _this4.initNewField();
                                 _this4.toggleFields = false;
@@ -526,7 +527,12 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
 
                             _this4.processing = false;
                             _this4.dirty = false;
+
                             m.redraw();
+                        }).catch(function (err) {
+                            _this4.processing = false;
+
+                            throw err;
                         });
                     }
                 }, {
@@ -542,14 +548,14 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
 
                         this.processing = true;
 
-                        app.request({
-                            method: 'DELETE',
-                            url: this.field.apiEndpoint()
-                        }).then(function () {
-                            app.store.remove(_this5.field);
-
+                        this.field.delete().then(function () {
                             _this5.processing = false;
+
                             m.redraw();
+                        }).catch(function (err) {
+                            _this5.processing = false;
+
+                            throw err;
                         });
                     }
                 }, {
@@ -701,7 +707,7 @@ System.register('flagrow/mason/models/Answer', ['flarum/app', 'flarum/Model', 'f
                 babelHelpers.createClass(Answer, [{
                     key: 'apiEndpoint',
                     value: function apiEndpoint() {
-                        return app.forum.attribute('apiUrl') + '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
+                        return '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
                     }
                 }]);
                 return Answer;
@@ -744,7 +750,7 @@ System.register('flagrow/mason/models/Field', ['flarum/app', 'flarum/Model', 'fl
                 babelHelpers.createClass(Field, [{
                     key: 'apiEndpoint',
                     value: function apiEndpoint() {
-                        return app.forum.attribute('apiUrl') + '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
+                        return '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
                     }
                 }]);
                 return Field;
