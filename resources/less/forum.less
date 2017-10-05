@@ -33,3 +33,38 @@
         content: '';
     }
 }
+
+.Mason-Column {
+    // Counterbalance the .Form-group margin that is removed on the last element
+    margin-bottom: 24px;
+}
+
+.Mason-Row:last-of-type .Mason-Column:last-of-type {
+    // Do not apply the .Form-group -like margin for the last item
+    margin-bottom: 0;
+}
+
+@media (min-width: @screen-desktop) {
+    .Mason-Grid-Wrapper {
+        margin: 0 -10px;
+    }
+
+    .Mason-Grid {
+        display: table;
+        width: 100%;
+    }
+
+    .Mason-Row {
+        display: table-row;
+    }
+
+    .Mason-Column {
+        display: table-cell;
+        padding: 5px 10px;
+    }
+
+    .Mason-Row:last-of-type .Mason-Column {
+        // Do not apply the .Form-group -like margin for the items of the last row
+        margin-bottom: 0;
+    }
+}

@@ -45,6 +45,51 @@ System.register('flagrow/mason/addMasonFieldsPane', ['flarum/extend', 'flarum/ap
 });;
 'use strict';
 
+System.register('flagrow/mason/addPermissions', ['flarum/extend', 'flarum/app', 'flarum/components/PermissionGrid'], function (_export, _context) {
+    "use strict";
+
+    var extend, app, PermissionGrid;
+
+    _export('default', function () {
+        extend(PermissionGrid.prototype, 'viewItems', function (items) {
+            items.add('flagrow-mason-update-own-fields', {
+                icon: 'check-square',
+                label: app.translator.trans('flagrow-mason.admin.permissions.update-own-fields'),
+                permission: 'flagrow.mason.update-own-fields'
+            });
+        });
+
+        extend(PermissionGrid.prototype, 'viewItems', function (items) {
+            items.add('flagrow-mason-update-other-fields', {
+                icon: 'check-square',
+                label: app.translator.trans('flagrow-mason.admin.permissions.update-other-fields'),
+                permission: 'flagrow.mason.update-other-fields',
+                allowGuest: true
+            });
+        });
+
+        extend(PermissionGrid.prototype, 'viewItems', function (items) {
+            items.add('flagrow-mason-skip-required-fields', {
+                icon: 'check-square',
+                label: app.translator.trans('flagrow-mason.admin.permissions.skip-required-fields'),
+                permission: 'flagrow.mason.skip-required-fields'
+            });
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            extend = _flarumExtend.extend;
+        }, function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponentsPermissionGrid) {
+            PermissionGrid = _flarumComponentsPermissionGrid.default;
+        }],
+        execute: function () {}
+    };
+});;
+'use strict';
+
 System.register('flagrow/mason/components/AnswerEdit', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flarum/components/Switch'], function (_export, _context) {
     "use strict";
 
@@ -579,10 +624,10 @@ System.register('flagrow/mason/components/FieldEdit', ['flarum/app', 'flarum/hel
 });;
 'use strict';
 
-System.register('flagrow/mason/components/MasonSettings', ['flarum/app', 'flarum/utils/saveSettings', 'flarum/Component', 'flarum/components/Switch'], function (_export, _context) {
+System.register('flagrow/mason/components/MasonSettings', ['flarum/app', 'flarum/utils/saveSettings', 'flarum/Component', 'flarum/components/Select', 'flarum/components/Switch'], function (_export, _context) {
     "use strict";
 
-    var app, saveSettings, Component, Switch, MasonSettings;
+    var app, saveSettings, Component, Select, Switch, MasonSettings;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -590,6 +635,8 @@ System.register('flagrow/mason/components/MasonSettings', ['flarum/app', 'flarum
             saveSettings = _flarumUtilsSaveSettings.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
+        }, function (_flarumComponentsSelect) {
+            Select = _flarumComponentsSelect.default;
         }, function (_flarumComponentsSwitch) {
             Switch = _flarumComponentsSwitch.default;
         }],
@@ -605,13 +652,24 @@ System.register('flagrow/mason/components/MasonSettings', ['flarum/app', 'flarum
                 babelHelpers.createClass(MasonSettings, [{
                     key: 'init',
                     value: function init() {
+                        this.columnCount = m.prop(app.data.settings['flagrow.mason.column-count'] || 1);
                         this.tagsAsFields = m.prop(app.data.settings['flagrow.mason.tags-as-fields'] > 0);
                         this.tagsFieldName = m.prop(app.data.settings['flagrow.mason.tags-field-name'] || '');
+
+                        this.columnOptions = {};
+
+                        for (var i = 1; i <= 3; i++) {
+                            this.columnOptions[i] = app.translator.trans('flagrow-mason.admin.settings.n-columns', { count: i });
+                        }
                     }
                 }, {
                     key: 'view',
                     value: function view() {
-                        return m('.Mason-Container', [m('.Form-group', [m('label', Switch.component({
+                        return m('.Mason-Container', [m('.Form-group', [m('label', app.translator.trans('flagrow-mason.admin.settings.column-count')), Select.component({
+                            options: this.columnOptions,
+                            value: this.columnCount(),
+                            onchange: this.updateSetting.bind(this, this.columnCount, 'flagrow.mason.column-count')
+                        })]), m('.Form-group', [m('label', Switch.component({
                             state: this.tagsAsFields(),
                             onchange: this.updateSetting.bind(this, this.tagsAsFields, 'flagrow.mason.tags-as-fields'),
                             children: app.translator.trans('flagrow-mason.admin.settings.tags-as-field')
@@ -878,50 +936,5 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
 
             _export('default', MasonFieldsPane);
         }
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/addPermissions', ['flarum/extend', 'flarum/app', 'flarum/components/PermissionGrid'], function (_export, _context) {
-    "use strict";
-
-    var extend, app, PermissionGrid;
-
-    _export('default', function () {
-        extend(PermissionGrid.prototype, 'viewItems', function (items) {
-            items.add('flagrow-mason-update-own-fields', {
-                icon: 'check-square',
-                label: app.translator.trans('flagrow-mason.admin.permissions.update-own-fields'),
-                permission: 'flagrow.mason.update-own-fields'
-            });
-        });
-
-        extend(PermissionGrid.prototype, 'viewItems', function (items) {
-            items.add('flagrow-mason-update-other-fields', {
-                icon: 'check-square',
-                label: app.translator.trans('flagrow-mason.admin.permissions.update-other-fields'),
-                permission: 'flagrow.mason.update-other-fields',
-                allowGuest: true
-            });
-        });
-
-        extend(PermissionGrid.prototype, 'viewItems', function (items) {
-            items.add('flagrow-mason-skip-required-fields', {
-                icon: 'check-square',
-                label: app.translator.trans('flagrow-mason.admin.permissions.skip-required-fields'),
-                permission: 'flagrow.mason.skip-required-fields'
-            });
-        });
-    });
-
-    return {
-        setters: [function (_flarumExtend) {
-            extend = _flarumExtend.extend;
-        }, function (_flarumApp) {
-            app = _flarumApp.default;
-        }, function (_flarumComponentsPermissionGrid) {
-            PermissionGrid = _flarumComponentsPermissionGrid.default;
-        }],
-        execute: function () {}
     };
 });

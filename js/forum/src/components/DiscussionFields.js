@@ -5,6 +5,7 @@ import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 import FieldEditDropdown from 'flagrow/mason/components/FieldEditDropdown';
 import FieldEditText from 'flagrow/mason/components/FieldEditText';
 import FieldEditTags from 'flagrow/mason/components/FieldEditTags';
+import FieldGrid from 'flagrow/mason/components/FieldGrid';
 
 export default class DiscussionFields extends Component {
     init() {
@@ -37,35 +38,37 @@ export default class DiscussionFields extends Component {
                     }
                 },
             }) : null),
-            this.fields.map(
-                field => {
-                    const inputAttrs = {
-                        field,
-                        answers: this.props.answers,
-                        onchange: fieldAnswers => {
-                            // Every input component calls "onchange" with a list of answers from the store
-                            this.updateSelection(field, fieldAnswers);
-                        },
-                    };
-                    let input = null;
+            FieldGrid.component({
+                items: this.fields.map(
+                    field => {
+                        const inputAttrs = {
+                            field,
+                            answers: this.props.answers,
+                            onchange: fieldAnswers => {
+                                // Every input component calls "onchange" with a list of answers from the store
+                                this.updateSelection(field, fieldAnswers);
+                            },
+                        };
+                        let input = null;
 
-                    if (field.user_values_allowed()) {
-                        input = FieldEditText.component(inputAttrs);
-                    } else {
-                        input = FieldEditDropdown.component(inputAttrs);
+                        if (field.user_values_allowed()) {
+                            input = FieldEditText.component(inputAttrs);
+                        } else {
+                            input = FieldEditDropdown.component(inputAttrs);
+                        }
+
+                        return m('.Mason-Field.Form-group', [
+                            m('label', [
+                                (field.icon() ? [icon(field.icon()), ' '] : null),
+                                field.name(),
+                                (field.required() ? ' *' : null),
+                            ]),
+                            input,
+                            (field.description() ? m('.helpText', field.description()) : null),
+                        ]);
                     }
-
-                    return m('.Mason-Field.Form-group', [
-                        m('label', [
-                            (field.icon() ? [icon(field.icon()), ' '] : null),
-                            field.name(),
-                            (field.required() ? ' *' : null),
-                        ]),
-                        input,
-                        (field.description() ? m('.helpText', field.description()) : null),
-                    ]);
-                }
-            ),
+                ),
+            }),
         ]);
     }
 

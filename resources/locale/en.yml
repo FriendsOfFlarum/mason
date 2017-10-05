@@ -75,6 +75,8 @@ flagrow-mason:
                 The field and its answers will be removed from all discussions that use them.
                 Delete field ?
         settings:
+            column-count: Number of columns when showing the fields
+            n-columns: "{count} columns"
             tags-as-field: Show tags selector as a field
             tags-as-field-help: >
                 This will hide the default tags selector and show a custom dropdown field instead.

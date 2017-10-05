@@ -138,10 +138,10 @@ System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/FieldEditDropdown', 'flagrow/mason/components/FieldEditText', 'flagrow/mason/components/FieldEditTags'], function (_export, _context) {
+System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/FieldEditDropdown', 'flagrow/mason/components/FieldEditText', 'flagrow/mason/components/FieldEditTags', 'flagrow/mason/components/FieldGrid'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, sortByAttribute, FieldEditDropdown, FieldEditText, FieldEditTags, DiscussionFields;
+    var app, icon, Component, sortByAttribute, FieldEditDropdown, FieldEditText, FieldEditTags, FieldGrid, DiscussionFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -157,6 +157,8 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
             FieldEditText = _flagrowMasonComponentsFieldEditText.default;
         }, function (_flagrowMasonComponentsFieldEditTags) {
             FieldEditTags = _flagrowMasonComponentsFieldEditTags.default;
+        }, function (_flagrowMasonComponentsFieldGrid) {
+            FieldGrid = _flagrowMasonComponentsFieldGrid.default;
         }],
         execute: function () {
             DiscussionFields = function (_Component) {
@@ -198,24 +200,26 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                                     _this3.props.ontagchange(tags);
                                 }
                             }
-                        }) : null, this.fields.map(function (field) {
-                            var inputAttrs = {
-                                field: field,
-                                answers: _this3.props.answers,
-                                onchange: function onchange(fieldAnswers) {
-                                    // Every input component calls "onchange" with a list of answers from the store
-                                    _this3.updateSelection(field, fieldAnswers);
+                        }) : null, FieldGrid.component({
+                            items: this.fields.map(function (field) {
+                                var inputAttrs = {
+                                    field: field,
+                                    answers: _this3.props.answers,
+                                    onchange: function onchange(fieldAnswers) {
+                                        // Every input component calls "onchange" with a list of answers from the store
+                                        _this3.updateSelection(field, fieldAnswers);
+                                    }
+                                };
+                                var input = null;
+
+                                if (field.user_values_allowed()) {
+                                    input = FieldEditText.component(inputAttrs);
+                                } else {
+                                    input = FieldEditDropdown.component(inputAttrs);
                                 }
-                            };
-                            var input = null;
 
-                            if (field.user_values_allowed()) {
-                                input = FieldEditText.component(inputAttrs);
-                            } else {
-                                input = FieldEditDropdown.component(inputAttrs);
-                            }
-
-                            return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]);
+                                return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]);
+                            })
                         })]);
                     }
                 }, {
@@ -677,10 +681,10 @@ System.register('flagrow/mason/components/FieldEditText', ['flarum/app', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
+System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal', 'flagrow/mason/components/FieldGrid', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, Button, DiscussionFieldsModal, sortByAttribute, PostFields;
+    var app, icon, Component, Button, DiscussionFieldsModal, FieldGrid, sortByAttribute, PostFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -692,6 +696,8 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
             Button = _flarumComponentsButton.default;
         }, function (_flagrowMasonComponentsDiscussionFieldsModal) {
             DiscussionFieldsModal = _flagrowMasonComponentsDiscussionFieldsModal.default;
+        }, function (_flagrowMasonComponentsFieldGrid) {
+            FieldGrid = _flagrowMasonComponentsFieldGrid.default;
         }, function (_flagrowMasonHelpersSortByAttribute) {
             sortByAttribute = _flagrowMasonHelpersSortByAttribute.default;
         }],
@@ -724,28 +730,30 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                                     discussion: _this2.discussion
                                 }));
                             }
-                        }) : null, m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')), this.fields.map(function (field) {
-                            // Discussion answers to this field
-                            var answers = sortByAttribute(_this2.discussion.flagrowMasonAnswers().filter(function (answer) {
-                                // It's necessary to compare the field() relationship
-                                // Because field.suggested_answers() won't contain new and user answers
-                                return answer.field().id() === field.id();
-                            }));
+                        }) : null, m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')), FieldGrid.component({
+                            items: this.fields.map(function (field) {
+                                // Discussion answers to this field
+                                var answers = sortByAttribute(_this2.discussion.flagrowMasonAnswers().filter(function (answer) {
+                                    // It's necessary to compare the field() relationship
+                                    // Because field.suggested_answers() won't contain new and user answers
+                                    return answer.field().id() === field.id();
+                                }));
 
-                            var answer_list = answers.map(function (answer) {
-                                return m('span.Mason-Inline-Answer', answer.content());
-                            });
+                                var answer_list = answers.map(function (answer) {
+                                    return m('span.Mason-Inline-Answer', answer.content());
+                                });
 
-                            if (answers.length === 0) {
-                                if (field.show_when_empty()) {
-                                    answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
-                                } else {
-                                    // If the field has no answer and the setting is off we don't show it
-                                    return null;
+                                if (answers.length === 0) {
+                                    if (field.show_when_empty()) {
+                                        answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
+                                    } else {
+                                        // If the field has no answer and the setting is off we don't show it
+                                        return null;
+                                    }
                                 }
-                            }
 
-                            return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]);
+                                return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]);
+                            })
                         })]);
                     }
                 }]);
@@ -754,6 +762,24 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
 
             _export('default', PostFields);
         }
+    };
+});;
+"use strict";
+
+System.register("flagrow/mason/helpers/chunkArray", [], function (_export, _context) {
+    "use strict";
+
+    _export("default", function (items, itemsPerChunk) {
+        var R = [];
+        for (var i = 0; i < items.length; i += itemsPerChunk) {
+            R.push(items.slice(i, i + itemsPerChunk));
+        }
+        return R;
+    });
+
+    return {
+        setters: [],
+        execute: function () {}
     };
 });;
 'use strict';
@@ -954,5 +980,45 @@ System.register('flagrow/mason/patchModelIdentifier', ['flarum/extend', 'flarum/
             Answer = _flagrowMasonModelsAnswer.default;
         }],
         execute: function () {}
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldGrid', ['flarum/app', 'flarum/Component', 'flagrow/mason/helpers/chunkArray'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, chunkArray, FieldGrid;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flagrowMasonHelpersChunkArray) {
+            chunkArray = _flagrowMasonHelpersChunkArray.default;
+        }],
+        execute: function () {
+            FieldGrid = function (_Component) {
+                babelHelpers.inherits(FieldGrid, _Component);
+
+                function FieldGrid() {
+                    babelHelpers.classCallCheck(this, FieldGrid);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldGrid.__proto__ || Object.getPrototypeOf(FieldGrid)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldGrid, [{
+                    key: 'view',
+                    value: function view() {
+                        return m('.Mason-Grid-Wrapper', m('.Mason-Grid', chunkArray(this.props.items, app.forum.attribute('flagrow.mason.column-count')).map(function (row) {
+                            return m('.Mason-Row', row.map(function (item) {
+                                return m('.Mason-Column', item);
+                            }));
+                        })));
+                    }
+                }]);
+                return FieldGrid;
+            }(Component);
+
+            _export('default', FieldGrid);
+        }
     };
 });
