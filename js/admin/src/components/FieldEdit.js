@@ -22,7 +22,7 @@ export default class FieldEdit extends Component {
         this.field = new Field();
 
         this.field.pushAttributes({
-            name: 'New field',
+            name: '',
             description: '',
             min_answers_count: 0,
             max_answers_count: 1,
@@ -33,6 +33,14 @@ export default class FieldEdit extends Component {
         });
     }
 
+    boxTitle() {
+        if (this.field.exists) {
+            return this.field.name();
+        }
+
+        return app.translator.trans('flagrow-mason.admin.buttons.new-field');
+    }
+
     view() {
         return m('.Mason-Box', [
             (this.field.exists ? m('span.fa.fa-arrows.Mason-Box--handle.js-field-handle') : null),
@@ -41,7 +49,7 @@ export default class FieldEdit extends Component {
                     this.toggleFields = !this.toggleFields;
                 },
             }, [
-                m('.Mason-Box-Header-Title', this.field.name()),
+                m('.Mason-Box-Header-Title', this.boxTitle()),
                 m('div', [
                     app.translator.trans('flagrow-mason.admin.buttons.edit-field'),
                     ' ',

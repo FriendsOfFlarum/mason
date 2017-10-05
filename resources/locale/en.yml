@@ -18,6 +18,7 @@ flagrow-mason:
             tags-label: Tags
     admin:
         buttons:
+            new-field: New field
             add-field: Add field
             save-field: Save field changes
             delete-field: Delete field
