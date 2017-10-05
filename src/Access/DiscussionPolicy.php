@@ -12,7 +12,14 @@ class DiscussionPolicy extends AbstractPolicy
 
     public function updateFlagrowMasonAnswers(User $actor, Discussion $discussion)
     {
-        // TODO: add setting to control this
-        return $discussion->start_user_id == $actor->id;
+        if ($actor->can('flagrow.mason.update-other-fields')) {
+            return true;
+        }
+
+        if ($actor->can('flagrow.mason.update-own-fields') && $discussion->start_user_id == $actor->id) {
+            return true;
+        }
+
+        return false;
     }
 }

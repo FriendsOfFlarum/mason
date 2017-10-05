@@ -84,3 +84,6 @@ flagrow-mason:
         titles:
             settings: Settings
             fields: Fields
+        permissions:
+            update-own-fields: Update Mason fields of own discussion
+            update-other-fields: Update Mason fields of any discussion

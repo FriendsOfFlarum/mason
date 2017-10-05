@@ -656,10 +656,10 @@ System.register('flagrow/mason/helpers/sortByAttribute', [], function (_export, 
 });;
 'use strict';
 
-System.register('flagrow/mason/main', ['flarum/app', 'flagrow/mason/models/Answer', 'flagrow/mason/models/Field', 'flagrow/mason/addMasonFieldsPane'], function (_export, _context) {
+System.register('flagrow/mason/main', ['flarum/app', 'flagrow/mason/models/Answer', 'flagrow/mason/models/Field', 'flagrow/mason/addMasonFieldsPane', 'flagrow/mason/addPermissions'], function (_export, _context) {
     "use strict";
 
-    var app, Answer, Field, addMasonFieldsPane;
+    var app, Answer, Field, addMasonFieldsPane, addPermissions;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -669,6 +669,8 @@ System.register('flagrow/mason/main', ['flarum/app', 'flagrow/mason/models/Answe
             Field = _flagrowMasonModelsField.default;
         }, function (_flagrowMasonAddMasonFieldsPane) {
             addMasonFieldsPane = _flagrowMasonAddMasonFieldsPane.default;
+        }, function (_flagrowMasonAddPermissions) {
+            addPermissions = _flagrowMasonAddPermissions.default;
         }],
         execute: function () {
 
@@ -677,6 +679,7 @@ System.register('flagrow/mason/main', ['flarum/app', 'flagrow/mason/models/Answe
                 app.store.models['flagrow-mason-answer'] = Answer;
 
                 addMasonFieldsPane();
+                addPermissions();
             });
         }
     };
@@ -875,5 +878,42 @@ System.register('flagrow/mason/panes/MasonFieldsPane', ['flarum/app', 'flarum/Co
 
             _export('default', MasonFieldsPane);
         }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/addPermissions', ['flarum/extend', 'flarum/app', 'flarum/components/PermissionGrid'], function (_export, _context) {
+    "use strict";
+
+    var extend, app, PermissionGrid;
+
+    _export('default', function () {
+        extend(PermissionGrid.prototype, 'viewItems', function (items) {
+            items.add('flagrow-mason-update-own-fields', {
+                icon: 'check-square',
+                label: app.translator.trans('flagrow-mason.admin.permissions.update-own-fields'),
+                permission: 'flagrow.mason.update-own-fields'
+            });
+        });
+
+        extend(PermissionGrid.prototype, 'viewItems', function (items) {
+            items.add('flagrow-mason-update-other-fields', {
+                icon: 'check-square',
+                label: app.translator.trans('flagrow-mason.admin.permissions.update-other-fields'),
+                permission: 'flagrow.mason.update-other-fields',
+                allowGuest: true
+            });
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            extend = _flarumExtend.extend;
+        }, function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponentsPermissionGrid) {
+            PermissionGrid = _flarumComponentsPermissionGrid.default;
+        }],
+        execute: function () {}
     };
 });
