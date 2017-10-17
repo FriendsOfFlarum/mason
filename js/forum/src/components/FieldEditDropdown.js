@@ -51,8 +51,8 @@ export default class FieldEditDropdown extends Component {
                     value: 'none',
                     selected: selectedAnswerIdsForThisField.length === 0,
                     disabled: this.field.required(),
-                    hidden: this.field.required(),
-                }, app.translator.trans('flagrow-mason.forum.answers.' + (this.field.required() ? 'choose-option' : 'no-option-selected')))),
+                    hidden: this.placeholderHidden(),
+                }, this.selectPlaceholder())),
                 sortByAttribute(this.field.suggested_answers()).map(
                     answer => m('option', {
                         value: answer.id(),
@@ -62,5 +62,37 @@ export default class FieldEditDropdown extends Component {
             ]),
             icon('sort', {className: 'Select-caret'}),
         ]);
+    }
+
+    placeholderHidden() {
+        // If labels are hidden, we need to always show the default value (even if it can't be selected)
+        // Otherwise when the field is "required" you can't find the name of the field anymore once something is selected
+        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+            return false;
+        }
+
+        return this.field.required();
+    }
+
+    selectPlaceholder() {
+        let text = '';
+
+        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+            text += this.field.name();
+
+            if (this.field.required()) {
+                text+= ' *';
+            }
+
+            text += ' - ';
+        }
+
+        if (this.field.required()) {
+            text += app.translator.trans('flagrow-mason.forum.answers.choose-option');
+        } else {
+            text += app.translator.trans('flagrow-mason.forum.answers.no-option-selected');
+        }
+
+        return text;
     }
 }

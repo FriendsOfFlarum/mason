@@ -77,6 +77,10 @@ flagrow-mason:
         settings:
             column-count: Number of columns when showing the fields
             n-columns: "{count} columns"
+            labels-as-placeholders: Show labels as placeholders in the form
+            labels-as-placeholders-help: >
+                Fields will use less vertical space and icons won't be shown anymore.
+                Keep in mind this might have an impact on usability, in particular when editing existing fields.
             tags-as-field: Show tags selector as a field
             tags-as-field-help: >
                 This will hide the default tags selector and show a custom dropdown field instead.

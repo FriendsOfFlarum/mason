@@ -57,7 +57,9 @@ export default class DiscussionFields extends Component {
                             input = FieldEditDropdown.component(inputAttrs);
                         }
 
-                        return m('.Mason-Field.Form-group', [
+                        return m('.Mason-Field.Form-group', {
+                            className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
+                        }, [
                             m('label', [
                                 (field.icon() ? [icon(field.icon()), ' '] : null),
                                 field.name(),

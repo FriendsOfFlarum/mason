@@ -218,7 +218,9 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                                     input = FieldEditDropdown.component(inputAttrs);
                                 }
 
-                                return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]);
+                                return m('.Mason-Field.Form-group', {
+                                    className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : ''
+                                }, [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]);
                             })
                         })]);
                     }
@@ -454,13 +456,47 @@ System.register('flagrow/mason/components/FieldEditDropdown', ['flarum/app', 'fl
                             value: 'none',
                             selected: selectedAnswerIdsForThisField.length === 0,
                             disabled: this.field.required(),
-                            hidden: this.field.required()
-                        }, app.translator.trans('flagrow-mason.forum.answers.' + (this.field.required() ? 'choose-option' : 'no-option-selected'))), sortByAttribute(this.field.suggested_answers()).map(function (answer) {
+                            hidden: this.placeholderHidden()
+                        }, this.selectPlaceholder()), sortByAttribute(this.field.suggested_answers()).map(function (answer) {
                             return m('option', {
                                 value: answer.id(),
                                 selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1
                             }, answer.content());
                         })]), icon('sort', { className: 'Select-caret' })]);
+                    }
+                }, {
+                    key: 'placeholderHidden',
+                    value: function placeholderHidden() {
+                        // If labels are hidden, we need to always show the default value (even if it can't be selected)
+                        // Otherwise when the field is "required" you can't find the name of the field anymore once something is selected
+                        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+                            return false;
+                        }
+
+                        return this.field.required();
+                    }
+                }, {
+                    key: 'selectPlaceholder',
+                    value: function selectPlaceholder() {
+                        var text = '';
+
+                        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+                            text += this.field.name();
+
+                            if (this.field.required()) {
+                                text += ' *';
+                            }
+
+                            text += ' - ';
+                        }
+
+                        if (this.field.required()) {
+                            text += app.translator.trans('flagrow-mason.forum.answers.choose-option');
+                        } else {
+                            text += app.translator.trans('flagrow-mason.forum.answers.no-option-selected');
+                        }
+
+                        return text;
                     }
                 }]);
                 return FieldEditDropdown;
@@ -668,14 +704,64 @@ System.register('flagrow/mason/components/FieldEditText', ['flarum/app', 'flarum
 
                                     _this3.onchange([answer]);
                                 }
-                            })
+                            }),
+                            placeholder: this.fieldPlaceholder()
                         });
+                    }
+                }, {
+                    key: 'fieldPlaceholder',
+                    value: function fieldPlaceholder() {
+                        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+                            return this.field.name() + (this.field.required() ? ' *' : '');
+                        }
+
+                        return '';
                     }
                 }]);
                 return FieldEditText;
             }(Component);
 
             _export('default', FieldEditText);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldGrid', ['flarum/app', 'flarum/Component', 'flagrow/mason/helpers/chunkArray'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, chunkArray, FieldGrid;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flagrowMasonHelpersChunkArray) {
+            chunkArray = _flagrowMasonHelpersChunkArray.default;
+        }],
+        execute: function () {
+            FieldGrid = function (_Component) {
+                babelHelpers.inherits(FieldGrid, _Component);
+
+                function FieldGrid() {
+                    babelHelpers.classCallCheck(this, FieldGrid);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldGrid.__proto__ || Object.getPrototypeOf(FieldGrid)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldGrid, [{
+                    key: 'view',
+                    value: function view() {
+                        return m('.Mason-Grid-Wrapper', m('.Mason-Grid', chunkArray(this.props.items, app.forum.attribute('flagrow.mason.column-count')).map(function (row) {
+                            return m('.Mason-Row', row.map(function (item) {
+                                return m('.Mason-Column', item);
+                            }));
+                        })));
+                    }
+                }]);
+                return FieldGrid;
+            }(Component);
+
+            _export('default', FieldGrid);
         }
     };
 });;
@@ -980,45 +1066,5 @@ System.register('flagrow/mason/patchModelIdentifier', ['flarum/extend', 'flarum/
             Answer = _flagrowMasonModelsAnswer.default;
         }],
         execute: function () {}
-    };
-});;
-'use strict';
-
-System.register('flagrow/mason/components/FieldGrid', ['flarum/app', 'flarum/Component', 'flagrow/mason/helpers/chunkArray'], function (_export, _context) {
-    "use strict";
-
-    var app, Component, chunkArray, FieldGrid;
-    return {
-        setters: [function (_flarumApp) {
-            app = _flarumApp.default;
-        }, function (_flarumComponent) {
-            Component = _flarumComponent.default;
-        }, function (_flagrowMasonHelpersChunkArray) {
-            chunkArray = _flagrowMasonHelpersChunkArray.default;
-        }],
-        execute: function () {
-            FieldGrid = function (_Component) {
-                babelHelpers.inherits(FieldGrid, _Component);
-
-                function FieldGrid() {
-                    babelHelpers.classCallCheck(this, FieldGrid);
-                    return babelHelpers.possibleConstructorReturn(this, (FieldGrid.__proto__ || Object.getPrototypeOf(FieldGrid)).apply(this, arguments));
-                }
-
-                babelHelpers.createClass(FieldGrid, [{
-                    key: 'view',
-                    value: function view() {
-                        return m('.Mason-Grid-Wrapper', m('.Mason-Grid', chunkArray(this.props.items, app.forum.attribute('flagrow.mason.column-count')).map(function (row) {
-                            return m('.Mason-Row', row.map(function (item) {
-                                return m('.Mason-Column', item);
-                            }));
-                        })));
-                    }
-                }]);
-                return FieldGrid;
-            }(Component);
-
-            _export('default', FieldGrid);
-        }
     };
 });
