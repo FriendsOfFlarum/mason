@@ -32,46 +32,8 @@ export default class DiscussionFields extends Component {
             },
         }, [
             this.headItems().toArray(),
-            (app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
-                discussion: this.props.discussion,
-                onchange: tags => {
-                    if (this.props.ontagchange) {
-                        this.props.ontagchange(tags);
-                    }
-                },
-            }) : null),
             FieldGrid.component({
-                items: this.fields.map(
-                    field => {
-                        const inputAttrs = {
-                            field,
-                            answers: this.props.answers,
-                            onchange: fieldAnswers => {
-                                // Every input component calls "onchange" with a list of answers from the store
-                                this.updateSelection(field, fieldAnswers);
-                            },
-                        };
-                        let input = null;
-
-                        if (field.user_values_allowed()) {
-                            input = FieldEditText.component(inputAttrs);
-                        } else {
-                            input = FieldEditDropdown.component(inputAttrs);
-                        }
-
-                        return m('.Mason-Field.Form-group', {
-                            className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
-                        }, [
-                            m('label', [
-                                (field.icon() ? [icon(field.icon()), ' '] : null),
-                                field.name(),
-                                (field.required() ? ' *' : null),
-                            ]),
-                            input,
-                            (field.description() ? m('.helpText', field.description()) : null),
-                        ]);
-                    }
-                ),
+                items: this.fieldItems().toArray(),
             }),
         ]);
     }
@@ -103,6 +65,53 @@ export default class DiscussionFields extends Component {
         if (app.forum.attribute('flagrow.mason.fields-section-title')) {
             items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
         }
+
+        return items;
+    }
+
+    fieldItems() {
+        const items = new ItemList();
+
+        if (app.forum.attribute('flagrow.mason.tags-as-fields')) {
+            items.add('tags', FieldEditTags.component({
+                discussion: this.props.discussion,
+                onchange: tags => {
+                    if (this.props.ontagchange) {
+                        this.props.ontagchange(tags);
+                    }
+                },
+            }));
+        }
+
+        this.fields.forEach(field => {
+            const inputAttrs = {
+                field,
+                answers: this.props.answers,
+                onchange: fieldAnswers => {
+                    // Every input component calls "onchange" with a list of answers from the store
+                    this.updateSelection(field, fieldAnswers);
+                },
+            };
+            let input = null;
+
+            if (field.user_values_allowed()) {
+                input = FieldEditText.component(inputAttrs);
+            } else {
+                input = FieldEditDropdown.component(inputAttrs);
+            }
+
+            items.add('field-' + field.id(), m('.Mason-Field.Form-group', {
+                className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
+            }, [
+                m('label', [
+                    (field.icon() ? [icon(field.icon()), ' '] : null),
+                    field.name(),
+                    (field.required() ? ' *' : null),
+                ]),
+                input,
+                (field.description() ? m('.helpText', field.description()) : null),
+            ]));
+        });
 
         return items;
     }

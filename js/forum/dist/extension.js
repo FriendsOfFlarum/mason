@@ -223,51 +223,22 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                 }, {
                     key: 'view',
                     value: function view() {
-                        var _this3 = this;
-
                         return m('form.Mason-Fields.Mason-Fields--editor', {
                             onsubmit: function onsubmit(event) {
                                 event.preventDefault();
                             }
-                        }, [this.headItems().toArray(), app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
-                            discussion: this.props.discussion,
-                            onchange: function onchange(tags) {
-                                if (_this3.props.ontagchange) {
-                                    _this3.props.ontagchange(tags);
-                                }
-                            }
-                        }) : null, FieldGrid.component({
-                            items: this.fields.map(function (field) {
-                                var inputAttrs = {
-                                    field: field,
-                                    answers: _this3.props.answers,
-                                    onchange: function onchange(fieldAnswers) {
-                                        // Every input component calls "onchange" with a list of answers from the store
-                                        _this3.updateSelection(field, fieldAnswers);
-                                    }
-                                };
-                                var input = null;
-
-                                if (field.user_values_allowed()) {
-                                    input = FieldEditText.component(inputAttrs);
-                                } else {
-                                    input = FieldEditDropdown.component(inputAttrs);
-                                }
-
-                                return m('.Mason-Field.Form-group', {
-                                    className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : ''
-                                }, [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]);
-                            })
+                        }, [this.headItems().toArray(), FieldGrid.component({
+                            items: this.fieldItems().toArray()
                         })]);
                     }
                 }, {
                     key: 'updateSelection',
                     value: function updateSelection(field, fieldAnswers) {
-                        var _this4 = this;
+                        var _this3 = this;
 
                         // Keep only answers to other fields
                         var answers = this.props.answers.filter(function (answer) {
-                            var reverseFieldLookup = _this4.answerToFieldIndex[answer.id()];
+                            var reverseFieldLookup = _this3.answerToFieldIndex[answer.id()];
 
                             // If the answer is not in the reverse lookup table it's probably a non-suggested (user) answer
                             // In that case the field should be linked in the relationship
@@ -290,6 +261,48 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                         if (app.forum.attribute('flagrow.mason.fields-section-title')) {
                             items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
                         }
+
+                        return items;
+                    }
+                }, {
+                    key: 'fieldItems',
+                    value: function fieldItems() {
+                        var _this4 = this;
+
+                        var items = new ItemList();
+
+                        if (app.forum.attribute('flagrow.mason.tags-as-fields')) {
+                            items.add('tags', FieldEditTags.component({
+                                discussion: this.props.discussion,
+                                onchange: function onchange(tags) {
+                                    if (_this4.props.ontagchange) {
+                                        _this4.props.ontagchange(tags);
+                                    }
+                                }
+                            }));
+                        }
+
+                        this.fields.forEach(function (field) {
+                            var inputAttrs = {
+                                field: field,
+                                answers: _this4.props.answers,
+                                onchange: function onchange(fieldAnswers) {
+                                    // Every input component calls "onchange" with a list of answers from the store
+                                    _this4.updateSelection(field, fieldAnswers);
+                                }
+                            };
+                            var input = null;
+
+                            if (field.user_values_allowed()) {
+                                input = FieldEditText.component(inputAttrs);
+                            } else {
+                                input = FieldEditDropdown.component(inputAttrs);
+                            }
+
+                            items.add('field-' + field.id(), m('.Mason-Field.Form-group', {
+                                className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : ''
+                            }, [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null]), input, field.description() ? m('.helpText', field.description()) : null]));
+                        });
 
                         return items;
                     }
@@ -635,9 +648,11 @@ System.register('flagrow/mason/components/FieldEditTags', ['flarum/app', 'flarum
                             return tag.parent() ? -1 : 1;
                         })[0].id() : null;
 
-                        var required = this.minPrimary > 0 || this.minSecondary > 0;
+                        var required = this.fieldRequired();
 
-                        return m('.Mason-Field.Form-group', [m('label', [app.forum.attribute('flagrow.mason.tags-field-name') || app.translator.trans('flagrow-mason.forum.tags.tags-label'), required ? ' *' : null]), m('span.Select', [m('select.Select-input.FormControl', {
+                        return m('.Mason-Field.Form-group', {
+                            className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : ''
+                        }, [m('label', this.fieldLabel()), m('span.Select', [m('select.Select-input.FormControl', {
                             onchange: m.withAttr('value', function (id) {
                                 _this3.selectedTags = [];
 
@@ -659,7 +674,7 @@ System.register('flagrow/mason/components/FieldEditTags', ['flarum/app', 'flarum
                             selected: this.selectedTags.length === 0,
                             disabled: required,
                             hidden: required
-                        }, app.translator.trans('flagrow-mason.forum.answers.' + (required ? 'choose-option' : 'no-option-selected'))), this.tags.map(function (tag) {
+                        }, this.selectPlaceholder()), this.tags.map(function (tag) {
                             var parent = tag.parent();
 
                             return m('option', {
@@ -667,6 +682,39 @@ System.register('flagrow/mason/components/FieldEditTags', ['flarum/app', 'flarum
                                 selected: tag.id() === currentSelectedChild
                             }, (parent ? parent.name() + ' | ' : '') + tag.name());
                         })]), icon('sort', { className: 'Select-caret' })])]);
+                    }
+                }, {
+                    key: 'fieldRequired',
+                    value: function fieldRequired() {
+                        return this.minPrimary > 0 || this.minSecondary > 0;
+                    }
+                }, {
+                    key: 'fieldLabel',
+                    value: function fieldLabel() {
+                        var text = app.forum.attribute('flagrow.mason.tags-field-name') || app.translator.trans('flagrow-mason.forum.tags.tags-label');
+
+                        if (this.fieldRequired()) {
+                            text += ' *';
+                        }
+
+                        return text;
+                    }
+                }, {
+                    key: 'selectPlaceholder',
+                    value: function selectPlaceholder() {
+                        var text = '';
+
+                        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+                            text += this.fieldLabel() + ' - ';
+                        }
+
+                        if (this.fieldRequired()) {
+                            text += app.translator.trans('flagrow-mason.forum.answers.choose-option');
+                        } else {
+                            text += app.translator.trans('flagrow-mason.forum.answers.no-option-selected');
+                        }
+
+                        return text;
                     }
                 }]);
                 return DiscussionFields;
