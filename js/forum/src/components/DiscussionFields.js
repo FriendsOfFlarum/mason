@@ -1,5 +1,6 @@
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
+import ItemList from 'flarum/utils/ItemList';
 import Component from 'flarum/Component';
 import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 import FieldEditDropdown from 'flagrow/mason/components/FieldEditDropdown';
@@ -30,6 +31,7 @@ export default class DiscussionFields extends Component {
                 event.preventDefault();
             },
         }, [
+            this.headItems().toArray(),
             (app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
                 discussion: this.props.discussion,
                 onchange: tags => {
@@ -93,5 +95,15 @@ export default class DiscussionFields extends Component {
         answers = answers.concat(fieldAnswers);
 
         this.props.onchange(answers);
+    }
+
+    headItems() {
+        const items = new ItemList();
+
+        if (app.forum.attribute('flagrow.mason.fields-section-title')) {
+            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
+        }
+
+        return items;
     }
 }

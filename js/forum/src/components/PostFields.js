@@ -1,5 +1,6 @@
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
+import ItemList from 'flarum/utils/ItemList';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import DiscussionFieldsModal from 'flagrow/mason/components/DiscussionFieldsModal';
@@ -14,15 +15,7 @@ export default class PostFields extends Component {
 
     view() {
         return m('.Mason-Fields.Mason-Fields--viewer', [
-            (this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
-                className: 'Button Mason-Fields--edit',
-                children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
-                icon: 'pencil',
-                onclick: () => app.modal.show(new DiscussionFieldsModal({
-                    discussion: this.discussion,
-                })),
-            }) : null),
-            m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')),
+            this.headItems().toArray(),
             FieldGrid.component({
                 items: this.fields.map(
                     field => {
@@ -55,5 +48,26 @@ export default class PostFields extends Component {
                 ),
             }),
         ]);
+    }
+
+    headItems() {
+        const items = new ItemList();
+
+        if (this.discussion.canUpdateFlagrowMasonAnswers()) {
+            items.add('edit', Button.component({
+                className: 'Button Mason-Fields--edit',
+                children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
+                icon: 'pencil',
+                onclick: () => app.modal.show(new DiscussionFieldsModal({
+                    discussion: this.discussion,
+                })),
+            }));
+        }
+
+        if (app.forum.attribute('flagrow.mason.fields-section-title')) {
+            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
+        }
+
+        return items;
     }
 }

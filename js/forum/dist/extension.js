@@ -172,15 +172,17 @@ System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum
 });;
 'use strict';
 
-System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/FieldEditDropdown', 'flagrow/mason/components/FieldEditText', 'flagrow/mason/components/FieldEditTags', 'flagrow/mason/components/FieldGrid'], function (_export, _context) {
+System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/utils/ItemList', 'flarum/Component', 'flagrow/mason/helpers/sortByAttribute', 'flagrow/mason/components/FieldEditDropdown', 'flagrow/mason/components/FieldEditText', 'flagrow/mason/components/FieldEditTags', 'flagrow/mason/components/FieldGrid'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, sortByAttribute, FieldEditDropdown, FieldEditText, FieldEditTags, FieldGrid, DiscussionFields;
+    var app, icon, ItemList, Component, sortByAttribute, FieldEditDropdown, FieldEditText, FieldEditTags, FieldGrid, DiscussionFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
         }, function (_flarumHelpersIcon) {
             icon = _flarumHelpersIcon.default;
+        }, function (_flarumUtilsItemList) {
+            ItemList = _flarumUtilsItemList.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
         }, function (_flagrowMasonHelpersSortByAttribute) {
@@ -227,7 +229,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                             onsubmit: function onsubmit(event) {
                                 event.preventDefault();
                             }
-                        }, [app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
+                        }, [this.headItems().toArray(), app.forum.attribute('flagrow.mason.tags-as-fields') ? FieldEditTags.component({
                             discussion: this.props.discussion,
                             onchange: function onchange(tags) {
                                 if (_this3.props.ontagchange) {
@@ -279,6 +281,17 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                         answers = answers.concat(fieldAnswers);
 
                         this.props.onchange(answers);
+                    }
+                }, {
+                    key: 'headItems',
+                    value: function headItems() {
+                        var items = new ItemList();
+
+                        if (app.forum.attribute('flagrow.mason.fields-section-title')) {
+                            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
+                        }
+
+                        return items;
                     }
                 }]);
                 return DiscussionFields;
@@ -801,15 +814,17 @@ System.register('flagrow/mason/components/FieldGrid', ['flarum/app', 'flarum/Com
 });;
 'use strict';
 
-System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal', 'flagrow/mason/components/FieldGrid', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
+System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/helpers/icon', 'flarum/utils/ItemList', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/DiscussionFieldsModal', 'flagrow/mason/components/FieldGrid', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, icon, Component, Button, DiscussionFieldsModal, FieldGrid, sortByAttribute, PostFields;
+    var app, icon, ItemList, Component, Button, DiscussionFieldsModal, FieldGrid, sortByAttribute, PostFields;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
         }, function (_flarumHelpersIcon) {
             icon = _flarumHelpersIcon.default;
+        }, function (_flarumUtilsItemList) {
+            ItemList = _flarumUtilsItemList.default;
         }, function (_flarumComponent) {
             Component = _flarumComponent.default;
         }, function (_flarumComponentsButton) {
@@ -841,16 +856,7 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                     value: function view() {
                         var _this2 = this;
 
-                        return m('.Mason-Fields.Mason-Fields--viewer', [this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
-                            className: 'Button Mason-Fields--edit',
-                            children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
-                            icon: 'pencil',
-                            onclick: function onclick() {
-                                return app.modal.show(new DiscussionFieldsModal({
-                                    discussion: _this2.discussion
-                                }));
-                            }
-                        }) : null, m('h5.Mason-Field--title', app.translator.trans('flagrow-mason.forum.post-answers.title')), FieldGrid.component({
+                        return m('.Mason-Fields.Mason-Fields--viewer', [this.headItems().toArray(), FieldGrid.component({
                             items: this.fields.map(function (field) {
                                 // Discussion answers to this field
                                 var answers = sortByAttribute(_this2.discussion.flagrowMasonAnswers().filter(function (answer) {
@@ -875,6 +881,32 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                                 return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]);
                             })
                         })]);
+                    }
+                }, {
+                    key: 'headItems',
+                    value: function headItems() {
+                        var _this3 = this;
+
+                        var items = new ItemList();
+
+                        if (this.discussion.canUpdateFlagrowMasonAnswers()) {
+                            items.add('edit', Button.component({
+                                className: 'Button Mason-Fields--edit',
+                                children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
+                                icon: 'pencil',
+                                onclick: function onclick() {
+                                    return app.modal.show(new DiscussionFieldsModal({
+                                        discussion: _this3.discussion
+                                    }));
+                                }
+                            }));
+                        }
+
+                        if (app.forum.attribute('flagrow.mason.fields-section-title')) {
+                            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
+                        }
+
+                        return items;
                     }
                 }]);
                 return PostFields;

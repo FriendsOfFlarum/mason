@@ -6,6 +6,7 @@ import Switch from 'flarum/components/Switch';
 
 export default class MasonSettings extends Component {
     init() {
+        this.fieldsSectionTitle = m.prop(app.data.settings['flagrow.mason.fields-section-title'] || '');
         this.columnCount = m.prop(app.data.settings['flagrow.mason.column-count'] || 1);
         this.labelsAsPlaceholders = m.prop(app.data.settings['flagrow.mason.labels-as-placeholders'] > 0);
         this.fieldsInHero = m.prop(app.data.settings['flagrow.mason.fields-in-hero'] > 0);
@@ -21,6 +22,15 @@ export default class MasonSettings extends Component {
 
     view() {
         return m('.Mason-Container', [
+            m('.Form-group', [
+                m('label', app.translator.trans('flagrow-mason.admin.settings.fields-section-title')),
+                m('input.FormControl', {
+                    value: this.fieldsSectionTitle(),
+                    placeholder: app.translator.trans('flagrow-mason.admin.settings.fields-section-title-placeholder'),
+                    onchange: m.withAttr('value', this.updateSetting.bind(this, this.fieldsSectionTitle, 'flagrow.mason.fields-section-title')),
+                }),
+                m('.helpText', app.translator.trans('flagrow-mason.admin.settings.fields-section-title-help')),
+            ]),
             m('.Form-group', [
                 m('label', app.translator.trans('flagrow-mason.admin.settings.column-count')),
                 Select.component({
