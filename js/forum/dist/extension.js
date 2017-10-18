@@ -911,38 +911,14 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                 }, {
                     key: 'view',
                     value: function view() {
-                        var _this2 = this;
-
                         return m('.Mason-Fields.Mason-Fields--viewer', [this.headItems().toArray(), FieldGrid.component({
-                            items: this.fields.map(function (field) {
-                                // Discussion answers to this field
-                                var answers = sortByAttribute(_this2.discussion.flagrowMasonAnswers().filter(function (answer) {
-                                    // It's necessary to compare the field() relationship
-                                    // Because field.suggested_answers() won't contain new and user answers
-                                    return answer.field().id() === field.id();
-                                }));
-
-                                var answer_list = answers.map(function (answer) {
-                                    return m('span.Mason-Inline-Answer', answer.content());
-                                });
-
-                                if (answers.length === 0) {
-                                    if (field.show_when_empty()) {
-                                        answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
-                                    } else {
-                                        // If the field has no answer and the setting is off we don't show it
-                                        return null;
-                                    }
-                                }
-
-                                return m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]);
-                            })
+                            items: this.fiedsItems().toArray()
                         })]);
                     }
                 }, {
                     key: 'headItems',
                     value: function headItems() {
-                        var _this3 = this;
+                        var _this2 = this;
 
                         var items = new ItemList();
 
@@ -953,7 +929,7 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                                 icon: 'pencil',
                                 onclick: function onclick() {
                                     return app.modal.show(new DiscussionFieldsModal({
-                                        discussion: _this3.discussion
+                                        discussion: _this2.discussion
                                     }));
                                 }
                             }));
@@ -962,6 +938,39 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                         if (app.forum.attribute('flagrow.mason.fields-section-title')) {
                             items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
                         }
+
+                        return items;
+                    }
+                }, {
+                    key: 'fiedsItems',
+                    value: function fiedsItems() {
+                        var _this3 = this;
+
+                        var items = new ItemList();
+
+                        this.fields.forEach(function (field) {
+                            // Discussion answers to this field
+                            var answers = sortByAttribute(_this3.discussion.flagrowMasonAnswers().filter(function (answer) {
+                                // It's necessary to compare the field() relationship
+                                // Because field.suggested_answers() won't contain new and user answers
+                                return answer.field().id() === field.id();
+                            }));
+
+                            var answer_list = answers.map(function (answer) {
+                                return m('span.Mason-Inline-Answer', answer.content());
+                            });
+
+                            if (answers.length === 0) {
+                                if (field.show_when_empty()) {
+                                    answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
+                                } else {
+                                    // If the field has no answer and the setting is off we don't show it
+                                    return;
+                                }
+                            }
+
+                            items.add('field-' + field.id(), m('.Mason-Field.Form-group', [m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]), m('.FormControl.Mason-Inline-Answers', answer_list)]));
+                        });
 
                         return items;
                     }
