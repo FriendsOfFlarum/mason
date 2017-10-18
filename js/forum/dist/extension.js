@@ -673,7 +673,7 @@ System.register('flagrow/mason/components/FieldEditTags', ['flarum/app', 'flarum
                             value: 'none',
                             selected: this.selectedTags.length === 0,
                             disabled: required,
-                            hidden: required
+                            hidden: this.placeholderHidden()
                         }, this.selectPlaceholder()), this.tags.map(function (tag) {
                             var parent = tag.parent();
 
@@ -698,6 +698,15 @@ System.register('flagrow/mason/components/FieldEditTags', ['flarum/app', 'flarum
                         }
 
                         return text;
+                    }
+                }, {
+                    key: 'placeholderHidden',
+                    value: function placeholderHidden() {
+                        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+                            return false;
+                        }
+
+                        return this.fieldRequired();
                     }
                 }, {
                     key: 'selectPlaceholder',

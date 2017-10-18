@@ -71,7 +71,7 @@ export default class DiscussionFields extends Component {
                         value: 'none',
                         selected: this.selectedTags.length === 0,
                         disabled: required,
-                        hidden: required,
+                        hidden: this.placeholderHidden(),
                     }, this.selectPlaceholder()),
                     this.tags.map(
                         tag => {
@@ -101,6 +101,14 @@ export default class DiscussionFields extends Component {
         }
 
         return text;
+    }
+
+    placeholderHidden() {
+        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+            return false;
+        }
+
+        return this.fieldRequired();
     }
 
     selectPlaceholder() {
