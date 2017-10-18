@@ -26,7 +26,12 @@ class AddDiscussionAnswerRelationship
     public function getModelRelationship(GetModelRelationship $event)
     {
         if ($event->isRelationship(Discussion::class, 'flagrowMasonAnswers')) {
-            return $event->model->belongsToMany(Answer::class, 'flagrow_mason_discussion_answer', 'discussion_id', 'answer_id', 'flagrowMasonAnswers')->withTimestamps();
+            return $event->model->belongsToMany(Answer::class, 'flagrow_mason_discussion_answer', 'discussion_id', 'answer_id', 'flagrowMasonAnswers')
+                ->withTimestamps()
+                ->whereHas('field', function ($query) {
+                    // Only load answers to fields that have not been deleted
+                    $query->whereNull('deleted_at');
+                });
         }
     }
 
