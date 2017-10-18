@@ -1,14 +1,13 @@
 import {extend} from 'flarum/extend';
-import app from 'flarum/app';
 import DiscussionComposer from 'flarum/components/DiscussionComposer';
-import DiscussionFields from 'flagrow/mason/components/DiscussionFields';
+import FieldsEditor from 'flagrow/mason/components/FieldsEditor';
 
 export default function () {
     DiscussionComposer.prototype.flagrowMasonAnswers = [];
 
     extend(DiscussionComposer.prototype, 'headerItems', function (items) {
         // add the Image Upload tab to the admin navigation menu
-        items.add('flagrow-mason-fields', DiscussionFields.component({
+        items.add('flagrow-mason-fields', FieldsEditor.component({
             answers: this.flagrowMasonAnswers,
             onchange: answers => {
                 this.flagrowMasonAnswers = answers;

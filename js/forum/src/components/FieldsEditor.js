@@ -8,7 +8,7 @@ import FieldEditText from 'flagrow/mason/components/FieldEditText';
 import FieldEditTags from 'flagrow/mason/components/FieldEditTags';
 import FieldGrid from 'flagrow/mason/components/FieldGrid';
 
-export default class DiscussionFields extends Component {
+export default class FieldsEditor extends Component {
     init() {
         this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
 

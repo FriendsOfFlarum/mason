@@ -1,7 +1,7 @@
 import {extend} from 'flarum/extend';
 import app from 'flarum/app';
 import DiscussionHero from 'flarum/components/DiscussionHero';
-import PostFields from 'flagrow/mason/components/PostFields';
+import FieldsViewer from 'flagrow/mason/components/FieldsViewer';
 
 export default function () {
     extend(DiscussionHero.prototype, 'items', function (items) {
@@ -9,7 +9,7 @@ export default function () {
             return;
         }
 
-        items.add('flagrow-mason-fields', PostFields.component({
+        items.add('flagrow-mason-fields', FieldsViewer.component({
             discussion: this.props.discussion,
         }));
     });

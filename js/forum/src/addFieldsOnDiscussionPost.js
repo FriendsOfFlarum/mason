@@ -1,7 +1,7 @@
 import {extend} from 'flarum/extend';
 import app from 'flarum/app';
 import CommentPost from 'flarum/components/CommentPost';
-import PostFields from 'flagrow/mason/components/PostFields';
+import FieldsViewer from 'flagrow/mason/components/FieldsViewer';
 
 function showFieldsOnPost(post) {
     // We only add fields to the first post, and only if fields are not displayed in the hero
@@ -34,7 +34,7 @@ export default function () {
 
         // Insert the new content just after the header
         // or at the very beginning if the header is not found
-        content.splice(postHeaderIndex === -1 ? 0 : postHeaderIndex + 1, 0, PostFields.component({
+        content.splice(postHeaderIndex === -1 ? 0 : postHeaderIndex + 1, 0, FieldsViewer.component({
             discussion: this.props.post.discussion(),
         }));
     });
