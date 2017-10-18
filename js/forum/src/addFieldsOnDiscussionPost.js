@@ -1,11 +1,12 @@
 import {extend} from 'flarum/extend';
+import app from 'flarum/app';
 import CommentPost from 'flarum/components/CommentPost';
 import PostFields from 'flagrow/mason/components/PostFields';
 
 function showFieldsOnPost(post) {
-    // We only add fields to the first post
+    // We only add fields to the first post, and only if fields are not displayed in the hero
     // TODO: what if the first post is deleted ?
-    return post.number() === 1
+    return post.number() === 1 && !app.forum.attribute('flagrow.mason.fields-in-hero');
 }
 
 export default function () {

@@ -25,7 +25,7 @@ export default class DiscussionFields extends Component {
     }
 
     view() {
-        return m('form.Mason-Fields', {
+        return m('form.Mason-Fields.Mason-Fields--editor', {
             onsubmit(event) {
                 event.preventDefault();
             },

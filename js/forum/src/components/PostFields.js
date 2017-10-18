@@ -13,7 +13,7 @@ export default class PostFields extends Component {
     }
 
     view() {
-        return m('.Mason-Fields', [
+        return m('.Mason-Fields.Mason-Fields--viewer', [
             (this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
                 className: 'Button Mason-Fields--edit',
                 children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),

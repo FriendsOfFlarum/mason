@@ -44,16 +44,48 @@ System.register('flagrow/mason/addComposerFields', ['flarum/extend', 'flarum/app
 });;
 'use strict';
 
-System.register('flagrow/mason/addFieldsOnDiscussion', ['flarum/extend', 'flarum/components/CommentPost', 'flagrow/mason/components/PostFields'], function (_export, _context) {
+System.register('flagrow/mason/addFieldsOnDiscussionHero', ['flarum/extend', 'flarum/app', 'flarum/components/DiscussionHero', 'flagrow/mason/components/PostFields'], function (_export, _context) {
     "use strict";
 
-    var extend, CommentPost, PostFields;
+    var extend, app, DiscussionHero, PostFields;
+
+    _export('default', function () {
+        extend(DiscussionHero.prototype, 'items', function (items) {
+            if (!app.forum.attribute('flagrow.mason.fields-in-hero')) {
+                return;
+            }
+
+            items.add('flagrow-mason-fields', PostFields.component({
+                discussion: this.props.discussion
+            }));
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            extend = _flarumExtend.extend;
+        }, function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponentsDiscussionHero) {
+            DiscussionHero = _flarumComponentsDiscussionHero.default;
+        }, function (_flagrowMasonComponentsPostFields) {
+            PostFields = _flagrowMasonComponentsPostFields.default;
+        }],
+        execute: function () {}
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/addFieldsOnDiscussionPost', ['flarum/extend', 'flarum/app', 'flarum/components/CommentPost', 'flagrow/mason/components/PostFields'], function (_export, _context) {
+    "use strict";
+
+    var extend, app, CommentPost, PostFields;
 
 
     function showFieldsOnPost(post) {
-        // We only add fields to the first post
+        // We only add fields to the first post, and only if fields are not displayed in the hero
         // TODO: what if the first post is deleted ?
-        return post.number() === 1;
+        return post.number() === 1 && !app.forum.attribute('flagrow.mason.fields-in-hero');
     }
 
     _export('default', function () {
@@ -94,6 +126,8 @@ System.register('flagrow/mason/addFieldsOnDiscussion', ['flarum/extend', 'flarum
     return {
         setters: [function (_flarumExtend) {
             extend = _flarumExtend.extend;
+        }, function (_flarumApp) {
+            app = _flarumApp.default;
         }, function (_flarumComponentsCommentPost) {
             CommentPost = _flarumComponentsCommentPost.default;
         }, function (_flagrowMasonComponentsPostFields) {
@@ -189,7 +223,7 @@ System.register('flagrow/mason/components/DiscussionFields', ['flarum/app', 'fla
                     value: function view() {
                         var _this3 = this;
 
-                        return m('form.Mason-Fields', {
+                        return m('form.Mason-Fields.Mason-Fields--editor', {
                             onsubmit: function onsubmit(event) {
                                 event.preventDefault();
                             }
@@ -807,7 +841,7 @@ System.register('flagrow/mason/components/PostFields', ['flarum/app', 'flarum/he
                     value: function view() {
                         var _this2 = this;
 
-                        return m('.Mason-Fields', [this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
+                        return m('.Mason-Fields.Mason-Fields--viewer', [this.discussion.canUpdateFlagrowMasonAnswers() ? Button.component({
                             className: 'Button Mason-Fields--edit',
                             children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
                             icon: 'pencil',
@@ -888,10 +922,10 @@ System.register('flagrow/mason/helpers/sortByAttribute', [], function (_export, 
 });;
 'use strict';
 
-System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/models/Discussion', 'flagrow/mason/models/Answer', 'flagrow/mason/models/Field', 'flagrow/mason/addComposerFields', 'flagrow/mason/addFieldUpdateControl', 'flagrow/mason/addFieldsOnDiscussion', 'flagrow/mason/patchModelIdentifier'], function (_export, _context) {
+System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/models/Discussion', 'flagrow/mason/models/Answer', 'flagrow/mason/models/Field', 'flagrow/mason/addComposerFields', 'flagrow/mason/addFieldUpdateControl', 'flagrow/mason/addFieldsOnDiscussionHero', 'flagrow/mason/addFieldsOnDiscussionPost', 'flagrow/mason/patchModelIdentifier'], function (_export, _context) {
     "use strict";
 
-    var app, Model, Discussion, Answer, Field, addComposerFields, addFieldUpdateControl, addFieldsOnDiscussion, patchModelIdentifier;
+    var app, Model, Discussion, Answer, Field, addComposerFields, addFieldUpdateControl, addFieldsOnDiscussionHero, addFieldsOnDiscussionPost, patchModelIdentifier;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -907,8 +941,10 @@ System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/mod
             addComposerFields = _flagrowMasonAddComposerFields.default;
         }, function (_flagrowMasonAddFieldUpdateControl) {
             addFieldUpdateControl = _flagrowMasonAddFieldUpdateControl.default;
-        }, function (_flagrowMasonAddFieldsOnDiscussion) {
-            addFieldsOnDiscussion = _flagrowMasonAddFieldsOnDiscussion.default;
+        }, function (_flagrowMasonAddFieldsOnDiscussionHero) {
+            addFieldsOnDiscussionHero = _flagrowMasonAddFieldsOnDiscussionHero.default;
+        }, function (_flagrowMasonAddFieldsOnDiscussionPost) {
+            addFieldsOnDiscussionPost = _flagrowMasonAddFieldsOnDiscussionPost.default;
         }, function (_flagrowMasonPatchModelIdentifier) {
             patchModelIdentifier = _flagrowMasonPatchModelIdentifier.default;
         }],
@@ -922,7 +958,8 @@ System.register('flagrow/mason/main', ['flarum/app', 'flarum/Model', 'flarum/mod
                 Discussion.prototype.canUpdateFlagrowMasonAnswers = Model.attribute('canUpdateFlagrowMasonAnswers');
 
                 addComposerFields();
-                addFieldsOnDiscussion();
+                addFieldsOnDiscussionHero();
+                addFieldsOnDiscussionPost();
                 addFieldUpdateControl();
                 patchModelIdentifier();
             });
