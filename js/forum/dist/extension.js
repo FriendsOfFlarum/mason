@@ -909,8 +909,19 @@ System.register('flagrow/mason/components/FieldsViewer', ['flarum/app', 'flarum/
                 }, {
                     key: 'view',
                     value: function view() {
-                        return m('.Mason-Fields.Mason-Fields--viewer', [this.headItems().toArray(), FieldGrid.component({
-                            items: this.fiedsItems().toArray()
+                        var head = this.headItems().toArray();
+                        var fields = this.fieldsItems().toArray();
+
+                        // If all fields are hidden
+                        // And either no controls are shown or the setting hides them
+                        // We don't show the viewer
+                        if (!fields.length && (!head.length || app.forum.attribute('flagrow.mason.hide-empty-fields-section'))) {
+                            // We need to return an actual dom element or Flarum does not like it
+                            return m('div');
+                        }
+
+                        return m('.Mason-Fields.Mason-Fields--viewer', [head, FieldGrid.component({
+                            items: fields
                         })]);
                     }
                 }, {
@@ -940,8 +951,8 @@ System.register('flagrow/mason/components/FieldsViewer', ['flarum/app', 'flarum/
                         return items;
                     }
                 }, {
-                    key: 'fiedsItems',
-                    value: function fiedsItems() {
+                    key: 'fieldsItems',
+                    value: function fieldsItems() {
                         var _this3 = this;
 
                         var items = new ItemList();

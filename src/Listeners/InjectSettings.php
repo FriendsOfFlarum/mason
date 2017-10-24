@@ -31,6 +31,7 @@ class InjectSettings
             $event->attributes['flagrow.mason.column-count'] = (int) $this->settings->get('flagrow.mason.column-count', 1);
             $event->attributes['flagrow.mason.labels-as-placeholders'] = (bool) $this->settings->get('flagrow.mason.labels-as-placeholders', false);
             $event->attributes['flagrow.mason.fields-in-hero'] = (bool) $this->settings->get('flagrow.mason.fields-in-hero', false);
+            $event->attributes['flagrow.mason.hide-empty-fields-section'] = (bool) $this->settings->get('flagrow.mason.hide-empty-fields-section', false);
             $event->attributes['flagrow.mason.tags-as-fields'] = (bool) $this->settings->get('flagrow.mason.tags-as-fields', false);
             $event->attributes['flagrow.mason.tags-field-name'] = $this->settings->get('flagrow.mason.tags-field-name', '');
         }

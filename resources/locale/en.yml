@@ -85,6 +85,10 @@ flagrow-mason:
                 Fields will use less vertical space and icons won't be shown anymore.
                 Keep in mind this might have an impact on usability, in particular when editing existing fields.
             fields-in-hero: Show fields in the discussion banner instead of the first post
+            hide-empty-fields-section: Hide title and controls when all fields are empty and hidden
+            hide-empty-fields-section-help: >
+                By default if the user can edit fields or a title has been set, the section will always be shown, even if all fields are hidden.
+                With this option enabled, the section will be hidden and the "edit fields" button will only be available inside the "reply" dropdown menu when all fields are blank.
             tags-as-field: Show tags selector as a field
             tags-as-field-help: >
                 This will hide the default tags selector and show a custom dropdown field instead.

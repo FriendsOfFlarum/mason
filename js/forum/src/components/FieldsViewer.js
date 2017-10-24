@@ -14,10 +14,21 @@ export default class FieldsViewer extends Component {
     }
 
     view() {
+        const head = this.headItems().toArray();
+        const fields = this.fieldsItems().toArray();
+
+        // If all fields are hidden
+        // And either no controls are shown or the setting hides them
+        // We don't show the viewer
+        if (!fields.length && (!head.length || app.forum.attribute('flagrow.mason.hide-empty-fields-section'))) {
+            // We need to return an actual dom element or Flarum does not like it
+            return m('div');
+        }
+
         return m('.Mason-Fields.Mason-Fields--viewer', [
-            this.headItems().toArray(),
+            head,
             FieldGrid.component({
-                items: this.fiedsItems().toArray(),
+                items: fields,
             }),
         ]);
     }
@@ -43,7 +54,7 @@ export default class FieldsViewer extends Component {
         return items;
     }
 
-    fiedsItems() {
+    fieldsItems() {
         const items = new ItemList();
 
         this.fields.forEach(field => {

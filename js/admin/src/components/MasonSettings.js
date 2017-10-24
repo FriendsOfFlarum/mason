@@ -10,6 +10,7 @@ export default class MasonSettings extends Component {
         this.columnCount = m.prop(app.data.settings['flagrow.mason.column-count'] || 1);
         this.labelsAsPlaceholders = m.prop(app.data.settings['flagrow.mason.labels-as-placeholders'] > 0);
         this.fieldsInHero = m.prop(app.data.settings['flagrow.mason.fields-in-hero'] > 0);
+        this.hideEmptyFieldsSection = m.prop(app.data.settings['flagrow.mason.hide-empty-fields-section'] > 0);
         this.tagsAsFields = m.prop(app.data.settings['flagrow.mason.tags-as-fields'] > 0);
         this.tagsFieldName = m.prop(app.data.settings['flagrow.mason.tags-field-name'] || '');
 
@@ -53,6 +54,14 @@ export default class MasonSettings extends Component {
                     onchange: this.updateSetting.bind(this, this.fieldsInHero, 'flagrow.mason.fields-in-hero'),
                     children: app.translator.trans('flagrow-mason.admin.settings.fields-in-hero'),
                 })),
+            ]),
+            m('.Form-group', [
+                m('label', Switch.component({
+                    state: this.hideEmptyFieldsSection(),
+                    onchange: this.updateSetting.bind(this, this.hideEmptyFieldsSection, 'flagrow.mason.hide-empty-fields-section'),
+                    children: app.translator.trans('flagrow-mason.admin.settings.hide-empty-fields-section'),
+                })),
+                m('.helpText', app.translator.trans('flagrow-mason.admin.settings.hide-empty-fields-section-help')),
             ]),
             m('.Form-group', [
                 m('label', Switch.component({
