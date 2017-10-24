@@ -5,7 +5,8 @@ import Answer from 'flagrow/mason/models/Answer';
 import Field from 'flagrow/mason/models/Field';
 import addComposerFields from 'flagrow/mason/addComposerFields';
 import addFieldUpdateControl from 'flagrow/mason/addFieldUpdateControl';
-import addFieldsOnDiscussion from 'flagrow/mason/addFieldsOnDiscussion';
+import addFieldsOnDiscussionHero from 'flagrow/mason/addFieldsOnDiscussionHero';
+import addFieldsOnDiscussionPost from 'flagrow/mason/addFieldsOnDiscussionPost';
 import patchModelIdentifier from "flagrow/mason/patchModelIdentifier";
 
 app.initializers.add('flagrow-mason', app => {
@@ -16,7 +17,8 @@ app.initializers.add('flagrow-mason', app => {
     Discussion.prototype.canUpdateFlagrowMasonAnswers = Model.attribute('canUpdateFlagrowMasonAnswers');
 
     addComposerFields();
-    addFieldsOnDiscussion();
+    addFieldsOnDiscussionHero();
+    addFieldsOnDiscussionPost();
     addFieldUpdateControl();
     patchModelIdentifier();
 });

@@ -44,13 +44,12 @@ export default class DiscussionFields extends Component {
         // Multiple tags are not supported on this selector
         const currentSelectedChild = this.selectedTags.length ? this.selectedTags.sort(tag => tag.parent() ? -1 : 1)[0].id() : null;
 
-        const required = this.minPrimary > 0 || this.minSecondary > 0;
+        const required = this.fieldRequired();
 
-        return m('.Mason-Field.Form-group', [
-            m('label', [
-                app.forum.attribute('flagrow.mason.tags-field-name') || app.translator.trans('flagrow-mason.forum.tags.tags-label'),
-                (required ? ' *' : null),
-            ]),
+        return m('.Mason-Field.Form-group', {
+            className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
+        }, [
+            m('label', this.fieldLabel()),
             m('span.Select', [
                 m('select.Select-input.FormControl', {
                     onchange: m.withAttr('value', id => {
@@ -72,8 +71,8 @@ export default class DiscussionFields extends Component {
                         value: 'none',
                         selected: this.selectedTags.length === 0,
                         disabled: required,
-                        hidden: required,
-                    }, app.translator.trans('flagrow-mason.forum.answers.' + (required ? 'choose-option' : 'no-option-selected'))),
+                        hidden: this.placeholderHidden(),
+                    }, this.selectPlaceholder()),
                     this.tags.map(
                         tag => {
                             const parent = tag.parent();
@@ -88,5 +87,43 @@ export default class DiscussionFields extends Component {
                 icon('sort', {className: 'Select-caret'}),
             ]),
         ]);
+    }
+
+    fieldRequired() {
+        return this.minPrimary > 0 || this.minSecondary > 0;
+    }
+
+    fieldLabel() {
+        let text = app.forum.attribute('flagrow.mason.tags-field-name') || app.translator.trans('flagrow-mason.forum.tags.tags-label');
+
+        if (this.fieldRequired()) {
+            text += ' *';
+        }
+
+        return text;
+    }
+
+    placeholderHidden() {
+        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+            return false;
+        }
+
+        return this.fieldRequired();
+    }
+
+    selectPlaceholder() {
+        let text = '';
+
+        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+            text += this.fieldLabel() + ' - ';
+        }
+
+        if (this.fieldRequired()) {
+            text += app.translator.trans('flagrow-mason.forum.answers.choose-option');
+        } else {
+            text += app.translator.trans('flagrow-mason.forum.answers.no-option-selected');
+        }
+
+        return text;
     }
 }

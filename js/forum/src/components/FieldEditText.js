@@ -49,6 +49,15 @@ export default class FieldEditText extends Component {
                     this.onchange([answer]);
                 }
             }),
+            placeholder: this.fieldPlaceholder(),
         });
+    }
+
+    fieldPlaceholder() {
+        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+            return this.field.name() + (this.field.required() ? ' *' : '');
+        }
+
+        return '';
     }
 }

@@ -1,9 +1,9 @@
 import app from 'flarum/app';
 import Modal from 'flarum/components/Modal';
 import Button from 'flarum/components/Button';
-import DiscussionFields from 'flagrow/mason/components/DiscussionFields';
+import FieldsEditor from 'flagrow/mason/components/FieldsEditor';
 
-export default class DiscussionFieldsModal extends Modal {
+export default class FieldsEditorModal extends Modal {
     init() {
         super.init();
 
@@ -23,7 +23,7 @@ export default class DiscussionFieldsModal extends Modal {
 
     content() {
         return [
-            m('.Modal-body', DiscussionFields.component({
+            m('.Modal-body', FieldsEditor.component({
                 discussion: this.props.discussion, // Only for the tags feature
                 answers: this.answers,
                 onchange: this.answersChanged.bind(this),
