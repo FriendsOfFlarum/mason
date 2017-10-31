@@ -4,6 +4,7 @@ flagrow-mason:
             edit-answers: Edit fields
         answers-modal:
             edit-title: Edit fields for {title}
+            create-title: Edit fields
             save: Save fields
         post-answers:
             no-answer: No answer
@@ -15,6 +16,10 @@ flagrow-mason:
                 Tag settings are not configured correctly.
                 Allow up to one primary and secondary tags or disable the "Tags as fields" feature.
             tags-label: Tags
+        composer-button:
+            fill-required: Click to fill {count_required} required fields
+            fill-optional: Click to fill {count_optional} optional fields
+            fill-required-and-optional: Click to fill {count_required} required and {count_optional} optional fields
     admin:
         buttons:
             new-field: New field

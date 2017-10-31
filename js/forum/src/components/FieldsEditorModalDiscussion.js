@@ -3,7 +3,7 @@ import Modal from 'flarum/components/Modal';
 import Button from 'flarum/components/Button';
 import FieldsEditor from 'flagrow/mason/components/FieldsEditor';
 
-export default class FieldsEditorModal extends Modal {
+export default class FieldsEditorModalDiscussion extends Modal {
     init() {
         super.init();
 
