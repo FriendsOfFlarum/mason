@@ -1,7 +1,8 @@
+import app from 'flarum/app';
 import {extend} from 'flarum/extend';
 import DiscussionControls from 'flarum/utils/DiscussionControls';
 import Button from 'flarum/components/Button';
-import FieldsEditorModal from 'flagrow/mason/components/FieldsEditorModal';
+import FieldsEditorModalDiscussion from 'flagrow/mason/components/FieldsEditorModalDiscussion';
 
 export default function () {
     extend(DiscussionControls, 'moderationControls', function (items, discussion) {
@@ -9,7 +10,7 @@ export default function () {
             items.add('flagrow-mason-update-answers', Button.component({
                 children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
                 icon: 'tag',
-                onclick: () => app.modal.show(new FieldsEditorModal({discussion})),
+                onclick: () => app.modal.show(new FieldsEditorModalDiscussion({discussion})),
             }));
         }
     });

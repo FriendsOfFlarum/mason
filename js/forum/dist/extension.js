@@ -1,21 +1,37 @@
 'use strict';
 
-System.register('flagrow/mason/addComposerFields', ['flarum/extend', 'flarum/components/DiscussionComposer', 'flagrow/mason/components/FieldsEditor'], function (_export, _context) {
+System.register('flagrow/mason/addComposerFields', ['flarum/app', 'flarum/extend', 'flarum/components/Composer', 'flarum/components/DiscussionComposer', 'flagrow/mason/components/ComposerFields'], function (_export, _context) {
     "use strict";
 
-    var extend, DiscussionComposer, FieldsEditor;
+    var app, extend, Composer, DiscussionComposer, ComposerFields, WINDOW_MOBILE_MAX_WIDTH, COMPOSER_REQUIRED_HEIGHT, FIELDS_LINE_HEIGHT;
+
+
+    function expectedFieldLinesCount() {
+        var fieldsCount = app.store.all('flagrow-mason-field').length;
+
+        if (app.forum.attribute('flagrow.mason.tags-as-fields')) {
+            fieldsCount++;
+        }
+
+        return Math.ceil(fieldsCount / app.forum.attribute('flagrow.mason.column-count'));
+    }
+
+    // The width at which the CSS triggers the change of layout
 
     _export('default', function () {
-        DiscussionComposer.prototype.flagrowMasonAnswers = [];
+        // A Mithril prop is required because otherwise the variable reference isn't properly synced between all sub-components
+        DiscussionComposer.prototype.flagrowMasonAnswers = m.prop([]);
+
+        var composerFieldsViewMode = m.prop(ComposerFields.ViewModeEnum.MODAL);
 
         extend(DiscussionComposer.prototype, 'headerItems', function (items) {
             var _this = this;
 
-            // add the Image Upload tab to the admin navigation menu
-            items.add('flagrow-mason-fields', FieldsEditor.component({
+            items.add('flagrow-mason-fields', ComposerFields.component({
+                viewMode: composerFieldsViewMode,
                 answers: this.flagrowMasonAnswers,
                 onchange: function onchange(answers) {
-                    _this.flagrowMasonAnswers = answers;
+                    _this.flagrowMasonAnswers(answers);
                 },
                 ontagchange: function ontagchange(tags) {
                     _this.tags = tags;
@@ -23,21 +39,47 @@ System.register('flagrow/mason/addComposerFields', ['flarum/extend', 'flarum/com
             }));
         });
 
+        extend(Composer.prototype, 'updateHeight', function () {
+            var height = this.computedHeight();
+
+            var newViewMode = ComposerFields.ViewModeEnum.MODAL;
+
+            var heightWithFields = COMPOSER_REQUIRED_HEIGHT + expectedFieldLinesCount() * FIELDS_LINE_HEIGHT;
+
+            if ($(window).width() > WINDOW_MOBILE_MAX_WIDTH && height > heightWithFields) {
+                newViewMode = ComposerFields.ViewModeEnum.FORM;
+            }
+
+            if (newViewMode !== composerFieldsViewMode()) {
+                composerFieldsViewMode(newViewMode);
+
+                m.redraw();
+            }
+        });
+
         extend(DiscussionComposer.prototype, 'data', function (data) {
             data.relationships = data.relationships || {};
-            data.relationships.flagrowMasonAnswers = this.flagrowMasonAnswers;
+            data.relationships.flagrowMasonAnswers = this.flagrowMasonAnswers();
         });
     });
 
     return {
-        setters: [function (_flarumExtend) {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumExtend) {
             extend = _flarumExtend.extend;
+        }, function (_flarumComponentsComposer) {
+            Composer = _flarumComponentsComposer.default;
         }, function (_flarumComponentsDiscussionComposer) {
             DiscussionComposer = _flarumComponentsDiscussionComposer.default;
-        }, function (_flagrowMasonComponentsFieldsEditor) {
-            FieldsEditor = _flagrowMasonComponentsFieldsEditor.default;
+        }, function (_flagrowMasonComponentsComposerFields) {
+            ComposerFields = _flagrowMasonComponentsComposerFields.default;
         }],
-        execute: function () {}
+        execute: function () {
+            WINDOW_MOBILE_MAX_WIDTH = 767;
+            COMPOSER_REQUIRED_HEIGHT = 300;
+            FIELDS_LINE_HEIGHT = 80;
+        }
     };
 });;
 'use strict';
@@ -136,10 +178,10 @@ System.register('flagrow/mason/addFieldsOnDiscussionPost', ['flarum/extend', 'fl
 });;
 'use strict';
 
-System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum/utils/DiscussionControls', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditorModal'], function (_export, _context) {
+System.register('flagrow/mason/addFieldUpdateControl', ['flarum/app', 'flarum/extend', 'flarum/utils/DiscussionControls', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditorModalDiscussion'], function (_export, _context) {
     "use strict";
 
-    var extend, DiscussionControls, Button, FieldsEditorModal;
+    var app, extend, DiscussionControls, Button, FieldsEditorModalDiscussion;
 
     _export('default', function () {
         extend(DiscussionControls, 'moderationControls', function (items, discussion) {
@@ -148,7 +190,7 @@ System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum
                     children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
                     icon: 'tag',
                     onclick: function onclick() {
-                        return app.modal.show(new FieldsEditorModal({ discussion: discussion }));
+                        return app.modal.show(new FieldsEditorModalDiscussion({ discussion: discussion }));
                     }
                 }));
             }
@@ -156,16 +198,152 @@ System.register('flagrow/mason/addFieldUpdateControl', ['flarum/extend', 'flarum
     });
 
     return {
-        setters: [function (_flarumExtend) {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumExtend) {
             extend = _flarumExtend.extend;
         }, function (_flarumUtilsDiscussionControls) {
             DiscussionControls = _flarumUtilsDiscussionControls.default;
         }, function (_flarumComponentsButton) {
             Button = _flarumComponentsButton.default;
-        }, function (_flagrowMasonComponentsFieldsEditorModal) {
-            FieldsEditorModal = _flagrowMasonComponentsFieldsEditorModal.default;
+        }, function (_flagrowMasonComponentsFieldsEditorModalDiscussion) {
+            FieldsEditorModalDiscussion = _flagrowMasonComponentsFieldsEditorModalDiscussion.default;
         }],
         execute: function () {}
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/ComposerFields', ['flarum/app', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditor', 'flagrow/mason/components/FieldsEditorModalComposer'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, Button, FieldsEditor, FieldsEditorModalComposer, ComposerFields;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flagrowMasonComponentsFieldsEditor) {
+            FieldsEditor = _flagrowMasonComponentsFieldsEditor.default;
+        }, function (_flagrowMasonComponentsFieldsEditorModalComposer) {
+            FieldsEditorModalComposer = _flagrowMasonComponentsFieldsEditorModalComposer.default;
+        }],
+        execute: function () {
+            ComposerFields = function (_Component) {
+                babelHelpers.inherits(ComposerFields, _Component);
+
+                function ComposerFields() {
+                    babelHelpers.classCallCheck(this, ComposerFields);
+                    return babelHelpers.possibleConstructorReturn(this, (ComposerFields.__proto__ || Object.getPrototypeOf(ComposerFields)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(ComposerFields, [{
+                    key: 'init',
+                    value: function init() {
+                        this.fieldsEditorComponent = null;
+                        this.uniqueFieldsKey = 0;
+
+                        this.reloadFormFields();
+
+                        this.requiredFieldsCount = 0;
+                        this.optionalFieldsCount = 0;
+
+                        this.countRequiredAndOptionalFields();
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        if (this.props.viewMode() === ComposerFields.ViewModeEnum.FORM) {
+                            return this.fieldsEditorComponent;
+                        } else {
+                            return Button.component({
+                                icon: 'pencil',
+                                className: 'Button Mason-Composer-Button',
+                                children: app.translator.trans('flagrow-mason.forum.composer-button.fill-' + this.buttonTranslationKey(), {
+                                    count_required: this.requiredFieldsCount,
+                                    count_optional: this.optionalFieldsCount
+                                }),
+                                onclick: function onclick() {
+                                    app.modal.show(new FieldsEditorModalComposer({
+                                        answers: _this2.props.answers(),
+                                        onchange: _this2.onModalAnswerChange.bind(_this2),
+                                        ontagchange: _this2.onModalTagChange.bind(_this2)
+                                    }));
+                                }
+                            });
+                        }
+                    }
+                }, {
+                    key: 'onModalAnswerChange',
+                    value: function onModalAnswerChange(answers) {
+                        this.props.onchange(answers);
+
+                        this.reloadFormFields();
+                    }
+                }, {
+                    key: 'onModalTagChange',
+                    value: function onModalTagChange(tags) {
+                        this.props.ontagchange(tags);
+
+                        this.reloadFormFields();
+                    }
+                }, {
+                    key: 'reloadFormFields',
+                    value: function reloadFormFields() {
+                        this.fieldsEditorComponent = FieldsEditor.component({
+                            key: ++this.uniqueFieldsKey,
+                            answers: this.props.answers(),
+                            onchange: this.props.onchange,
+                            ontagchange: this.props.ontagchange
+                        });
+                    }
+                }, {
+                    key: 'countRequiredAndOptionalFields',
+                    value: function countRequiredAndOptionalFields() {
+                        var _this3 = this;
+
+                        app.store.all('flagrow-mason-field').forEach(function (field) {
+                            if (field.required()) {
+                                _this3.requiredFieldsCount++;
+                            } else {
+                                _this3.optionalFieldsCount++;
+                            }
+                        });
+
+                        if (app.forum.attribute('flagrow.mason.tags-as-fields')) {
+                            if (app.forum.attribute('minPrimaryTags') > 0 || app.forum.attribute('minSecondaryTags') > 0) {
+                                this.requiredFieldsCount++;
+                            } else {
+                                this.optionalFieldsCount++;
+                            }
+                        }
+                    }
+                }, {
+                    key: 'buttonTranslationKey',
+                    value: function buttonTranslationKey() {
+                        if (this.requiredFieldsCount && this.optionalFieldsCount) {
+                            return 'required-and-optional';
+                        } else if (this.requiredFieldsCount) {
+                            return 'required';
+                        }
+
+                        return 'optional';
+                    }
+                }]);
+                return ComposerFields;
+            }(Component);
+
+            ComposerFields.ViewModeEnum = {
+                FORM: 'form',
+                MODAL: 'modal'
+            };
+
+            _export('default', ComposerFields);
+        }
     };
 });;
 'use strict';
@@ -763,10 +941,10 @@ System.register('flagrow/mason/components/FieldsEditor', ['flarum/app', 'flarum/
 });;
 'use strict';
 
-System.register('flagrow/mason/components/FieldsEditorModal', ['flarum/app', 'flarum/components/Modal', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditor'], function (_export, _context) {
+System.register('flagrow/mason/components/FieldsEditorModalComposer', ['flarum/app', 'flarum/components/Modal', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditor'], function (_export, _context) {
     "use strict";
 
-    var app, Modal, Button, FieldsEditor, FieldsEditorModal;
+    var app, Modal, Button, FieldsEditor, FieldsEditorModalComposer;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -778,18 +956,76 @@ System.register('flagrow/mason/components/FieldsEditorModal', ['flarum/app', 'fl
             FieldsEditor = _flagrowMasonComponentsFieldsEditor.default;
         }],
         execute: function () {
-            FieldsEditorModal = function (_Modal) {
-                babelHelpers.inherits(FieldsEditorModal, _Modal);
+            FieldsEditorModalComposer = function (_Modal) {
+                babelHelpers.inherits(FieldsEditorModalComposer, _Modal);
 
-                function FieldsEditorModal() {
-                    babelHelpers.classCallCheck(this, FieldsEditorModal);
-                    return babelHelpers.possibleConstructorReturn(this, (FieldsEditorModal.__proto__ || Object.getPrototypeOf(FieldsEditorModal)).apply(this, arguments));
+                function FieldsEditorModalComposer() {
+                    babelHelpers.classCallCheck(this, FieldsEditorModalComposer);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldsEditorModalComposer.__proto__ || Object.getPrototypeOf(FieldsEditorModalComposer)).apply(this, arguments));
                 }
 
-                babelHelpers.createClass(FieldsEditorModal, [{
+                babelHelpers.createClass(FieldsEditorModalComposer, [{
+                    key: 'title',
+                    value: function title() {
+                        return app.translator.trans('flagrow-mason.forum.answers-modal.create-title');
+                    }
+                }, {
+                    key: 'content',
+                    value: function content() {
+                        return [m('.Modal-body', FieldsEditor.component({
+                            answers: this.props.answers,
+                            onchange: this.props.onchange,
+                            ontagchange: this.props.ontagchange
+                        })), m('.Modal-footer', [Button.component({
+                            className: 'Button Button--primary',
+                            type: 'submit',
+                            children: app.translator.trans('flagrow-mason.forum.answers-modal.save')
+                        })])];
+                    }
+                }, {
+                    key: 'onsubmit',
+                    value: function onsubmit(e) {
+                        e.preventDefault();
+
+                        app.modal.close();
+                    }
+                }]);
+                return FieldsEditorModalComposer;
+            }(Modal);
+
+            _export('default', FieldsEditorModalComposer);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/mason/components/FieldsEditorModalDiscussion', ['flarum/app', 'flarum/components/Modal', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditor'], function (_export, _context) {
+    "use strict";
+
+    var app, Modal, Button, FieldsEditor, FieldsEditorModalDiscussion;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponentsModal) {
+            Modal = _flarumComponentsModal.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flagrowMasonComponentsFieldsEditor) {
+            FieldsEditor = _flagrowMasonComponentsFieldsEditor.default;
+        }],
+        execute: function () {
+            FieldsEditorModalDiscussion = function (_Modal) {
+                babelHelpers.inherits(FieldsEditorModalDiscussion, _Modal);
+
+                function FieldsEditorModalDiscussion() {
+                    babelHelpers.classCallCheck(this, FieldsEditorModalDiscussion);
+                    return babelHelpers.possibleConstructorReturn(this, (FieldsEditorModalDiscussion.__proto__ || Object.getPrototypeOf(FieldsEditorModalDiscussion)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(FieldsEditorModalDiscussion, [{
                     key: 'init',
                     value: function init() {
-                        babelHelpers.get(FieldsEditorModal.prototype.__proto__ || Object.getPrototypeOf(FieldsEditorModal.prototype), 'init', this).call(this);
+                        babelHelpers.get(FieldsEditorModalDiscussion.prototype.__proto__ || Object.getPrototypeOf(FieldsEditorModalDiscussion.prototype), 'init', this).call(this);
 
                         this.answers = this.props.discussion.flagrowMasonAnswers();
                         this.dirty = false;
@@ -860,19 +1096,19 @@ System.register('flagrow/mason/components/FieldsEditorModal', ['flarum/app', 'fl
                         });
                     }
                 }]);
-                return FieldsEditorModal;
+                return FieldsEditorModalDiscussion;
             }(Modal);
 
-            _export('default', FieldsEditorModal);
+            _export('default', FieldsEditorModalDiscussion);
         }
     };
 });;
 'use strict';
 
-System.register('flagrow/mason/components/FieldsViewer', ['flarum/app', 'flarum/helpers/icon', 'flarum/utils/ItemList', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditorModal', 'flagrow/mason/components/FieldGrid', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
+System.register('flagrow/mason/components/FieldsViewer', ['flarum/app', 'flarum/helpers/icon', 'flarum/utils/ItemList', 'flarum/Component', 'flarum/components/Button', 'flagrow/mason/components/FieldsEditorModalDiscussion', 'flagrow/mason/components/FieldGrid', 'flagrow/mason/helpers/sortByAttribute'], function (_export, _context) {
     "use strict";
 
-    var app, icon, ItemList, Component, Button, FieldsEditorModal, FieldGrid, sortByAttribute, FieldsViewer;
+    var app, icon, ItemList, Component, Button, FieldsEditorModalDiscussion, FieldGrid, sortByAttribute, FieldsViewer;
     return {
         setters: [function (_flarumApp) {
             app = _flarumApp.default;
@@ -884,8 +1120,8 @@ System.register('flagrow/mason/components/FieldsViewer', ['flarum/app', 'flarum/
             Component = _flarumComponent.default;
         }, function (_flarumComponentsButton) {
             Button = _flarumComponentsButton.default;
-        }, function (_flagrowMasonComponentsFieldsEditorModal) {
-            FieldsEditorModal = _flagrowMasonComponentsFieldsEditorModal.default;
+        }, function (_flagrowMasonComponentsFieldsEditorModalDiscussion) {
+            FieldsEditorModalDiscussion = _flagrowMasonComponentsFieldsEditorModalDiscussion.default;
         }, function (_flagrowMasonComponentsFieldGrid) {
             FieldGrid = _flagrowMasonComponentsFieldGrid.default;
         }, function (_flagrowMasonHelpersSortByAttribute) {
@@ -937,7 +1173,7 @@ System.register('flagrow/mason/components/FieldsViewer', ['flarum/app', 'flarum/
                                 children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
                                 icon: 'pencil',
                                 onclick: function onclick() {
-                                    return app.modal.show(new FieldsEditorModal({
+                                    return app.modal.show(new FieldsEditorModalDiscussion({
                                         discussion: _this2.discussion
                                     }));
                                 }

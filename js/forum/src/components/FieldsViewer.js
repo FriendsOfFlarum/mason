@@ -3,7 +3,7 @@ import icon from 'flarum/helpers/icon';
 import ItemList from 'flarum/utils/ItemList';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
-import FieldsEditorModal from 'flagrow/mason/components/FieldsEditorModal';
+import FieldsEditorModalDiscussion from 'flagrow/mason/components/FieldsEditorModalDiscussion';
 import FieldGrid from 'flagrow/mason/components/FieldGrid';
 import sortByAttribute from 'flagrow/mason/helpers/sortByAttribute';
 
@@ -41,7 +41,7 @@ export default class FieldsViewer extends Component {
                 className: 'Button Mason-Fields--edit',
                 children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
                 icon: 'pencil',
-                onclick: () => app.modal.show(new FieldsEditorModal({
+                onclick: () => app.modal.show(new FieldsEditorModalDiscussion({
                     discussion: this.discussion,
                 })),
             }));
