@@ -6,7 +6,6 @@ export default function () {
     DiscussionComposer.prototype.flagrowMasonAnswers = [];
 
     extend(DiscussionComposer.prototype, 'headerItems', function (items) {
-        // add the Image Upload tab to the admin navigation menu
         items.add('flagrow-mason-fields', FieldsEditor.component({
             answers: this.flagrowMasonAnswers,
             onchange: answers => {
