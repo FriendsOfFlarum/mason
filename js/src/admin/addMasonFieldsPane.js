@@ -18,7 +18,7 @@ export default function () {
         // add the Image Upload tab to the admin navigation menu
         items.add('flagrow-mason-fields', AdminLinkButton.component({
             href: app.route('flagrow-mason-fields'),
-            icon: 'check-square',
+            icon: 'fas fa-dungeon',
             children: 'Mason',
             description: app.translator.trans('flagrow-mason.admin.menu.description'),
         }));

@@ -157,7 +157,7 @@ __webpack_require__.r(__webpack_exports__);
     // add the Image Upload tab to the admin navigation menu
     items.add('flagrow-mason-fields', flarum_components_AdminLinkButton__WEBPACK_IMPORTED_MODULE_3___default.a.component({
       href: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.route('flagrow-mason-fields'),
-      icon: 'check-square',
+      icon: 'fas fa-dungeon',
       children: 'Mason',
       description: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.menu.description')
     }));

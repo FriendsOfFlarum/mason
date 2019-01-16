@@ -28,7 +28,7 @@
         "flarum-extension": {
             "title": "Mason",
             "icon": {
-                "name": "fas fa-igloo",
+                "name": "fas fa-dungeon",
                 "backgroundColor": "#f4f4f4",
                 "color": "#5f4bb6"
             }
