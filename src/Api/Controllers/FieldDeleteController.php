@@ -4,7 +4,7 @@ namespace Flagrow\Mason\Api\Controllers;
 
 use Flagrow\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractDeleteController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 

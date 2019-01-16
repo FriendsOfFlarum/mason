@@ -2,7 +2,7 @@
 
 namespace Flagrow\Mason\Validators;
 
-use Flarum\Core\Validator\AbstractValidator;
+use Flarum\Foundation\AbstractValidator;
 
 class AnswerValidator extends AbstractValidator
 {

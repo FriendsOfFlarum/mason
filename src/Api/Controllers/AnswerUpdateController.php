@@ -5,13 +5,13 @@ namespace Flagrow\Mason\Api\Controllers;
 use Flagrow\Mason\Api\Serializers\AnswerSerializer;
 use Flagrow\Mason\Repositories\AnswerRepository;
 use Flagrow\Mason\Repositories\FieldRepository;
-use Flarum\Api\Controller\AbstractResourceController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractShowController;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class AnswerUpdateController extends AbstractResourceController
+class AnswerUpdateController extends AbstractShowController
 {
     use AssertPermissionTrait;
 

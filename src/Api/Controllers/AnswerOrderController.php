@@ -6,13 +6,13 @@ use Flagrow\Mason\Api\Serializers\FieldSerializer;
 use Flagrow\Mason\Repositories\AnswerRepository;
 use Flagrow\Mason\Repositories\FieldRepository;
 use Flagrow\Mason\Validators\OrderValidator;
-use Flarum\Api\Controller\AbstractResourceController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractShowController;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class AnswerOrderController extends AbstractResourceController
+class AnswerOrderController extends AbstractShowController
 {
     use AssertPermissionTrait;
 

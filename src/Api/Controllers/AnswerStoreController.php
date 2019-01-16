@@ -6,7 +6,7 @@ use Flagrow\Mason\Api\Serializers\FieldSerializer;
 use Flagrow\Mason\Repositories\AnswerRepository;
 use Flagrow\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractCreateController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;

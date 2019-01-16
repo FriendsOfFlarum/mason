@@ -5,11 +5,12 @@ namespace Flagrow\Mason\Api\Controllers;
 use Flagrow\Mason\Api\Serializers\FieldSerializer;
 use Flagrow\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractCollectionController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractListController;
+use Flarum\User\AssertPermissionTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class FieldIndexController extends AbstractCollectionController
+class FieldIndexController extends AbstractListController
 {
     use AssertPermissionTrait;
 

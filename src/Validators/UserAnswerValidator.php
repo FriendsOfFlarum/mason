@@ -3,7 +3,7 @@
 namespace Flagrow\Mason\Validators;
 
 use Flagrow\Mason\Field;
-use Flarum\Core\Validator\AbstractValidator;
+use Flarum\Foundation\AbstractValidator;
 
 class UserAnswerValidator extends AbstractValidator
 {

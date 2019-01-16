@@ -4,13 +4,13 @@ namespace Flagrow\Mason\Api\Controllers;
 
 use Flagrow\Mason\Api\Serializers\FieldSerializer;
 use Flagrow\Mason\Repositories\FieldRepository;
-use Flarum\Api\Controller\AbstractResourceController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractShowController;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class FieldUpdateController extends AbstractResourceController
+class FieldUpdateController extends AbstractShowController
 {
     use AssertPermissionTrait;
 
