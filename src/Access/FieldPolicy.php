@@ -3,8 +3,8 @@
 namespace Flagrow\Mason\Access;
 
 use Flagrow\Mason\Field;
-use Flarum\Core\Access\AbstractPolicy;
-use Flarum\Core\User;
+use Flarum\User\AbstractPolicy;
+use Flarum\User\User;
 
 class FieldPolicy extends AbstractPolicy
 {

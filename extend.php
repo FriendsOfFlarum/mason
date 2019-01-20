@@ -4,6 +4,7 @@ namespace Flagrow\Mason;
 
 use Flagrow\Mason\Extend\DiscussionAttributes;
 use Flagrow\Mason\Extend\ForumAttributes;
+use Flagrow\Mason\Extend\Policies;
 use Flarum\Extend;
 
 return [
@@ -28,5 +29,6 @@ return [
         ->delete('/flagrow/mason/answers/{id:[0-9]+}', 'flagrow.mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
     (new Extend\Locales(__DIR__.'/resources/locale')),
     new ForumAttributes,
-    new DiscussionAttributes
+    new DiscussionAttributes,
+    new Policies,
 ];

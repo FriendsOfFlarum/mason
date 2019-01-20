@@ -2,9 +2,9 @@
 
 namespace Flagrow\Mason\Access;
 
-use Flarum\Core\Access\AbstractPolicy;
-use Flarum\Core\Discussion;
-use Flarum\Core\User;
+use Flarum\Discussion\Discussion;
+use Flarum\User\AbstractPolicy;
+use Flarum\User\User;
 
 class DiscussionPolicy extends AbstractPolicy
 {
@@ -16,7 +16,7 @@ class DiscussionPolicy extends AbstractPolicy
             return true;
         }
 
-        if ($actor->can('flagrow.mason.update-own-fields') && $discussion->start_user_id == $actor->id) {
+        if ($actor->can('flagrow.mason.update-own-fields') && $discussion->user_id == $actor->id) {
             return true;
         }
 
