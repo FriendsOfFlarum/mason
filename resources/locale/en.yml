@@ -57,8 +57,8 @@ flagrow-mason:
             icon: Icon
             icon-help: >
                 Shows an icon in front of values entered by the user. For a reference of
-                available icons, check the <a>FontAwesome website</a>. Use "info" without
-                the "fa-" prefix.
+                available icons, check the <a>FontAwesome website</a>.
+                Use the full icon class name including prefix, for example "fas fa-bolt".
             icon-preview: "preview: {preview}"
             save-field-for-answers: Save the field to add answers
             is_suggested: Suggest answer to users

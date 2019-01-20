@@ -184,7 +184,7 @@ __webpack_require__.r(__webpack_exports__);
     if (discussion.canUpdateFlagrowMasonAnswers()) {
       items.add('flagrow-mason-update-answers', flarum_components_Button__WEBPACK_IMPORTED_MODULE_2___default.a.component({
         children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
-        icon: 'tag',
+        icon: 'fas fa-tag',
         onclick: function onclick() {
           return app.modal.show(new _components_FieldsEditorModal__WEBPACK_IMPORTED_MODULE_3__["default"]({
             discussion: discussion
@@ -391,7 +391,7 @@ function (_Component) {
         value: answer.id(),
         selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1
       }, answer.content());
-    })]), flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('sort', {
+    })]), flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-caret-down', {
       className: 'Select-caret'
     })]);
   };
@@ -554,7 +554,7 @@ function (_Component) {
         value: tag.id(),
         selected: tag.id() === currentSelectedChild
       }, (parent ? parent.name() + ' | ' : '') + tag.name());
-    })]), flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('sort', {
+    })]), flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-caret-down', {
       className: 'Select-caret'
     })])]);
   };
@@ -1079,7 +1079,7 @@ function (_Component) {
       items.add('edit', flarum_components_Button__WEBPACK_IMPORTED_MODULE_5___default.a.component({
         className: 'Button Mason-Fields--edit',
         children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
-        icon: 'pencil',
+        icon: 'fas fa-pen',
         onclick: function onclick() {
           return flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.modal.show(new _FieldsEditorModal__WEBPACK_IMPORTED_MODULE_6__["default"]({
             discussion: _this.discussion

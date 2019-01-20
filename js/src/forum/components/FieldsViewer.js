@@ -40,7 +40,7 @@ export default class FieldsViewer extends Component {
             items.add('edit', Button.component({
                 className: 'Button Mason-Fields--edit',
                 children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
-                icon: 'pencil',
+                icon: 'fas fa-pen',
                 onclick: () => app.modal.show(new FieldsEditorModal({
                     discussion: this.discussion,
                 })),

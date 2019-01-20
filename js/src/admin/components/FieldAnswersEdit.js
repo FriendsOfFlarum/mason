@@ -71,7 +71,7 @@ export default class FieldAnswersEdit extends Component {
                         count: userAnswers.length,
                     })),
                     m('div', [
-                        icon(this.showUserAnswers ? 'chevron-up' : 'chevron-down'),
+                        icon('fas fa-chevron-' + (this.showUserAnswers ? 'up' : 'down')),
                     ]),
                 ]),
                 // The list of user answers can't be re-ordered

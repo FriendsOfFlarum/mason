@@ -5,7 +5,7 @@ import PermissionGrid from 'flarum/components/PermissionGrid';
 export default function () {
     extend(PermissionGrid.prototype, 'viewItems', items => {
         items.add('flagrow-mason-update-own-fields', {
-            icon: 'check-square',
+            icon: 'fas fa-dungeon',
             label: app.translator.trans('flagrow-mason.admin.permissions.update-own-fields'),
             permission: 'flagrow.mason.update-own-fields',
         });
@@ -13,7 +13,7 @@ export default function () {
 
     extend(PermissionGrid.prototype, 'viewItems', items => {
         items.add('flagrow-mason-update-other-fields', {
-            icon: 'check-square',
+            icon: 'fas fa-dungeon',
             label: app.translator.trans('flagrow-mason.admin.permissions.update-other-fields'),
             permission: 'flagrow.mason.update-other-fields',
             allowGuest: true,
@@ -22,7 +22,7 @@ export default function () {
 
     extend(PermissionGrid.prototype, 'viewItems', items => {
         items.add('flagrow-mason-skip-required-fields', {
-            icon: 'check-square',
+            icon: 'fas fa-dungeon',
             label: app.translator.trans('flagrow-mason.admin.permissions.skip-required-fields'),
             permission: 'flagrow.mason.skip-required-fields',
         });

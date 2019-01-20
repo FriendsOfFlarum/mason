@@ -60,7 +60,7 @@ export default class FieldEditDropdown extends Component {
                     }, answer.content())
                 ),
             ]),
-            icon('sort', {className: 'Select-caret'}),
+            icon('fas fa-caret-down', {className: 'Select-caret'}),
         ]);
     }
 

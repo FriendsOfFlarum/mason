@@ -29,7 +29,7 @@ export default class FieldEdit extends Component {
             }, [
                 this.answer.content(),
                 ' ',
-                icon('pencil'),
+                icon('fas fa-pen'),
             ]),
             Switch.component({
                 state: this.answer.is_suggested(),

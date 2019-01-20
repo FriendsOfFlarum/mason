@@ -84,7 +84,7 @@ export default class DiscussionFields extends Component {
                         }
                     ),
                 ]),
-                icon('sort', {className: 'Select-caret'}),
+                icon('fas fa-caret-down', {className: 'Select-caret'}),
             ]),
         ]);
     }

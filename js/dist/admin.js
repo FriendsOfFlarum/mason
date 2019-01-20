@@ -187,14 +187,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'viewItems', function (items) {
     items.add('flagrow-mason-update-own-fields', {
-      icon: 'check-square',
+      icon: 'fas fa-dungeon',
       label: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.permissions.update-own-fields'),
       permission: 'flagrow.mason.update-own-fields'
     });
   });
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'viewItems', function (items) {
     items.add('flagrow-mason-update-other-fields', {
-      icon: 'check-square',
+      icon: 'fas fa-dungeon',
       label: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.permissions.update-other-fields'),
       permission: 'flagrow.mason.update-other-fields',
       allowGuest: true
@@ -202,7 +202,7 @@ __webpack_require__.r(__webpack_exports__);
   });
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'viewItems', function (items) {
     items.add('flagrow-mason-skip-required-fields', {
-      icon: 'check-square',
+      icon: 'fas fa-dungeon',
       label: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.permissions.skip-required-fields'),
       permission: 'flagrow.mason.skip-required-fields'
     });
@@ -268,7 +268,7 @@ function (_Component) {
           _this.updateAttribute('content', newContent);
         }
       }
-    }, [this.answer.content(), ' ', flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('pencil')]), flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5___default.a.component({
+    }, [this.answer.content(), ' ', flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-pen')]), flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5___default.a.component({
       state: this.answer.is_suggested(),
       onchange: function onchange(value) {
         _this.updateAttribute('is_suggested', value); // Save right away, because updating the model with immediately trigger a redraw of the UI
@@ -441,7 +441,7 @@ function (_Component) {
       }
     }, [m('.Mason-Box-Header-Title', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.buttons.show-user-answers', {
       count: userAnswers.length
-    })), m('div', [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()(this.showUserAnswers ? 'chevron-up' : 'chevron-down')])]), // The list of user answers can't be re-ordered
+    })), m('div', [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-chevron-' + (this.showUserAnswers ? 'up' : 'down'))])]), // The list of user answers can't be re-ordered
     this.showUserAnswers ? m('.Mason-Container', Object(_lib_helpers_sortByAttribute__WEBPACK_IMPORTED_MODULE_6__["default"])(userAnswers, 'content').map(function (answer) {
       return m('div', {
         key: answer.id()
@@ -590,7 +590,7 @@ function (_Component) {
       onclick: function onclick() {
         _this.toggleFields = !_this.toggleFields;
       }
-    }, [m('.Mason-Box-Header-Title', this.boxTitle()), m('div', [this.field.exists ? [flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.buttons.edit-field'), ' '] : null, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()(this.toggleFields ? 'chevron-up' : 'chevron-down')])]), this.toggleFields ? this.viewFields() : null]);
+    }, [m('.Mason-Box-Header-Title', this.boxTitle()), m('div', [this.field.exists ? [flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.buttons.edit-field'), ' '] : null, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-chevron-' + (this.toggleFields ? 'up' : 'down'))])]), this.toggleFields ? this.viewFields() : null]);
   };
 
   _proto.viewFields = function viewFields() {
@@ -649,7 +649,7 @@ function (_Component) {
       value: this.field.icon(),
       oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon'))
     }), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('flagrow-mason.admin.fields.icon-help', {
-      a: m('a[href=http://fontawesome.io/icons/][_target=blank]')
+      a: m('a[href=https://fontawesome.com/icons?m=free][_target=blank]')
     }))])]), m('.Mason-Box--column', [m('h4', 'Field answers'), m('.Form-group', _FieldAnswersEdit__WEBPACK_IMPORTED_MODULE_6__["default"].component({
       field: this.field
     }))])]), m('li.ButtonGroup', [flarum_components_Button__WEBPACK_IMPORTED_MODULE_4___default.a.component({

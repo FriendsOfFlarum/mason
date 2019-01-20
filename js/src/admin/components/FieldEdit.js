@@ -54,7 +54,7 @@ export default class FieldEdit extends Component {
                         app.translator.trans('flagrow-mason.admin.buttons.edit-field'),
                         ' ',
                     ] : null),
-                    icon(this.toggleFields ? 'chevron-up' : 'chevron-down'),
+                    icon('fas fa-chevron-' + (this.toggleFields ? 'up' : 'down')),
                 ]),
             ]),
             (this.toggleFields ? this.viewFields() : null),
@@ -156,7 +156,7 @@ export default class FieldEdit extends Component {
                             oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon')),
                         }),
                         m('.helpText', app.translator.trans('flagrow-mason.admin.fields.icon-help', {
-                            a: m('a[href=http://fontawesome.io/icons/][_target=blank]'),
+                            a: m('a[href=https://fontawesome.com/icons?m=free][_target=blank]'),
                         })),
                     ]),
                 ]),
