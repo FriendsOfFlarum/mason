@@ -111,14 +111,13 @@ class DiscussionSaving
         });
     }
 
-
     protected function validateAnswerCount(Field $field, $count)
     {
         $min = $field->min_answers_count;
         $max = $field->max_answers_count;
         $key = 'Answer Count ' . $field->name;
 
-        $validator = $this->validator->make(
+        $validator = $this->validation->make(
             [$key => $count],
             [$key => ['numeric', $min === $max ? "size:$min" : "between:$min,$max"]]
         );
