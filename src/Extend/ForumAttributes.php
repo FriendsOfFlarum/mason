@@ -28,12 +28,12 @@ class ForumAttributes implements ExtenderInterface
     {
         if ($event->isRelationship(ForumSerializer::class, 'flagrowMasonFields')) {
             /**
-             * @var FieldRepository
+             * @var $fields FieldRepository
              */
             $fields = app(FieldRepository::class);
 
             /**
-             * @var FieldSerializer
+             * @var $serializer FieldSerializer
              */
             $serializer = app(FieldSerializer::class);
 
@@ -51,9 +51,12 @@ class ForumAttributes implements ExtenderInterface
 
     public function attributes(Serializing $event)
     {
-        $settings = app()->make(SettingsRepositoryInterface::class);
-
         if ($event->isSerializer(ForumSerializer::class)) {
+            /**
+             * @var $settings SettingsRepositoryInterface
+             */
+            $settings = app(SettingsRepositoryInterface::class);
+
             $event->attributes['flagrow.mason.fields-section-title'] = $settings->get('flagrow.mason.fields-section-title', '');
             $event->attributes['flagrow.mason.column-count'] = (int) $settings->get('flagrow.mason.column-count', 1);
             $event->attributes['flagrow.mason.labels-as-placeholders'] = (bool) $settings->get('flagrow.mason.labels-as-placeholders', false);
