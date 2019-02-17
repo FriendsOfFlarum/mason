@@ -72,6 +72,10 @@ class DiscussionAttributes implements ExtenderInterface
 
     public function saving(Saving $event)
     {
-        app()->call(DiscussionSaving::class, [$event]);
+        /**
+         * @var $saving DiscussionSaving
+         */
+        $saving = app(DiscussionSaving::class);
+        $saving($event);
     }
 }
