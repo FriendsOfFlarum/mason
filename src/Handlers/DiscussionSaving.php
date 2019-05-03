@@ -42,22 +42,26 @@ class DiscussionSaving
         $hasAnswersData = isset($event->data['relationships']['flagrowMasonAnswers']['data']);
 
         if ($discussion->exists) {
-            if ($hasAnswersData) {
-                if (!$actor->can('updateFlagrowMasonAnswers', $discussion)) {
+            if (!$actor->can('updateFlagrowMasonAnswers', $discussion)) {
+                if (!$hasAnswersData) {
+                    // If we're updating a discussion and no answer data has been given we skip
+                    // Handles cases like discussion renaming
+                    return;
+                } else {
+                    // However if the user is trying but isn't allowed to update fields, we throw a permission error
                     throw new PermissionDeniedException;
                 }
-            } else {
-                // If we're updating a discussion and no answer data has been given we skip
-                // Handles cases like discussion renaming
-                return;
             }
-        } else if (!$actor->can('fillFlagrowMasonAnswers', $discussion)) {
-            if (!$hasAnswersData) {
-                // if no answer data is provided and the user can't fill fields, just skip this handler
-                return;
-            } else {
-                // However if the user wasn't allowed to fill fields and tried to, we throw a permission error
-                throw new PermissionDeniedException;
+
+        } else {
+            if (!$actor->can('fillFlagrowMasonAnswers', $discussion)) {
+                if (!$hasAnswersData) {
+                    // if no answer data is provided and the user can't fill fields, just skip this handler
+                    return;
+                } else {
+                    // However if the user is trying but isn't allowed to fill fields, we throw a permission error
+                    throw new PermissionDeniedException;
+                }
             }
         }
 
