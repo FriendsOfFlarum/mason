@@ -11,22 +11,19 @@ function showFieldsOnPost(post) {
 
 export default function () {
     extend(CommentPost.prototype, 'init', function () {
-        this.subtree.check(
-            () => {
-                if (showFieldsOnPost(this.props.post)) {
-                    // Create a string with all answer ids
-                    // If answers change this string will be different
-                    return this.props.post.discussion().flagrowMasonAnswers().map(answer => answer.id()).join(',');
-                }
+        if (!this.props.post.discussion().canSeeFlagrowMasonAnswers() || !showFieldsOnPost(this.props.post)) {
+            return;
+        }
 
-                // For other posts we always return the same thing
-                return '';
-            }
-        );
+        this.subtree.check(() => {
+            // Create a string with all answer ids
+            // If answers change this string will be different
+            return this.props.post.discussion().flagrowMasonAnswers().map(answer => answer.id()).join(',');
+        });
     });
 
     extend(CommentPost.prototype, 'content', function (content) {
-        if (!showFieldsOnPost(this.props.post)) {
+        if (!this.props.post.discussion().canSeeFlagrowMasonAnswers() || !showFieldsOnPost(this.props.post)) {
             return;
         }
 

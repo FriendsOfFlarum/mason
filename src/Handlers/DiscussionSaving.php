@@ -51,6 +51,14 @@ class DiscussionSaving
                 // Handles cases like discussion renaming
                 return;
             }
+        } else if (!$actor->can('fillFlagrowMasonAnswers', $discussion)) {
+            if (!$hasAnswersData) {
+                // if no answer data is provided and the user can't fill fields, just skip this handler
+                return;
+            } else {
+                // However if the user wasn't allowed to fill fields and tried to, we throw a permission error
+                throw new PermissionDeniedException;
+            }
         }
 
         $newAnswerIds = [];

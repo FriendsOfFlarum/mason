@@ -5,7 +5,7 @@ import FieldsViewer from './components/FieldsViewer';
 
 export default function () {
     extend(DiscussionHero.prototype, 'items', function (items) {
-        if (!app.forum.attribute('flagrow.mason.fields-in-hero')) {
+        if (!this.props.discussion.canSeeFlagrowMasonAnswers() || !app.forum.attribute('flagrow.mason.fields-in-hero')) {
             return;
         }
 

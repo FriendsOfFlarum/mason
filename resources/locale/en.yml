@@ -99,6 +99,10 @@ flagrow-mason:
             settings: Settings
             fields: Fields
         permissions:
-            update-own-fields: Update Mason fields of own discussion
-            update-other-fields: Update Mason fields of any discussion
-            skip-required-fields: Skip required Mason fields
+            mason-heading: Mason
+            see-own-fields: See fields on own existing discussions
+            see-other-fields: See fields on all existing discussions
+            fill-fields: Fill fields on new discussions
+            update-own-fields: Update fields of own discussion
+            update-other-fields: Update fields of any discussion
+            skip-required-fields: Allowed to skip required fields

@@ -66,7 +66,15 @@ class DiscussionAttributes implements ExtenderInterface
     public function attributes(Serializing $event)
     {
         if ($event->isSerializer(DiscussionSerializer::class)) {
+            $canSee = $event->actor->can('seeFlagrowMasonAnswers', $event->model);
+
+            $event->attributes['canSeeFlagrowMasonAnswers'] = $canSee;
             $event->attributes['canUpdateFlagrowMasonAnswers'] = $event->actor->can('updateFlagrowMasonAnswers', $event->model);
+
+            if (!$canSee) {
+                // Will cause a skip of the relationship retrieval
+                $event->model->setRelation('flagrowMasonAnswers', null);
+            }
         }
     }
 
