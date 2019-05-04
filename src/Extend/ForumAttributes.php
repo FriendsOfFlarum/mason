@@ -37,6 +37,9 @@ class ForumAttributes implements ExtenderInterface
             // We first try the permissions the users are most likely to have
             if ($event->actor->can('flagrow.mason.see-other-fields') || $event->actor->can('flagrow.mason.fill-fields') || $event->actor->can('flagrow.mason.see-own-fields')) {
                 $event->data['flagrowMasonFields'] = $fields->all();
+            } else {
+                // Fill empty set. Without this, installs with visible notices will get "Undefined index: flagrowMasonFields"
+                $event->data['flagrowMasonFields'] = [];
             }
         }
     }
