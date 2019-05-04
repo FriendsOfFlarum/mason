@@ -34,50 +34,58 @@ class DiscussionSaving
         $this->answers = $answers;
     }
 
+    /**
+     * @param Saving $event
+     * @throws PermissionDeniedException
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     */
     public function __invoke(Saving $event)
     {
-        $discussion = $event->discussion;
-        $actor = $event->actor;
-
         $hasAnswersData = isset($event->data['relationships']['flagrowMasonAnswers']['data']);
 
-        if ($discussion->exists) {
-            if (!$actor->can('updateFlagrowMasonAnswers', $discussion)) {
-                if (!$hasAnswersData) {
-                    // If we're updating a discussion and no answer data has been given we skip
-                    // Handles cases like discussion renaming
-                    return;
+        if ($event->discussion->exists) { // Discussion update
+            // If we're updating a discussion, we only handle fields update if fields attribute is given
+            // This skips cases like discussion renaming
+            if ($hasAnswersData) {
+                if ($event->actor->can('updateFlagrowMasonAnswers', $event->discussion)) {
+                    $this->fillOrUpdateFields($event);
                 } else {
-                    // However if the user is trying but isn't allowed to update fields, we throw a permission error
                     throw new PermissionDeniedException;
                 }
             }
-
-        } else {
-            if (!$actor->can('fillFlagrowMasonAnswers', $discussion)) {
-                if (!$hasAnswersData) {
-                    // if no answer data is provided and the user can't fill fields, just skip this handler
-                    return;
-                } else {
-                    // However if the user is trying but isn't allowed to fill fields, we throw a permission error
-                    throw new PermissionDeniedException;
-                }
+        } else { // Discussion creation
+            if ($event->actor->can('fillFlagrowMasonAnswers', $event->discussion)) {
+                $this->fillOrUpdateFields($event);
+            } else if ($hasAnswersData) {
+                // Only throw a permission exception if fields data was included in the request
+                // Users not authorized to use the fields should not have a flagrowMasonAnswers relationship at all
+                throw new PermissionDeniedException;
             }
         }
+    }
 
+    /**
+     * @param Saving $event
+     * @throws PermissionDeniedException
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     */
+    protected function fillOrUpdateFields(Saving $event)
+    {
         $newAnswerIds = [];
         $answersPerField = [];
 
-        $answerRelations = $hasAnswersData ? $event->data['relationships']['flagrowMasonAnswers']['data'] : [];
+        $answerRelations = Arr::get($event->data, 'relationships.flagrowMasonAnswers.data', []);
 
         foreach ($answerRelations as $answerRelation) {
             $answer = null;
 
             if ($id = Arr::get($answerRelation, 'id')) {
                 $answer = $this->answers->findOrFail($id);
-            } else if (isset($answerRelation['attributes']['content']) && isset($answerRelation['relationships']['field']['data']['id'])) {
-                $field = $this->fields->findOrFail($answerRelation['relationships']['field']['data']['id']);
-                $content = trim($answerRelation['attributes']['content']);
+            } else if (Arr::has($answerRelation, 'attributes.content') && Arr::has($answerRelation, 'relationships.field.data.id')) {
+                $field = $this->fields->findOrFail(Arr::get($answerRelation, 'relationships.field.data.id'));
+                $content = trim(Arr::get($answerRelation, 'attributes.content'));
 
                 /**
                  * @var $answerValidator UserAnswerValidator
@@ -96,10 +104,10 @@ class DiscussionSaving
 
                 $answer = $this->answers->findOrCreate($field, $content);
             } else {
-                throw new \Exception('Invalid answer payload');
+                throw new ValidationException([], ['flagrowMasonAnswers' => 'Invalid answer payload']);
             }
 
-            if (!$actor->can('addToDiscussion', $answer)) {
+            if (!$event->actor->can('addToDiscussion', $answer)) {
                 throw new PermissionDeniedException;
             }
 
@@ -107,9 +115,9 @@ class DiscussionSaving
             $answersPerField[$answer->field->id] = Arr::get($answersPerField, $answer->field->id, 0) + 1;
         }
 
-        $this->fields->all()->each(function ($field) use ($actor, $answersPerField) {
+        $this->fields->all()->each(function ($field) use ($event, $answersPerField) {
             // If the actor can skip fields, no need to check their number
-            if ($actor->can('skipField', $field)) {
+            if ($event->actor->can('skipField', $field)) {
                 return;
             }
 
@@ -118,11 +126,16 @@ class DiscussionSaving
             $this->validateAnswerCount($field, $count);
         });
 
-        $discussion->afterSave(function ($discussion) use ($newAnswerIds) {
+        $event->discussion->afterSave(function ($discussion) use ($newAnswerIds) {
             $discussion->flagrowMasonAnswers()->sync($newAnswerIds);
         });
     }
 
+    /**
+     * @param Field $field
+     * @param $count
+     * @throws ValidationException
+     */
     protected function validateAnswerCount(Field $field, $count)
     {
         $min = $field->min_answers_count;
