@@ -1,0 +1,108 @@
+flagrow-mason:
+    forum:
+        discussion-controls:
+            edit-answers: Edit fields
+        answers-modal:
+            edit-title: Edit fields for {title}
+            save: Save fields
+        post-answers:
+            no-answer: No answer
+        answers:
+            choose-option: Choose an option
+            no-option-selected: No option selected
+        tags:
+            inadequate-settings: >
+                Tag settings are not configured correctly.
+                Allow up to one primary and secondary tags or disable the "Tags as fields" feature.
+            tags-label: Tags
+    admin:
+        buttons:
+            new-field: New field
+            add-field: Add field
+            save-field: Save field changes
+            delete-field: Delete field
+            edit-field: Click to edit field
+            add-answer: Add answer
+            save-answer: Save answer changes
+            delete-answer: Delete answer
+            show-user-answers: Show non-suggested answers ({count})
+        menu:
+            description: >
+                Configure custom discussion fields.
+        fields:
+            add: Add field {field}
+            edit: Edit field {field}
+            required: Required
+            name: Field name
+            name-help: >
+                The publicly visible (non-translatable) field label.
+            description: Field description
+            description-help: >
+                An optional description to explain the use/need of this field.
+            min_answers_count: Minimum required answers
+            max_answers_count: Maximum allowed answers
+            show_when_empty: Show when empty
+            show_when_empty-help:
+                Whether to show the field on the discussion when it has no answer
+            validation: Validation for user values
+            user_values_allowed: User values allowed
+            user_values_allowed-help: >
+                If enabled, users can add their own values instead of the ones defined by the admin.
+                These values will be checked against the "Validation" setting.
+                If disabled they will only be able to use "suggested" answers.
+            validation-help: >
+                Check the supported <a>Laravel validation rules</a>. Eg:
+                "string|min:5" or "url".
+            enable-user-values-for-validation: Enable "user values" to configure validation rules
+            icon: Icon
+            icon-help: >
+                Shows an icon in front of values entered by the user. For a reference of
+                available icons, check the <a>FontAwesome website</a>.
+                Use the full icon class name including prefix, for example "fas fa-bolt".
+            icon-preview: "preview: {preview}"
+            save-field-for-answers: Save the field to add answers
+            is_suggested: Suggest answer to users
+            new-answer-placeholder: Some text
+        messages:
+            delete-answer-confirmation: >
+                Are you sure you want to delete answer "{content}" ?
+                It will be removed from all discussions that use it.
+                If you want to keep existing answers disable answer suggestion instead.
+                Delete answer ?
+            delete-field-confirmation: >
+                Are you sure you want to delete field "{name}" ?
+                The field and its answers will be removed from all discussions that use them.
+                Delete field ?
+        settings:
+            fields-section-title: Title of the custom fields section
+            fields-section-title-placeholder: By default no title will be shown
+            fields-section-title-help: >
+                Users will see this text above the custom fields in the editor and on the discussion.
+            column-count: Number of columns when showing the fields
+            n-columns: "{count} columns"
+            labels-as-placeholders: Show labels as placeholders in the form
+            labels-as-placeholders-help: >
+                Fields will use less vertical space and icons won't be shown anymore.
+                Keep in mind this might have an impact on usability, in particular when editing existing fields.
+            fields-in-hero: Show fields in the discussion banner instead of the first post
+            hide-empty-fields-section: Hide title and controls when all fields are empty and hidden
+            hide-empty-fields-section-help: >
+                By default if the user can edit fields or a title has been set, the section will always be shown, even if all fields are hidden.
+                With this option enabled, the section will be hidden and the "edit fields" button will only be available inside the "reply" dropdown menu when all fields are blank.
+            tags-as-field: Show tags selector as a field
+            tags-as-field-help: >
+                This will hide the default tags selector and show a custom dropdown field instead.
+                This will only work if you allowed up to one primary and one secondary tag !
+            tags-field-name: Label of the tags field
+            tags-field-name-placeholder: => flagrow-mason.forum.tags.tags-label
+        titles:
+            settings: Settings
+            fields: Fields
+        permissions:
+            mason-heading: Mason
+            see-own-fields: See fields on own existing discussions
+            see-other-fields: See fields on all existing discussions
+            fill-fields: Fill fields on new discussions
+            update-own-fields: Update fields of own discussion
+            update-other-fields: Update fields of any discussion
+skip-required-fields: Allowed to skip required fields
