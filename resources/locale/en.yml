@@ -65,14 +65,14 @@ flagrow-mason:
             new-answer-placeholder: Some text
         messages:
             delete-answer-confirmation: >
-                Are you sure you want to delete answer "{content}" ?
+                Are you sure you want to delete answer "{content}"?
                 It will be removed from all discussions that use it.
                 If you want to keep existing answers disable answer suggestion instead.
-                Delete answer ?
+                Delete answer?
             delete-field-confirmation: >
-                Are you sure you want to delete field "{name}" ?
+                Are you sure you want to delete field "{name}"?
                 The field and its answers will be removed from all discussions that use them.
-                Delete field ?
+                Delete field?
         settings:
             fields-section-title: Title of the custom fields section
             fields-section-title-placeholder: By default no title will be shown
