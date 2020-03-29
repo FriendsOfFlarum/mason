@@ -15,6 +15,8 @@ export default class FieldAnswersEdit extends Component {
     }
 
     config() {
+        let self = this;
+
         sortable('.js-answers-container', {
             handle: '.js-answers-handle',
             items: '.js-answers-data',
