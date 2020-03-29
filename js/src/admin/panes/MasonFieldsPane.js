@@ -2,6 +2,7 @@ import app from 'flarum/app';
 import Component from 'flarum/Component';
 import FieldEdit from './../components/FieldEdit';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
+import sortable from 'html5sortable/dist/html5sortable.es.js';
 import MasonSettings from './../components/MasonSettings';
 
 export default class MasonFieldsPane extends Component {
@@ -16,19 +17,21 @@ export default class MasonFieldsPane extends Component {
     }
 
     config() {
-        this.$('.js-fields-container')
-            .sortable({
-                handle: '.js-field-handle',
-            })
-            .on('sortupdate', () => {
-                const sorting = this.$('.js-field-data')
-                    .map(function () {
-                        return $(this).data('id');
-                    })
-                    .get();
+        let self = this;
 
-                this.updateSort(sorting);
+        sortable('.js-fields-container', {
+            handle: '.js-field-handle',
+            items: '.js-field-data',
+        }).forEach(function(el){
+            $(el).off('sortupdate').on('sortupdate', e => {
+                const sorting = e.detail.destination.items
+                    .map(item => {
+                        return $(item).data('id');
+                    });
+
+                self.updateSort(sorting);
             });
+        });
     }
 
     view() {

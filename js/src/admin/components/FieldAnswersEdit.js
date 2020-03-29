@@ -3,6 +3,7 @@ import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import AnswerEdit from './AnswerEdit';
+import sortable from 'html5sortable/dist/html5sortable.es.js';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 export default class FieldAnswersEdit extends Component {
@@ -14,19 +15,19 @@ export default class FieldAnswersEdit extends Component {
     }
 
     config() {
-        this.$('.js-answers-container')
-            .sortable({
-                handle: '.js-answer-handle',
-            })
-            .on('sortupdate', () => {
-                const sorting = this.$('.js-answer-data')
-                    .map(function () {
-                        return $(this).data('id');
-                    })
-                    .get();
+        sortable('.js-answers-container', {
+            handle: '.js-answers-handle',
+            items: '.js-answers-data',
+        }).forEach(function (el) {
+            $(el).off('sortupdate').on('sortupdate', e => {
+                const sorting = e.detail.destination.items
+                    .map(item => {
+                        return $(item).data('id');
+                    });
 
-                this.updateSort(sorting);
+                self.updateSort(sorting);
             });
+        });
     }
 
     view() {

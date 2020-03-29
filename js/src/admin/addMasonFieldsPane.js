@@ -7,7 +7,7 @@ import MasonFieldsPane from './panes/MasonFieldsPane';
 export default function () {
     // create the route
     app.routes['flagrow-mason-fields'] = {
-        path: '/flagrow/mason',
+        path: '/mason',
         component: MasonFieldsPane.component(),
     };
 
