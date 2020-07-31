@@ -36,7 +36,7 @@ export default class DiscussionFields extends Component {
 
     view() {
         if (this.maxPrimary > 1 || this.maxSecondary > 1) {
-            return m('.Alert', app.translator.trans('flagrow-mason.forum.tags.inadequate-settings'));
+            return m('.Alert', app.translator.trans('fof-mason.forum.tags.inadequate-settings'));
         }
 
         // We take the first child selected or if none, the first parent selected
@@ -47,7 +47,7 @@ export default class DiscussionFields extends Component {
         const required = this.fieldRequired();
 
         return m('.Mason-Field.Form-group', {
-            className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
+            className: app.forum.attribute('fof-mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
         }, [
             m('label', this.fieldLabel()),
             m('span.Select', [
@@ -94,7 +94,7 @@ export default class DiscussionFields extends Component {
     }
 
     fieldLabel() {
-        let text = app.forum.attribute('flagrow.mason.tags-field-name') || app.translator.trans('flagrow-mason.forum.tags.tags-label');
+        let text = app.forum.attribute('fof-mason.tags-field-name') || app.translator.trans('fof-mason.forum.tags.tags-label');
 
         if (this.fieldRequired()) {
             text += ' *';
@@ -104,7 +104,7 @@ export default class DiscussionFields extends Component {
     }
 
     placeholderHidden() {
-        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+        if (app.forum.attribute('fof-mason.labels-as-placeholders')) {
             return false;
         }
 
@@ -114,14 +114,14 @@ export default class DiscussionFields extends Component {
     selectPlaceholder() {
         let text = '';
 
-        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+        if (app.forum.attribute('fof-mason.labels-as-placeholders')) {
             text += this.fieldLabel() + ' - ';
         }
 
         if (this.fieldRequired()) {
-            text += app.translator.trans('flagrow-mason.forum.answers.choose-option');
+            text += app.translator.trans('fof-mason.forum.answers.choose-option');
         } else {
-            text += app.translator.trans('flagrow-mason.forum.answers.no-option-selected');
+            text += app.translator.trans('fof-mason.forum.answers.no-option-selected');
         }
 
         return text;

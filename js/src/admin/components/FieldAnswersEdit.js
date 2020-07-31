@@ -31,7 +31,7 @@ export default class FieldAnswersEdit extends Component {
 
     view() {
         if (!this.field.exists) {
-            return m('div', app.translator.trans('flagrow-mason.admin.fields.save-field-for-answers'));
+            return m('div', app.translator.trans('fof-mason.admin.fields.save-field-for-answers'));
         }
 
         let suggestedAnswers = [];
@@ -67,7 +67,7 @@ export default class FieldAnswersEdit extends Component {
                         this.showUserAnswers = !this.showUserAnswers;
                     },
                 }, [
-                    m('.Mason-Box-Header-Title', app.translator.trans('flagrow-mason.admin.buttons.show-user-answers', {
+                    m('.Mason-Box-Header-Title', app.translator.trans('fof-mason.admin.buttons.show-user-answers', {
                         count: userAnswers.length,
                     })),
                     m('div', [
@@ -91,14 +91,14 @@ export default class FieldAnswersEdit extends Component {
                         oninput: m.withAttr('value', value => {
                             this.new_content = value;
                         }),
-                        placeholder: app.translator.trans('flagrow-mason.admin.fields.new-answer-placeholder'),
+                        placeholder: app.translator.trans('fof-mason.admin.fields.new-answer-placeholder'),
                     }),
                 ]),
                 m('.Form-group', [
                     Button.component({
                         type: 'submit',
                         className: 'Button Button--primary',
-                        children: app.translator.trans('flagrow-mason.admin.buttons.add-answer'),
+                        children: app.translator.trans('fof-mason.admin.buttons.add-answer'),
                         loading: this.processing,
                         disabled: !this.new_content,
                         onclick: this.saveField.bind(this),

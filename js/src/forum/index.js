@@ -10,14 +10,14 @@ import addFieldsOnDiscussionHero from './addFieldsOnDiscussionHero';
 import addFieldsOnDiscussionPost from './addFieldsOnDiscussionPost';
 import patchModelIdentifier from "./patchModelIdentifier";
 
-app.initializers.add('flagrow-mason', app => {
-    app.store.models['flagrow-mason-field'] = Field;
-    app.store.models['flagrow-mason-answer'] = Answer;
+app.initializers.add('fof-mason', app => {
+    app.store.models['mason-fields'] = Field;
+    app.store.models['mason-answers'] = Answer;
 
-    Discussion.prototype.flagrowMasonAnswers = Model.hasMany('flagrowMasonAnswers');
-    Discussion.prototype.canSeeFlagrowMasonAnswers = Model.attribute('canSeeFlagrowMasonAnswers');
-    Discussion.prototype.canUpdateFlagrowMasonAnswers = Model.attribute('canUpdateFlagrowMasonAnswers');
-    Forum.prototype.canFillFlagrowMasonFields = Model.attribute('canFillFlagrowMasonFields');
+    Discussion.prototype.masonAnswers = Model.hasMany('masonAnswers');
+    Discussion.prototype.canSeeMasonAnswers = Model.attribute('canSeeMasonAnswers');
+    Discussion.prototype.canUpdateMasonAnswers = Model.attribute('canUpdateMasonAnswers');
+    Forum.prototype.canFillMasonFields = Model.attribute('canFillMasonFields');
 
     addComposerFields();
     addFieldsOnDiscussionHero();

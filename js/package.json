@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "@flagrow/mason",
+    "name": "@fof/mason",
     "dependencies": {
         "flarum-webpack-config": "0.1.0-beta.10",
         "html5sortable": "^0.9.17",

@@ -7,7 +7,7 @@ export default class FieldsEditorModal extends Modal {
     init() {
         super.init();
 
-        this.answers = this.props.discussion.flagrowMasonAnswers();
+        this.answers = this.props.discussion.masonAnswers();
         this.dirty = false;
         this.processing = false;
 
@@ -16,7 +16,7 @@ export default class FieldsEditorModal extends Modal {
     }
 
     title() {
-        return app.translator.trans('flagrow-mason.forum.answers-modal.edit-title', {
+        return app.translator.trans('fof-mason.forum.answers-modal.edit-title', {
             title: m('em', this.props.discussion.title()),
         });
     }
@@ -35,7 +35,7 @@ export default class FieldsEditorModal extends Modal {
             m('.Modal-footer', [
                 Button.component({
                     className: 'Button Button--primary',
-                    children: app.translator.trans('flagrow-mason.forum.answers-modal.save'),
+                    children: app.translator.trans('fof-mason.forum.answers-modal.save'),
                     loading: this.processing,
                     disabled: !this.dirty,
                     onclick: this.saveAnswers.bind(this),
@@ -53,7 +53,7 @@ export default class FieldsEditorModal extends Modal {
         this.processing = true;
 
         let relationships = {
-            flagrowMasonAnswers: this.answers,
+            masonAnswers: this.answers,
         };
 
         // If tag edit is enabled, take care of them here as well

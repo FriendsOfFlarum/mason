@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Mason\Access;
+namespace FoF\Mason\Access;
 
 use Flarum\Discussion\Discussion;
 use Flarum\User\AbstractPolicy;
@@ -10,31 +10,31 @@ class DiscussionPolicy extends AbstractPolicy
 {
     protected $model = Discussion::class;
 
-    public function seeFlagrowMasonAnswers(User $actor, Discussion $discussion)
+    public function seeMasonAnswers(User $actor, Discussion $discussion)
     {
-        if ($actor->can('flagrow.mason.see-other-fields')) {
+        if ($actor->can('fof-mason.see-other-fields')) {
             return true;
         }
 
-        if ($actor->can('flagrow.mason.see-own-fields') && $discussion->user_id == $actor->id) {
+        if ($actor->can('fof-mason.see-own-fields') && $discussion->user_id == $actor->id) {
             return true;
         }
 
         return false;
     }
 
-    public function fillFlagrowMasonAnswers(User $actor, Discussion $discussion)
+    public function fillMasonAnswers(User $actor, Discussion $discussion)
     {
-        return $actor->can('flagrow.mason.fill-fields');
+        return $actor->can('fof-mason.fill-fields');
     }
 
-    public function updateFlagrowMasonAnswers(User $actor, Discussion $discussion)
+    public function updateMasonAnswers(User $actor, Discussion $discussion)
     {
-        if ($actor->can('flagrow.mason.update-other-fields')) {
+        if ($actor->can('fof-mason.update-other-fields')) {
             return true;
         }
 
-        if ($actor->can('flagrow.mason.update-own-fields') && $discussion->user_id == $actor->id) {
+        if ($actor->can('fof-mason.update-own-fields') && $discussion->user_id == $actor->id) {
             return true;
         }
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Mason\Validators;
+namespace FoF\Mason\Validators;
 
-use Flagrow\Mason\Field;
+use FoF\Mason\Field;
 use Flarum\Foundation\AbstractValidator;
 
 class UserAnswerValidator extends AbstractValidator

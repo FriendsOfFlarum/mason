@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Mason\Access;
+namespace FoF\Mason\Access;
 
-use Flagrow\Mason\Answer;
+use FoF\Mason\Answer;
 use Flarum\User\AbstractPolicy;
 use Flarum\User\User;
 

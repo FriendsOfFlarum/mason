@@ -5,9 +5,9 @@ import FieldsEditorModal from './components/FieldsEditorModal';
 
 export default function () {
     extend(DiscussionControls, 'moderationControls', function (items, discussion) {
-        if (discussion.canUpdateFlagrowMasonAnswers()) {
-            items.add('flagrow-mason-update-answers', Button.component({
-                children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
+        if (discussion.canUpdateMasonAnswers()) {
+            items.add('mason-update-answers', Button.component({
+                children: app.translator.trans('fof-mason.forum.discussion-controls.edit-answers'),
                 icon: 'fas fa-tag',
                 onclick: () => app.modal.show(new FieldsEditorModal({discussion})),
             }));

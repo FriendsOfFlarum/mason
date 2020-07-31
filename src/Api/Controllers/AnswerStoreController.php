@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Mason\Api\Controllers;
+namespace FoF\Mason\Api\Controllers;
 
-use Flagrow\Mason\Api\Serializers\FieldSerializer;
-use Flagrow\Mason\Repositories\AnswerRepository;
-use Flagrow\Mason\Repositories\FieldRepository;
+use FoF\Mason\Api\Serializers\FieldSerializer;
+use FoF\Mason\Repositories\AnswerRepository;
+use FoF\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;

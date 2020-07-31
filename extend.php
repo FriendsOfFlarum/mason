@@ -1,10 +1,7 @@
 <?php
 
-namespace Flagrow\Mason;
+namespace FoF\Mason;
 
-use Flagrow\Mason\Extend\DiscussionAttributes;
-use Flagrow\Mason\Extend\ForumAttributes;
-use Flagrow\Mason\Extend\Policies;
 use Flarum\Extend;
 
 return [
@@ -16,19 +13,19 @@ return [
         ->js(__DIR__.'/js/dist/admin.js'),
     (new Extend\Routes('api'))
         // Fields
-        ->post('/flagrow/mason/fields/order', 'flagrow.mason.api.fields.order', Api\Controllers\FieldOrderController::class)
-        ->get('/flagrow/mason/fields', 'flagrow.mason.api.fields.index', Api\Controllers\FieldIndexController::class)
-        ->post('/flagrow/mason/fields', 'flagrow.mason.api.fields.store', Api\Controllers\FieldStoreController::class)
-        ->patch('/flagrow/mason/fields/{id:[0-9]+}', 'flagrow.mason.api.fields.update', Api\Controllers\FieldUpdateController::class)
-        ->delete('/flagrow/mason/fields/{id:[0-9]+}', 'flagrow.mason.api.fields.delete', Api\Controllers\FieldDeleteController::class)
+        ->post('/fof/mason/fields/order', 'fof-mason.api.fields.order', Api\Controllers\FieldOrderController::class)
+        ->get('/fof/mason/fields', 'fof-mason.api.fields.index', Api\Controllers\FieldIndexController::class)
+        ->post('/fof/mason/fields', 'fof-mason.api.fields.store', Api\Controllers\FieldStoreController::class)
+        ->patch('/fof/mason/fields/{id:[0-9]+}', 'fof-mason.api.fields.update', Api\Controllers\FieldUpdateController::class)
+        ->delete('/fof/mason/fields/{id:[0-9]+}', 'fof-mason.api.fields.delete', Api\Controllers\FieldDeleteController::class)
 
         // Answers
-        ->post('/flagrow/mason/fields/{id:[0-9]+}/answers/order', 'flagrow.mason.api.answers.order', Api\Controllers\AnswerOrderController::class)
-        ->post('/flagrow/mason/fields/{id:[0-9]+}/answers', 'flagrow.mason.api.answers.create', Api\Controllers\AnswerStoreController::class)
-        ->patch('/flagrow/mason/answers/{id:[0-9]+}', 'flagrow.mason.api.answers.update', Api\Controllers\AnswerUpdateController::class)
-        ->delete('/flagrow/mason/answers/{id:[0-9]+}', 'flagrow.mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
+        ->post('/fof/mason/fields/{id:[0-9]+}/answers/order', 'fof-mason.api.answers.order', Api\Controllers\AnswerOrderController::class)
+        ->post('/fof/mason/fields/{id:[0-9]+}/answers', 'fof-mason.api.answers.create', Api\Controllers\AnswerStoreController::class)
+        ->patch('/fof/mason/answers/{id:[0-9]+}', 'fof-mason.api.answers.update', Api\Controllers\AnswerUpdateController::class)
+        ->delete('/fof/mason/answers/{id:[0-9]+}', 'fof-mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
     (new Extend\Locales(__DIR__.'/resources/locale')),
-    new ForumAttributes,
-    new DiscussionAttributes,
-    new Policies,
+    new Extenders\ForumAttributes,
+    new Extenders\DiscussionAttributes,
+    new Extenders\Policies,
 ];

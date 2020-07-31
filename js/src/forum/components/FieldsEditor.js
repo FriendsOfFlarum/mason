@@ -10,7 +10,7 @@ import FieldGrid from './FieldGrid';
 
 export default class FieldsEditor extends Component {
     init() {
-        this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
+        this.fields = sortByAttribute(app.store.all('mason-fields'));
 
         // Index to quickly do a reverse lookup from answer to field
         this.answerToFieldIndex = [];
@@ -62,8 +62,8 @@ export default class FieldsEditor extends Component {
     headItems() {
         const items = new ItemList();
 
-        if (app.forum.attribute('flagrow.mason.fields-section-title')) {
-            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
+        if (app.forum.attribute('fof-mason.fields-section-title')) {
+            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('fof-mason.fields-section-title')));
         }
 
         return items;
@@ -72,7 +72,7 @@ export default class FieldsEditor extends Component {
     fieldItems() {
         const items = new ItemList();
 
-        if (app.forum.attribute('flagrow.mason.tags-as-fields')) {
+        if (app.forum.attribute('fof-mason.tags-as-fields')) {
             items.add('tags', FieldEditTags.component({
                 discussion: this.props.discussion,
                 onchange: tags => {
@@ -101,7 +101,7 @@ export default class FieldsEditor extends Component {
             }
 
             items.add('field-' + field.id(), m('.Mason-Field.Form-group', {
-                className: app.forum.attribute('flagrow.mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
+                className: app.forum.attribute('fof-mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
             }, [
                 m('label', [
                     (field.icon() ? [icon(field.icon()), ' '] : null),

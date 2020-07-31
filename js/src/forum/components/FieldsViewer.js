@@ -9,7 +9,7 @@ import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 export default class FieldsViewer extends Component {
     init() {
-        this.fields = sortByAttribute(app.store.all('flagrow-mason-field'));
+        this.fields = sortByAttribute(app.store.all('mason-fields'));
         this.discussion = this.props.discussion;
     }
 
@@ -20,7 +20,7 @@ export default class FieldsViewer extends Component {
         // If all fields are hidden
         // And either no controls are shown or the setting hides them
         // We don't show the viewer
-        if (!fields.length && (!head.length || app.forum.attribute('flagrow.mason.hide-empty-fields-section'))) {
+        if (!fields.length && (!head.length || app.forum.attribute('fof-mason.hide-empty-fields-section'))) {
             // We need to return an actual dom element or Flarum does not like it
             return m('div');
         }
@@ -36,10 +36,10 @@ export default class FieldsViewer extends Component {
     headItems() {
         const items = new ItemList();
 
-        if (this.discussion.canUpdateFlagrowMasonAnswers()) {
+        if (this.discussion.canUpdateMasonAnswers()) {
             items.add('edit', Button.component({
                 className: 'Button Mason-Fields--edit',
-                children: app.translator.trans('flagrow-mason.forum.discussion-controls.edit-answers'),
+                children: app.translator.trans('fof-mason.forum.discussion-controls.edit-answers'),
                 icon: 'fas fa-pen',
                 onclick: () => app.modal.show(new FieldsEditorModal({
                     discussion: this.discussion,
@@ -47,8 +47,8 @@ export default class FieldsViewer extends Component {
             }));
         }
 
-        if (app.forum.attribute('flagrow.mason.fields-section-title')) {
-            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('flagrow.mason.fields-section-title')));
+        if (app.forum.attribute('fof-mason.fields-section-title')) {
+            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('fof-mason.fields-section-title')));
         }
 
         return items;
@@ -59,7 +59,7 @@ export default class FieldsViewer extends Component {
 
         this.fields.forEach(field => {
             // Discussion answers to this field
-            const answers = sortByAttribute(this.discussion.flagrowMasonAnswers().filter(answer => {
+            const answers = sortByAttribute(this.discussion.masonAnswers().filter(answer => {
                 // It's necessary to compare the field() relationship
                 // Because field.suggested_answers() won't contain new and user answers
                 return answer.field().id() === field.id();
@@ -69,7 +69,7 @@ export default class FieldsViewer extends Component {
 
             if (answers.length === 0) {
                 if (field.show_when_empty()) {
-                    answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('flagrow-mason.forum.post-answers.no-answer')));
+                    answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('fof-mason.forum.post-answers.no-answer')));
                 } else {
                     // If the field has no answer and the setting is off we don't show it
                     return;

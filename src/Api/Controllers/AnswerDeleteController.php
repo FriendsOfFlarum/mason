@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Mason\Api\Controllers;
+namespace FoF\Mason\Api\Controllers;
 
-use Flagrow\Mason\Repositories\AnswerRepository;
+use FoF\Mason\Repositories\AnswerRepository;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Mason;
+namespace FoF\Mason;
 
 use Carbon\Carbon;
-use Flarum\Core\Discussion;
 use Flarum\Database\AbstractModel;
+use Flarum\Discussion\Discussion;
 
 /**
  * @property int $id
@@ -21,7 +21,7 @@ class Answer extends AbstractModel
 {
     public $timestamps = true;
 
-    protected $table = 'flagrow_mason_answers';
+    protected $table = 'fof_mason_answers';
 
     protected $casts = [
         'is_suggested' => 'boolean',

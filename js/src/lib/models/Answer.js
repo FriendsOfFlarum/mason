@@ -1,4 +1,3 @@
-import app from 'flarum/app';
 import Model from 'flarum/Model';
 import mixin from 'flarum/utils/mixin';
 
@@ -12,6 +11,6 @@ export default class Answer extends mixin(Model, {
      * @inheritDoc
      */
     apiEndpoint() {
-        return '/flagrow/mason/answers' + (this.exists ? '/' + this.data.id : '');
+        return '/fof/mason/answers' + (this.exists ? '/' + this.data.id : '');
     }
 }

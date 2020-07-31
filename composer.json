@@ -1,5 +1,5 @@
 {
-    "name": "flagrow/mason",
+    "name": "fof/mason",
     "description": "Add custom fields to discussions",
     "keywords": [
         "extension",
@@ -18,19 +18,22 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/flagrow/mason/issues",
-        "source": "https://github.com/flagrow/mason"
+        "issues": "https://github.com/FriendsOfFlarum/mason/issues",
+        "source": "https://github.com/FriendsOfFlarum/mason"
     },
     "require": {
         "flarum/core": "^0.1.0-beta.8"
     },
+    "replace": {
+        "flagrow/mason": "*"
+    },
     "extra": {
         "flarum-extension": {
-            "title": "Mason",
+            "title": "FoF Mason",
             "icon": {
                 "name": "fas fa-dungeon",
-                "backgroundColor": "#f4f4f4",
-                "color": "#5f4bb6"
+                "backgroundColor": "#e74c3c",
+                "color": "#fff"
             }
         },
         "flagrow": {
@@ -39,7 +42,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Flagrow\\Mason\\": "src/"
+            "FoF\\Mason\\": "src/"
         }
     }
 }

@@ -1,6 +1,6 @@
-# Mason by ![Flagrow logo](https://avatars0.githubusercontent.com/u/16413865?v=3&s=20) [Flagrow](https://flagrow.io/)
+# Mason by FriendsOfFlarum
 
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/flagrow/mason/blob/master/LICENSE.md) [![Latest Stable Version](https://img.shields.io/packagist/v/flagrow/mason.svg)](https://packagist.org/packages/flagrow/mason) [![Total Downloads](https://img.shields.io/packagist/dt/flagrow/mason.svg)](https://packagist.org/packages/flagrow/mason) [![Support Us](https://img.shields.io/badge/flagrow.io-support%20us-yellow.svg)](https://flagrow.io/support-us) [![Join our Discord server](https://discordapp.com/api/guilds/240489109041315840/embed.png)](https://flagrow.io/join-discord)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/mason.svg)](https://packagist.org/packages/fof/mason)
 
 Add custom fields to your discussions. Features:
 
@@ -13,20 +13,16 @@ Add custom fields to your discussions. Features:
 
 **Note:** due to the way the Flarum discussion composer works, it currently cannot be automatically resized to fit all fields. If you have many fields you will have to manually increase the composer height with the mouse handle.
 
-Looking for a similar extension but for user profiles ? Check out [Masquerade](https://github.com/flagrow/masquerade).
-
 ## Installation
 
-Use [Bazaar](https://discuss.flarum.org/d/5151-flagrow-bazaar-the-extension-marketplace) or install manually:
-
 ```bash
-composer require flagrow/mason
+composer require fof/mason
 ```
 
 ## Updating
 
 ```bash
-composer update flagrow/mason
+composer require fof/mason
 php flarum migrate
 php flarum cache:clear
 ```
@@ -64,21 +60,28 @@ The extension comes with several permissions to choose who can interact with cus
 The custom fields form will display on the discussion composer, on the first post of the discussion and as an option in the discussion edit menu.
 The layout can be customized via the settings available in the Mason page of the admin panel.
 
-## Support our work
+## Updating from Flagrow
 
-Check out how to support Flagrow extensions at [flagrow.io/support-us](https://flagrow.io/support-us).
+This extension replaces [Flagrow Mason](https://packagist.org/packages/flagrow/mason).
 
-## Security
+**Please backup your data before attempting the update!**
 
-If you discover a security vulnerability within Mason, please send an email to the Gravure team at security@flagrow.io. All security vulnerabilities will be promptly addressed.
+You can upgrade from any of the older versions of the Flagrow extension.
 
-Please include as many details as possible. You can use `php flarum info` to get the PHP, Flarum and extension versions installed.
+Then upgrade from the old extension to the new one:
+
+```sh
+composer remove flagrow/mason
+composer require fof/mason
+```
+
+When you enable the new extension, the permissions, settings and the data from Flagrow Mason will be moved to FoF Mason.
 
 ## Links
 
 - [Flarum Discuss post](https://discuss.flarum.org/d/7028)
-- [Source code on GitHub](https://github.com/flagrow/mason)
-- [Report an issue](https://github.com/flagrow/mason/issues)
-- [Download via Packagist](https://packagist.org/packages/flagrow/mason)
+- [Source code on GitHub](https://github.com/FriendsOfFlarum/mason)
+- [Report an issue](https://github.com/FriendsOfFlarum/mason/issues)
+- [Download via Packagist](https://packagist.org/packages/fof/mason)
 
-An extension by [Flagrow](https://flagrow.io/).
+An extension by [FriendsOfFlarum](https://github.com/FriendsOfFlarum)

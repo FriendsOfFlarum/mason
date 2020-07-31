@@ -1,14 +1,10 @@
 <?php
 
-namespace Flagrow\Mason\Repositories;
+namespace FoF\Mason\Repositories;
 
-use Flagrow\Mason\Answer;
-use Flagrow\Mason\Field;
-use Flagrow\Mason\Validators\FieldValidator;
-use Flarum\Core\User;
+use FoF\Mason\Field;
+use FoF\Mason\Validators\FieldValidator;
 use Illuminate\Cache\Repository;
-use Illuminate\Support\Arr;
-use Validator;
 
 class FieldRepository
 {

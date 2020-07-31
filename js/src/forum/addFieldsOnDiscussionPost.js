@@ -6,24 +6,24 @@ import FieldsViewer from './components/FieldsViewer';
 function showFieldsOnPost(post) {
     // We only add fields to the first post, and only if fields are not displayed in the hero
     // TODO: what if the first post is deleted ?
-    return post.number() === 1 && !app.forum.attribute('flagrow.mason.fields-in-hero');
+    return post.number() === 1 && !app.forum.attribute('fof-mason.fields-in-hero');
 }
 
 export default function () {
     extend(CommentPost.prototype, 'init', function () {
-        if (!this.props.post.discussion().canSeeFlagrowMasonAnswers() || !showFieldsOnPost(this.props.post)) {
+        if (!this.props.post.discussion().canSeeMasonAnswers() || !showFieldsOnPost(this.props.post)) {
             return;
         }
 
         this.subtree.check(() => {
             // Create a string with all answer ids
             // If answers change this string will be different
-            return this.props.post.discussion().flagrowMasonAnswers().map(answer => answer.id()).join(',');
+            return this.props.post.discussion().masonAnswers().map(answer => answer.id()).join(',');
         });
     });
 
     extend(CommentPost.prototype, 'content', function (content) {
-        if (!this.props.post.discussion().canSeeFlagrowMasonAnswers() || !showFieldsOnPost(this.props.post)) {
+        if (!this.props.post.discussion().canSeeMasonAnswers() || !showFieldsOnPost(this.props.post)) {
             return;
         }
 

@@ -1,4 +1,4 @@
-flagrow-mason:
+fof-mason:
     forum:
         discussion-controls:
             edit-answers: Edit fields
@@ -94,7 +94,7 @@ flagrow-mason:
                 This will hide the default tags selector and show a custom dropdown field instead.
                 This will only work if you allowed up to one primary and one secondary tag !
             tags-field-name: Label of the tags field
-            tags-field-name-placeholder: => flagrow-mason.forum.tags.tags-label
+            tags-field-name-placeholder: => fof-mason.forum.tags.tags-label
         titles:
             settings: Settings
             fields: Fields

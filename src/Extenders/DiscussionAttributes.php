@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Mason\Extend;
+namespace FoF\Mason\Extenders;
 
-use Flagrow\Mason\Answer;
-use Flagrow\Mason\Api\Serializers\AnswerSerializer;
-use Flagrow\Mason\Handlers\DiscussionSaving;
+use FoF\Mason\Answer;
+use FoF\Mason\Api\Serializers\AnswerSerializer;
+use FoF\Mason\Handlers\DiscussionSaving;
 use Flarum\Api\Controller\CreateDiscussionController;
 use Flarum\Api\Controller\ListDiscussionsController;
 use Flarum\Api\Controller\ShowDiscussionController;
@@ -33,8 +33,8 @@ class DiscussionAttributes implements ExtenderInterface
 
     public function relationships(GetModelRelationship $event)
     {
-        if ($event->isRelationship(Discussion::class, 'flagrowMasonAnswers')) {
-            return $event->model->belongsToMany(Answer::class, 'flagrow_mason_discussion_answer', 'discussion_id', 'answer_id')
+        if ($event->isRelationship(Discussion::class, 'masonAnswers')) {
+            return $event->model->belongsToMany(Answer::class, 'fof_mason_discussion_answer', 'discussion_id', 'answer_id')
                 ->withTimestamps()
                 ->whereHas('field', function ($query) {
                     // Only load answers to fields that have not been deleted
@@ -45,8 +45,8 @@ class DiscussionAttributes implements ExtenderInterface
 
     public function serializer(GetApiRelationship $event)
     {
-        if ($event->isRelationship(DiscussionSerializer::class, 'flagrowMasonAnswers')) {
-            return $event->serializer->hasMany($event->model, AnswerSerializer::class, 'flagrowMasonAnswers');
+        if ($event->isRelationship(DiscussionSerializer::class, 'masonAnswers')) {
+            return $event->serializer->hasMany($event->model, AnswerSerializer::class, 'masonAnswers');
         }
     }
 
@@ -57,8 +57,8 @@ class DiscussionAttributes implements ExtenderInterface
             || $event->isController(CreateDiscussionController::class)
             || $event->isController(UpdateDiscussionController::class)) {
             $event->addInclude([
-                'flagrowMasonAnswers',
-                'flagrowMasonAnswers.field',
+                'masonAnswers',
+                'masonAnswers.field',
             ]);
         }
     }
@@ -66,14 +66,14 @@ class DiscussionAttributes implements ExtenderInterface
     public function attributes(Serializing $event)
     {
         if ($event->isSerializer(DiscussionSerializer::class)) {
-            $canSee = $event->actor->can('seeFlagrowMasonAnswers', $event->model);
+            $canSee = $event->actor->can('seeMasonAnswers', $event->model);
 
-            $event->attributes['canSeeFlagrowMasonAnswers'] = $canSee;
-            $event->attributes['canUpdateFlagrowMasonAnswers'] = $event->actor->can('updateFlagrowMasonAnswers', $event->model);
+            $event->attributes['canSeeMasonAnswers'] = $canSee;
+            $event->attributes['canUpdateMasonAnswers'] = $event->actor->can('updateMasonAnswers', $event->model);
 
             if (!$canSee) {
                 // Will cause a skip of the relationship retrieval
-                $event->model->setRelation('flagrowMasonAnswers', null);
+                $event->model->setRelation('masonAnswers', null);
             }
         }
     }

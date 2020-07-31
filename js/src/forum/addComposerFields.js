@@ -4,17 +4,17 @@ import DiscussionComposer from 'flarum/components/DiscussionComposer';
 import FieldsEditor from './components/FieldsEditor';
 
 export default function () {
-    DiscussionComposer.prototype.flagrowMasonAnswers = [];
+    DiscussionComposer.prototype.masonAnswers = [];
 
     extend(DiscussionComposer.prototype, 'headerItems', function (items) {
-        if (!app.forum.canFillFlagrowMasonFields()) {
+        if (!app.forum.canFillMasonFields()) {
             return;
         }
 
-        items.add('flagrow-mason-fields', FieldsEditor.component({
-            answers: this.flagrowMasonAnswers,
+        items.add('mason-fields', FieldsEditor.component({
+            answers: this.masonAnswers,
             onchange: answers => {
-                this.flagrowMasonAnswers = answers;
+                this.masonAnswers = answers;
             },
             ontagchange: tags => {
                 this.tags = tags;
@@ -23,11 +23,11 @@ export default function () {
     });
 
     extend(DiscussionComposer.prototype, 'data', function (data) {
-        if (!app.forum.canFillFlagrowMasonFields()) {
+        if (!app.forum.canFillMasonFields()) {
             return;
         }
 
         data.relationships = data.relationships || {};
-        data.relationships.flagrowMasonAnswers = this.flagrowMasonAnswers;
+        data.relationships.masonAnswers = this.masonAnswers;
     });
 }

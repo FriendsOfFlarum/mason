@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Mason\Access;
+namespace FoF\Mason\Access;
 
-use Flagrow\Mason\Field;
+use FoF\Mason\Field;
 use Flarum\User\AbstractPolicy;
 use Flarum\User\User;
 
@@ -29,6 +29,6 @@ class FieldPolicy extends AbstractPolicy
      */
     public function skipField(User $user, Field $field)
     {
-        return $field->min_answers_count === 0 || $user->can('flagrow.mason.skip-required-fields');
+        return $field->min_answers_count === 0 || $user->can('fof-mason.skip-required-fields');
     }
 }

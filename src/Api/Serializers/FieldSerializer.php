@@ -1,15 +1,17 @@
 <?php
 
-namespace Flagrow\Mason\Api\Serializers;
+namespace FoF\Mason\Api\Serializers;
 
-use Flagrow\Mason\Field;
-use Flagrow\Mason\Repositories\AnswerRepository;
+use FoF\Mason\Field;
+use FoF\Mason\Repositories\AnswerRepository;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
 
 class FieldSerializer extends AbstractSerializer
 {
+    protected $type = 'mason-fields';
+
     /**
      * Get the default set of serialized attributes for a model.
      *
@@ -19,15 +21,6 @@ class FieldSerializer extends AbstractSerializer
     protected function getDefaultAttributes($model)
     {
         return $model->toArray();
-    }
-
-    /**
-     * @param Field $model
-     * @return string
-     */
-    public function getType($model)
-    {
-        return 'flagrow-mason-field';
     }
 
     /**

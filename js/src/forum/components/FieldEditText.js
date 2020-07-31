@@ -35,7 +35,7 @@ export default class FieldEditText extends Component {
                 if (this.content === '') {
                     this.onchange([]);
                 } else {
-                    const answer = app.store.createRecord('flagrow-mason-answer', {
+                    const answer = app.store.createRecord('mason-answers', {
                         attributes: {
                             content: this.content,
                         },
@@ -54,7 +54,7 @@ export default class FieldEditText extends Component {
     }
 
     fieldPlaceholder() {
-        if (app.forum.attribute('flagrow.mason.labels-as-placeholders')) {
+        if (app.forum.attribute('fof-mason.labels-as-placeholders')) {
             return this.field.name() + (this.field.required() ? ' *' : '');
         }
 

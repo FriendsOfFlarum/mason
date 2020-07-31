@@ -1,4 +1,3 @@
-import app from 'flarum/app';
 import Model from 'flarum/Model';
 import mixin from 'flarum/utils/mixin';
 import computed from 'flarum/utils/computed';
@@ -23,6 +22,6 @@ export default class Field extends mixin(Model, {
      * @inheritDoc
      */
     apiEndpoint() {
-        return '/flagrow/mason/fields' + (this.exists ? '/' + this.data.id : '');
+        return '/fof/mason/fields' + (this.exists ? '/' + this.data.id : '');
     }
 }

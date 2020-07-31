@@ -5,7 +5,11 @@ use Illuminate\Database\Schema\Builder;
 
 return [
     'up' => function (Builder $schema) {
-        $schema->create('flagrow_mason_fields', function (Blueprint $table) {
+        if ($schema->hasTable('fof_mason_fields')) {
+            return;
+        }
+
+        $schema->create('fof_mason_fields', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('description')->nullable();
@@ -21,6 +25,6 @@ return [
         });
     },
     'down' => function (Builder $schema) {
-        $schema->drop('flagrow_mason_fields');
+        $schema->dropIfExists('fof_mason_fields');
     },
 ];

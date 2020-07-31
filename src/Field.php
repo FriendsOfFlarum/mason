@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Mason;
+namespace FoF\Mason;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
@@ -28,7 +28,7 @@ class Field extends AbstractModel
 
     public $timestamps = true;
 
-    protected $table = 'flagrow_mason_fields';
+    protected $table = 'fof_mason_fields';
 
     protected $casts = [
         'min_answers_count' => 'integer',
