@@ -1,5 +1,6 @@
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
+import extractText from 'flarum/utils/extractText';
 import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import Switch from 'flarum/components/Switch';
@@ -223,9 +224,9 @@ export default class FieldEdit extends Component {
     }
 
     deleteField() {
-        if (!confirm(app.translator.trans('fof-mason.admin.messages.delete-field-confirmation', {
+        if (!confirm(extractText(app.translator.trans('fof-mason.admin.messages.delete-field-confirmation', {
                 name: this.field.name(),
-            }))) {
+            })))) {
             return;
         }
 
