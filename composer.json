@@ -22,7 +22,7 @@
         "source": "https://github.com/FriendsOfFlarum/mason"
     },
     "require": {
-        "flarum/core": "^0.1.0-beta.8"
+        "flarum/core": ">=0.1.0-beta.8 <0.1.0-beta.14"
     },
     "replace": {
         "flagrow/mason": "*"
