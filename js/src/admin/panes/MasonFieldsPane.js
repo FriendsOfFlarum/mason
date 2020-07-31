@@ -1,3 +1,5 @@
+import sortable from 'html5sortable/dist/html5sortable.es.js';
+
 import app from 'flarum/app';
 import Component from 'flarum/Component';
 import FieldEdit from './../components/FieldEdit';
@@ -16,19 +18,17 @@ export default class MasonFieldsPane extends Component {
     }
 
     config() {
-        this.$('.js-fields-container')
-            .sortable({
-                handle: '.js-field-handle',
-            })
-            .on('sortupdate', () => {
-                const sorting = this.$('.js-field-data')
-                    .map(function () {
-                        return $(this).data('id');
-                    })
-                    .get();
+        sortable(this.element.querySelector('.js-fields-container'), {
+            handle: '.js-field-handle',
+        })[0].addEventListener('sortupdate', () => {
+            const sorting = this.$('.js-field-data')
+                .map(function () {
+                    return $(this).data('id');
+                })
+                .get();
 
-                this.updateSort(sorting);
-            });
+            this.updateSort(sorting);
+        });
     }
 
     view() {

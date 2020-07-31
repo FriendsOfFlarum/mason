@@ -15,7 +15,7 @@ export default class FieldEdit extends Component {
         return m('form.Mason-Box', [
             // Only suggested answers can be reordered
             (this.answer.is_suggested() ? [
-                m('span.fa.fa-arrows.Mason-Box--handle.js-answer-handle'),
+                m('span.fas.fa-arrows-alt.Mason-Box--handle.js-answer-handle'),
                 ' ',
             ] : null),
             m('span', {

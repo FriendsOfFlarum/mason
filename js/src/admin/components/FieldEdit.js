@@ -42,7 +42,7 @@ export default class FieldEdit extends Component {
 
     view() {
         return m('.Mason-Box', [
-            (this.field.exists ? m('span.fa.fa-arrows.Mason-Box--handle.js-field-handle') : null),
+            (this.field.exists ? m('span.fas.fa-arrows-alt.Mason-Box--handle.js-field-handle') : null),
             m('.Button.Button--block.Mason-Box-Header', {
                 onclick: () => {
                     this.toggleFields = !this.toggleFields;

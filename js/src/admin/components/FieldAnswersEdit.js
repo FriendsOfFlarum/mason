@@ -1,3 +1,5 @@
+import sortable from 'html5sortable/dist/html5sortable.es.js';
+
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
@@ -14,19 +16,17 @@ export default class FieldAnswersEdit extends Component {
     }
 
     config() {
-        this.$('.js-answers-container')
-            .sortable({
-                handle: '.js-answer-handle',
-            })
-            .on('sortupdate', () => {
-                const sorting = this.$('.js-answer-data')
-                    .map(function () {
-                        return $(this).data('id');
-                    })
-                    .get();
+        sortable(this.element.querySelector('.js-answers-container'), {
+            handle: '.js-answer-handle',
+        })[0].addEventListener('sortupdate', () => {
+            const sorting = this.$('.js-answer-data')
+                .map(function () {
+                    return $(this).data('id');
+                })
+                .get();
 
-                this.updateSort(sorting);
-            });
+            this.updateSort(sorting);
+        });
     }
 
     view() {
