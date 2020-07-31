@@ -25,6 +25,8 @@ fof-mason:
             add-answer: Add answer
             save-answer: Save answer changes
             delete-answer: Delete answer
+            edit-answer: Edit Answer
+            edit-answer-prompt: Edit content everywhere it is used
             show-user-answers: Show non-suggested answers ({count})
         menu:
             description: >
@@ -60,6 +62,7 @@ fof-mason:
             icon-preview: "preview: {preview}"
             save-field-for-answers: Save the field to add answers
             is_suggested: Suggest answer to users
+            new-answer: New answer
             new-answer-placeholder: Some text
         messages:
             delete-answer-confirmation: >
@@ -96,6 +99,8 @@ fof-mason:
         titles:
             settings: Settings
             fields: Fields
+            field-settings: Field settinga
+            field-answers: Field answers
         permissions:
             mason-heading: Mason
             see-own-fields: See fields on own existing discussions

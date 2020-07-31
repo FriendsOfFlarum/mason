@@ -21,12 +21,13 @@ export default class FieldEdit extends Component {
             ] : null),
             m('span', {
                 onclick: () => {
-                    const newContent = prompt('Edit content', this.answer.content());
+                    const newContent = prompt(extractText(app.translator.trans('fof-mason.admin.buttons.edit-answer-prompt')), this.answer.content());
 
                     if (newContent) {
                         this.updateAttribute('content', newContent);
                     }
                 },
+                title: extractText(app.translator.trans('fof-mason.admin.buttons.edit-answer')),
             }, [
                 this.answer.content(),
                 ' ',

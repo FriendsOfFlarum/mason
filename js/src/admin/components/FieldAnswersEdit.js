@@ -85,7 +85,7 @@ export default class FieldAnswersEdit extends Component {
             ] : null),
             m('form', [
                 m('.Form-group', [
-                    m('label', 'New answer'),
+                    m('label', app.translator.trans('fof-mason.admin.fields.new-answer')),
                     m('input.FormControl', {
                         value: this.new_content,
                         oninput: m.withAttr('value', value => {

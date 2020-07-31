@@ -66,7 +66,7 @@ export default class FieldEdit extends Component {
         return m('form', [
             m('.Mason-Box--row', [
                 m('.Mason-Box--column', [
-                    m('h4', 'Field settings'),
+                    m('h4', app.translator.trans('fof-mason.admin.titles.field-settings')),
                     m('.Form-group', [
                         m('label', app.translator.trans('fof-mason.admin.fields.name')),
                         m('input.FormControl', {
@@ -142,7 +142,7 @@ export default class FieldEdit extends Component {
                     ]),
                 ]),
                 m('.Mason-Box--column', [
-                    m('h4', 'Field answers'),
+                    m('h4', app.translator.trans('fof-mason.admin.titles.field-answers')),
                     m('.Form-group', FieldAnswersEdit.component({
                         field: this.field,
                     })),
