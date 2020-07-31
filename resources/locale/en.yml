@@ -39,8 +39,6 @@ fof-mason:
             description: Field description
             description-help: >
                 An optional description to explain the use/need of this field.
-            min_answers_count: Minimum required answers
-            max_answers_count: Maximum allowed answers
             show_when_empty: Show when empty
             show_when_empty-help:
                 Whether to show the field on the discussion when it has no answer

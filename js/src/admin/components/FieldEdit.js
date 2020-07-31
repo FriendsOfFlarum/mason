@@ -24,7 +24,7 @@ export default class FieldEdit extends Component {
                 name: '',
                 description: '',
                 min_answers_count: 0,
-                max_answers_count: 1,
+                max_answers_count: 1, // Currently not visible in the editor
                 user_values_allowed: false,
                 show_when_empty: false,
                 validation: '',
@@ -85,7 +85,7 @@ export default class FieldEdit extends Component {
                     ]),
                     m('.Form-group', [
                         m('label', [
-                            // TODO: while multiple answers are still in the work, show the "min answers" field as a checkbox
+                            // multi-answers were never implemented so min_answers_count just switches between 0 and 1 for optional and required
                             Switch.component({
                                 state: this.field.min_answers_count() === 1,
                                 onchange: value => {
@@ -95,26 +95,6 @@ export default class FieldEdit extends Component {
                             }),
                         ]),
                     ]),
-                    /*m('.Form-group', [
-                        m('label', app.translator.trans('fof-mason.admin.fields.min_answers_count')),
-                        m('input.FormControl', {
-                            type: 'number',
-                            min: 0,
-                            max: 1, // TODO: remove when multiple answers is ready
-                            value: this.field.min_answers_count(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'min_answers_count')),
-                        }),
-                    ]),
-                    m('.Form-group', [
-                        m('label', app.translator.trans('fof-mason.admin.fields.max_answers_count')),
-                        m('input.FormControl', {
-                            type: 'number',
-                            min: 1,
-                            disabled: true, // TODO: remove when multiple answers is ready
-                            value: this.field.max_answers_count(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'max_answers_count')),
-                        }),
-                    ]),*/
                     m('.Form-group', [
                         m('label', [
                             Switch.component({
