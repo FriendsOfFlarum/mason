@@ -99,7 +99,7 @@ fof-mason:
         titles:
             settings: Settings
             fields: Fields
-            field-settings: Field settinga
+            field-settings: Field settings
             field-answers: Field answers
         permissions:
             mason-heading: Mason
