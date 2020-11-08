@@ -3,15 +3,19 @@ import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import sortTags from 'flarum/tags/utils/sortTags';
 
+/* global m */
+
 export default class DiscussionFields extends Component {
-    init() {
+    oninit(vnode) {
+        super.oninit(vnode);
+
         this.tags = app.store.all('tags');
         this.selectedTags = [];
 
-        if (this.props.discussion) {
-            this.tags = this.tags.filter(tag => tag.canAddToDiscussion() || this.props.discussion.tags().indexOf(tag) !== -1);
+        if (this.attrs.discussion) {
+            this.tags = this.tags.filter(tag => tag.canAddToDiscussion() || this.attrs.discussion.tags().indexOf(tag) !== -1);
 
-            this.selectedTags = this.props.discussion.tags();
+            this.selectedTags = this.attrs.discussion.tags();
         } else {
             this.tags = this.tags.filter(tag => tag.canStartDiscussion());
         }
@@ -52,7 +56,9 @@ export default class DiscussionFields extends Component {
             m('label', this.fieldLabel()),
             m('span.Select', [
                 m('select.Select-input.FormControl', {
-                    onchange: m.withAttr('value', id => {
+                    onchange: event => {
+                        const id = event.target.value;
+
                         this.selectedTags = [];
 
                         if (id !== 'none') {
@@ -64,8 +70,8 @@ export default class DiscussionFields extends Component {
                             }
                         }
 
-                        this.props.onchange(this.selectedTags);
-                    }),
+                        this.attrs.onchange(this.selectedTags);
+                    },
                 }, [
                     m('option', {
                         value: 'none',

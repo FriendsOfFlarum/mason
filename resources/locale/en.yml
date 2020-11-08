@@ -29,8 +29,8 @@ fof-mason:
             edit-answer-prompt: Edit content everywhere it is used
             show-user-answers: Show non-suggested answers ({count})
         menu:
-            description: >
-                Configure custom discussion fields.
+            title: Mason
+            description: Configure custom discussion fields.
         fields:
             add: Add field {field}
             edit: Edit field {field}

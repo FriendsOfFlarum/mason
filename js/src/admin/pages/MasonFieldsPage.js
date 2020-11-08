@@ -1,13 +1,17 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
 import app from 'flarum/app';
-import Component from 'flarum/Component';
+import Page from 'flarum/components/Page';
 import FieldEdit from './../components/FieldEdit';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 import MasonSettings from './../components/MasonSettings';
 
-export default class MasonFieldsPane extends Component {
-    init() {
+/* global m, $ */
+
+export default class MasonFieldsPage extends Page {
+    oninit(vnode) {
+        super.oninit(vnode);
+
         app.request({
             method: 'GET',
             url: app.forum.attribute('apiUrl') + '/fof/mason/fields',
@@ -17,7 +21,7 @@ export default class MasonFieldsPane extends Component {
         });
     }
 
-    config() {
+    configSortable() {
         sortable(this.element.querySelector('.js-fields-container'), {
             handle: '.js-field-handle',
         })[0].addEventListener('sortupdate', () => {
@@ -29,6 +33,16 @@ export default class MasonFieldsPane extends Component {
 
             this.updateSort(sorting);
         });
+    }
+
+    oncreate(vnode) {
+        super.oncreate(vnode);
+
+        this.configSortable();
+    }
+
+    onupdate() {
+        this.configSortable();
     }
 
     view() {
@@ -52,7 +66,6 @@ export default class MasonFieldsPane extends Component {
             m('.Mason-Container', [
                 m('.js-fields-container', fieldsList),
                 FieldEdit.component({
-                    key: 'new',
                     field: null,
                 }),
             ]),
@@ -65,7 +78,7 @@ export default class MasonFieldsPane extends Component {
         app.request({
             method: 'POST',
             url: app.forum.attribute('apiUrl') + '/fof/mason/fields/order',
-            data: {
+            body: {
                 sort: sorting,
             },
         }).then(result => {

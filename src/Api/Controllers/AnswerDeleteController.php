@@ -4,17 +4,11 @@ namespace FoF\Mason\Api\Controllers;
 
 use FoF\Mason\Repositories\AnswerRepository;
 use Flarum\Api\Controller\AbstractDeleteController;
-use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AnswerDeleteController extends AbstractDeleteController
 {
-    use AssertPermissionTrait;
-
-    /**
-     * @var AnswerRepository
-     */
     protected $answers;
 
     public function __construct(AnswerRepository $answers)
@@ -24,7 +18,7 @@ class AnswerDeleteController extends AbstractDeleteController
 
     protected function delete(ServerRequestInterface $request)
     {
-        $this->assertAdmin($request->getAttribute('actor'));
+        $request->getAttribute('actor')->assertAdmin();
 
         $id = Arr::get($request->getQueryParams(), 'id');
 

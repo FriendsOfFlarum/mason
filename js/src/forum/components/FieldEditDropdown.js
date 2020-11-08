@@ -3,11 +3,15 @@ import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
+/* global m */
+
 export default class FieldEditDropdown extends Component {
-    init() {
-        this.field = this.props.field;
-        this.answers = this.props.answers;
-        this.onchange = this.props.onchange;
+    oninit(vnode) {
+        super.oninit(vnode);
+
+        this.field = this.attrs.field;
+        this.answers = this.attrs.answers;
+        this.onchange = this.attrs.onchange;
     }
 
     view() {

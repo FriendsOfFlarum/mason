@@ -10,20 +10,20 @@ function showFieldsOnPost(post) {
 }
 
 export default function () {
-    extend(CommentPost.prototype, 'init', function () {
-        if (!this.props.post.discussion().canSeeMasonAnswers() || !showFieldsOnPost(this.props.post)) {
+    extend(CommentPost.prototype, 'oninit', function () {
+        if (!this.attrs.post.discussion().canSeeMasonAnswers() || !showFieldsOnPost(this.attrs.post)) {
             return;
         }
 
         this.subtree.check(() => {
             // Create a string with all answer ids
             // If answers change this string will be different
-            return this.props.post.discussion().masonAnswers().map(answer => answer.id()).join(',');
+            return this.attrs.post.discussion().masonAnswers().map(answer => answer.id()).join(',');
         });
     });
 
     extend(CommentPost.prototype, 'content', function (content) {
-        if (!this.props.post.discussion().canSeeMasonAnswers() || !showFieldsOnPost(this.props.post)) {
+        if (!this.attrs.post.discussion().canSeeMasonAnswers() || !showFieldsOnPost(this.attrs.post)) {
             return;
         }
 
@@ -32,7 +32,7 @@ export default function () {
         // Insert the new content just after the header
         // or at the very beginning if the header is not found
         content.splice(postHeaderIndex === -1 ? 0 : postHeaderIndex + 1, 0, FieldsViewer.component({
-            discussion: this.props.post.discussion(),
+            discussion: this.attrs.post.discussion(),
         }));
     });
 }

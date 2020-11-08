@@ -21,6 +21,6 @@ return [
         });
     },
     'down' => function (Builder $schema) {
-        $schema->drop('fof_mason_answers');
+        $schema->dropIfExists('fof_mason_answers');
     },
 ];

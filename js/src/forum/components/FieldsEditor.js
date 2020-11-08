@@ -8,8 +8,12 @@ import FieldEditText from './FieldEditText';
 import FieldEditTags from './FieldEditTags';
 import FieldGrid from './FieldGrid';
 
+/* global m */
+
 export default class FieldsEditor extends Component {
-    init() {
+    oninit(vnode) {
+        super.oninit(vnode);
+
         this.fields = sortByAttribute(app.store.all('mason-fields'));
 
         // Index to quickly do a reverse lookup from answer to field
@@ -26,11 +30,7 @@ export default class FieldsEditor extends Component {
     }
 
     view() {
-        return m('form.Mason-Fields.Mason-Fields--editor', {
-            onsubmit(event) {
-                event.preventDefault();
-            },
-        }, [
+        return m('.Mason-Fields.Mason-Fields--editor', [
             this.headItems().toArray(),
             FieldGrid.component({
                 items: this.fieldItems().toArray(),
@@ -40,7 +40,7 @@ export default class FieldsEditor extends Component {
 
     updateSelection(field, fieldAnswers) {
         // Keep only answers to other fields
-        let answers = this.props.answers.filter(
+        let answers = this.attrs.answers.filter(
             answer => {
                 const reverseFieldLookup = this.answerToFieldIndex[answer.id()];
 
@@ -56,7 +56,7 @@ export default class FieldsEditor extends Component {
 
         answers = answers.concat(fieldAnswers);
 
-        this.props.onchange(answers);
+        this.attrs.onchange(answers);
     }
 
     headItems() {
@@ -74,10 +74,10 @@ export default class FieldsEditor extends Component {
 
         if (app.forum.attribute('fof-mason.tags-as-fields')) {
             items.add('tags', FieldEditTags.component({
-                discussion: this.props.discussion,
+                discussion: this.attrs.discussion,
                 onchange: tags => {
-                    if (this.props.ontagchange) {
-                        this.props.ontagchange(tags);
+                    if (this.attrs.ontagchange) {
+                        this.attrs.ontagchange(tags);
                     }
                 },
             }));
@@ -86,7 +86,7 @@ export default class FieldsEditor extends Component {
         this.fields.forEach(field => {
             const inputAttrs = {
                 field,
-                answers: this.props.answers,
+                answers: this.attrs.answers,
                 onchange: fieldAnswers => {
                     // Every input component calls "onchange" with a list of answers from the store
                     this.updateSelection(field, fieldAnswers);

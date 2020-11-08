@@ -7,10 +7,14 @@ import FieldsEditorModal from './FieldsEditorModal';
 import FieldGrid from './FieldGrid';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
+/* global m */
+
 export default class FieldsViewer extends Component {
-    init() {
+    oninit(vnode) {
+        super.oninit(vnode);
+
         this.fields = sortByAttribute(app.store.all('mason-fields'));
-        this.discussion = this.props.discussion;
+        this.discussion = this.attrs.discussion;
     }
 
     view() {
@@ -39,12 +43,11 @@ export default class FieldsViewer extends Component {
         if (this.discussion.canUpdateMasonAnswers()) {
             items.add('edit', Button.component({
                 className: 'Button Mason-Fields--edit',
-                children: app.translator.trans('fof-mason.forum.discussion-controls.edit-answers'),
                 icon: 'fas fa-pen',
-                onclick: () => app.modal.show(new FieldsEditorModal({
+                onclick: () => app.modal.show(FieldsEditorModal, {
                     discussion: this.discussion,
-                })),
-            }));
+                }),
+            }, app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')));
         }
 
         if (app.forum.attribute('fof-mason.fields-section-title')) {
@@ -62,7 +65,7 @@ export default class FieldsViewer extends Component {
             const answers = sortByAttribute(this.discussion.masonAnswers().filter(answer => {
                 // It's necessary to compare the field() relationship
                 // Because field.suggested_answers() won't contain new and user answers
-                return answer.field().id() === field.id();
+                return answer.field() && answer.field().id() === field.id();
             }));
 
             let answer_list = answers.map(answer => m('span.Mason-Inline-Answer', answer.content()));

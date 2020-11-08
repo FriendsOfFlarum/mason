@@ -5,22 +5,14 @@ namespace FoF\Mason\Repositories;
 use FoF\Mason\Field;
 use FoF\Mason\Validators\FieldValidator;
 use Illuminate\Cache\Repository;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class FieldRepository
 {
-    /**
-     * @var Field
-     */
     protected $field;
-
-    /**
-     * @var FieldValidator
-     */
     protected $validator;
-
-    /**
-     * @var Repository
-     */
     protected $cache;
 
     public function __construct(Field $field, FieldValidator $validator, Repository $cache)
@@ -30,36 +22,29 @@ class FieldRepository
         $this->cache = $cache;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    protected function query()
+    protected function query(): Builder
     {
         return $this->field->newQuery()->orderBy('sort', 'desc');
     }
 
     /**
      * @param $id
-     * @return Field
+     * @return Field|Model
      */
-    public function findOrFail($id)
+    public function findOrFail($id): Field
     {
         return $this->field->newQuery()->findOrFail($id);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection|Field[]
+     * @return Collection|Field[]
      */
-    public function all()
+    public function all(): Collection
     {
         return $this->query()->get();
     }
 
-    /**
-     * @param array $attributes
-     * @return Field
-     */
-    public function store(array $attributes)
+    public function store(array $attributes): Field
     {
         $this->validator->assertValid($attributes);
 
@@ -69,12 +54,7 @@ class FieldRepository
         return $field;
     }
 
-    /**
-     * @param Field $field
-     * @param array $attributes
-     * @return Field
-     */
-    public function update(Field $field, array $attributes)
+    public function update(Field $field, array $attributes): Field
     {
         $this->validator->assertValid($attributes);
 
@@ -84,9 +64,6 @@ class FieldRepository
         return $field;
     }
 
-    /**
-     * @param Field $field
-     */
     public function delete(Field $field)
     {
         $field->delete();
@@ -95,7 +72,7 @@ class FieldRepository
     public function sorting(array $sorting)
     {
         foreach ($sorting as $i => $fieldId) {
-            $this->field->where('id', $fieldId)->update(['sort' => $i]);
+            $this->field->newQuery()->where('id', $fieldId)->update(['sort' => $i]);
         }
     }
 }

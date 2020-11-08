@@ -6,9 +6,13 @@ import Button from 'flarum/components/Button';
 import Switch from 'flarum/components/Switch';
 import FieldAnswersEdit from './FieldAnswersEdit';
 
+/* global m */
+
 export default class FieldEdit extends Component {
-    init() {
-        this.field = this.props.field;
+    oninit(vnode) {
+        super.oninit(vnode);
+
+        this.field = this.attrs.field;
         this.dirty = false;
         this.processing = false;
         this.toggleFields = false;
@@ -63,7 +67,7 @@ export default class FieldEdit extends Component {
     }
 
     viewFields() {
-        return m('form', [
+        return [
             m('.Mason-Box--row', [
                 m('.Mason-Box--column', [
                     m('h4', app.translator.trans('fof-mason.admin.titles.field-settings')),
@@ -71,7 +75,9 @@ export default class FieldEdit extends Component {
                         m('label', app.translator.trans('fof-mason.admin.fields.name')),
                         m('input.FormControl', {
                             value: this.field.name(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'name')),
+                            oninput: event => {
+                                this.updateAttribute('name', event.target.value);
+                            },
                         }),
                         m('.helpText', app.translator.trans('fof-mason.admin.fields.name-help')),
                     ]),
@@ -79,7 +85,9 @@ export default class FieldEdit extends Component {
                         m('label', app.translator.trans('fof-mason.admin.fields.description')),
                         m('input.FormControl', {
                             value: this.field.description(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'description')),
+                            oninput: event => {
+                                this.updateAttribute('description', event.target.value);
+                            },
                         }),
                         m('.helpText', app.translator.trans('fof-mason.admin.fields.description-help')),
                     ]),
@@ -91,8 +99,7 @@ export default class FieldEdit extends Component {
                                 onchange: value => {
                                     this.updateAttribute('min_answers_count', value ? 1 : 0);
                                 },
-                                children: app.translator.trans('fof-mason.admin.fields.required'),
-                            }),
+                            }, app.translator.trans('fof-mason.admin.fields.required')),
                         ]),
                     ]),
                     m('.Form-group', [
@@ -100,8 +107,7 @@ export default class FieldEdit extends Component {
                             Switch.component({
                                 state: this.field.show_when_empty(),
                                 onchange: this.updateAttribute.bind(this, 'show_when_empty'),
-                                children: app.translator.trans('fof-mason.admin.fields.show_when_empty'),
-                            }),
+                            }, app.translator.trans('fof-mason.admin.fields.show_when_empty')),
                         ]),
                         m('.helpText', app.translator.trans('fof-mason.admin.fields.show_when_empty-help')),
                     ]),
@@ -110,8 +116,7 @@ export default class FieldEdit extends Component {
                             Switch.component({
                                 state: this.field.user_values_allowed(),
                                 onchange: this.updateAttribute.bind(this, 'user_values_allowed'),
-                                children: app.translator.trans('fof-mason.admin.fields.user_values_allowed'),
-                            }),
+                            }, app.translator.trans('fof-mason.admin.fields.user_values_allowed')),
                         ]),
                         m('.helpText', app.translator.trans('fof-mason.admin.fields.user_values_allowed-help')),
                     ]),
@@ -121,10 +126,15 @@ export default class FieldEdit extends Component {
                             disabled: !this.field.user_values_allowed(),
                             placeholder: this.field.user_values_allowed() ? '' : app.translator.trans('fof-mason.admin.fields.enable-user-values-for-validation'),
                             value: this.field.validation(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'validation')),
+                            oninput: event => {
+                                this.updateAttribute('validation', event.target.value);
+                            },
                         }),
                         m('.helpText', app.translator.trans('fof-mason.admin.fields.validation-help', {
-                            a: m('a[href=https://laravel.com/docs/5.1/validation#available-validation-rules][_target=blank]'),
+                            a: m('a', {
+                                href: 'https://laravel.com/docs/6.x/validation#available-validation-rules',
+                                target: '_blank',
+                            }),
                         })),
                     ]),
                     m('.Form-group', [
@@ -134,10 +144,15 @@ export default class FieldEdit extends Component {
                         ]),
                         m('input.FormControl', {
                             value: this.field.icon(),
-                            oninput: m.withAttr('value', this.updateAttribute.bind(this, 'icon')),
+                            oninput: event => {
+                                this.updateAttribute('icon', event.target.value);
+                            },
                         }),
                         m('.helpText', app.translator.trans('fof-mason.admin.fields.icon-help', {
-                            a: m('a[href=https://fontawesome.com/icons?m=free][_target=blank]'),
+                            a: m('a', {
+                                href: 'https://fontawesome.com/icons?m=free',
+                                target: '_blank',
+                            }),
                         })),
                     ]),
                 ]),
@@ -148,24 +163,20 @@ export default class FieldEdit extends Component {
                     })),
                 ]),
             ]),
-            m('li.ButtonGroup', [
+            m('.ButtonGroup', [
                 Button.component({
-                    type: 'submit',
                     className: 'Button Button--primary',
-                    children: app.translator.trans('fof-mason.admin.buttons.' + (this.field.exists ? 'save' : 'add') + '-field'),
                     loading: this.processing,
                     disabled: !this.readyToSave(),
                     onclick: this.saveField.bind(this),
-                }),
+                }, app.translator.trans('fof-mason.admin.buttons.' + (this.field.exists ? 'save' : 'add') + '-field')),
                 (this.field.exists ? Button.component({
-                    type: 'submit',
                     className: 'Button Button--danger',
-                    children: app.translator.trans('fof-mason.admin.buttons.delete-field'),
                     loading: this.processing,
                     onclick: this.deleteField.bind(this),
-                }) : ''),
+                }, app.translator.trans('fof-mason.admin.buttons.delete-field')) : ''),
             ]),
-        ]);
+        ];
     }
 
     updateAttribute(attribute, value) {
@@ -205,8 +216,8 @@ export default class FieldEdit extends Component {
 
     deleteField() {
         if (!confirm(extractText(app.translator.trans('fof-mason.admin.messages.delete-field-confirmation', {
-                name: this.field.name(),
-            })))) {
+            name: this.field.name(),
+        })))) {
             return;
         }
 

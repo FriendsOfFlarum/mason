@@ -3,11 +3,13 @@ import Modal from 'flarum/components/Modal';
 import Button from 'flarum/components/Button';
 import FieldsEditor from './FieldsEditor';
 
-export default class FieldsEditorModal extends Modal {
-    init() {
-        super.init();
+/* global m */
 
-        this.answers = this.props.discussion.masonAnswers();
+export default class FieldsEditorModal extends Modal {
+    oninit(vnode) {
+        super.oninit(vnode);
+
+        this.answers = this.attrs.discussion.masonAnswers();
         this.dirty = false;
         this.processing = false;
 
@@ -17,14 +19,14 @@ export default class FieldsEditorModal extends Modal {
 
     title() {
         return app.translator.trans('fof-mason.forum.answers-modal.edit-title', {
-            title: m('em', this.props.discussion.title()),
+            title: m('em', this.attrs.discussion.title()),
         });
     }
 
     content() {
         return [
             m('.Modal-body', FieldsEditor.component({
-                discussion: this.props.discussion, // Only for the tags feature
+                discussion: this.attrs.discussion, // Only for the tags feature
                 answers: this.answers,
                 onchange: this.answersChanged.bind(this),
                 ontagchange: tags => {
@@ -35,11 +37,10 @@ export default class FieldsEditorModal extends Modal {
             m('.Modal-footer', [
                 Button.component({
                     className: 'Button Button--primary',
-                    children: app.translator.trans('fof-mason.forum.answers-modal.save'),
                     loading: this.processing,
                     disabled: !this.dirty,
                     onclick: this.saveAnswers.bind(this),
-                }),
+                }, app.translator.trans('fof-mason.forum.answers-modal.save')),
             ]),
         ];
     }
@@ -61,7 +62,7 @@ export default class FieldsEditorModal extends Modal {
             relationships.tags = this.tags;
         }
 
-        this.props.discussion.save({
+        this.attrs.discussion.save({
             relationships,
         }).then(() => {
             this.processing = false;

@@ -6,25 +6,15 @@ use FoF\Mason\Api\Serializers\FieldSerializer;
 use FoF\Mason\Repositories\FieldRepository;
 use FoF\Mason\Validators\OrderValidator;
 use Flarum\Api\Controller\AbstractListController;
-use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
 class FieldOrderController extends AbstractListController
 {
-    use AssertPermissionTrait;
-
     public $serializer = FieldSerializer::class;
 
-    /**
-     * @var OrderValidator
-     */
     protected $validator;
-
-    /**
-     * @var FieldRepository
-     */
     protected $fields;
 
     public function __construct(OrderValidator $validator, FieldRepository $fields)
@@ -35,7 +25,7 @@ class FieldOrderController extends AbstractListController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $this->assertAdmin($request->getAttribute('actor'));
+        $request->getAttribute('actor')->assertAdmin();
 
         $attributes = $request->getParsedBody();
 

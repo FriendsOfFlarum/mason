@@ -19,6 +19,6 @@ return [
         });
     },
     'down' => function (Builder $schema) {
-        $schema->drop('fof_mason_discussion_answer');
+        $schema->dropIfExists('fof_mason_discussion_answer');
     },
 ];

@@ -2,11 +2,15 @@ import app from 'flarum/app';
 import Model from 'flarum/Model';
 import Component from 'flarum/Component';
 
+/* global m */
+
 export default class FieldEditText extends Component {
-    init() {
-        this.field = this.props.field;
-        this.answers = this.props.answers;
-        this.onchange = this.props.onchange;
+    oninit(vnode) {
+        super.oninit(vnode);
+
+        this.field = this.attrs.field;
+        this.answers = this.attrs.answers;
+        this.onchange = this.attrs.onchange;
 
         this.content = '';
 
@@ -29,8 +33,8 @@ export default class FieldEditText extends Component {
         return m('input.FormControl', {
             required: this.field.required(),
             value: this.content,
-            oninput: m.withAttr('value', value => {
-                this.content = value;
+            oninput: event => {
+                this.content = event.target.value;
 
                 if (this.content === '') {
                     this.onchange([]);
@@ -48,7 +52,7 @@ export default class FieldEditText extends Component {
 
                     this.onchange([answer]);
                 }
-            }),
+            },
             placeholder: this.fieldPlaceholder(),
         });
     }

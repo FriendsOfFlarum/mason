@@ -17,7 +17,7 @@ export default function () {
                 this.masonAnswers = answers;
             },
             ontagchange: tags => {
-                this.tags = tags;
+                this.composer.fields.tags = tags;
             },
         }));
     });

@@ -14,17 +14,8 @@ use Illuminate\Support\Arr;
 
 class DiscussionSaving
 {
-    /**
-     * @var Factory
-     */
     private $validation;
-    /**
-     * @var FieldRepository
-     */
     private $fields;
-    /**
-     * @var AnswerRepository
-     */
     private $answers;
 
     public function __construct(Factory $validation, FieldRepository $fields, AnswerRepository $answers)

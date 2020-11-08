@@ -30,7 +30,7 @@ class FieldSerializer extends AbstractSerializer
     public function suggested_answers($model)
     {
         /**
-         * @var AnswerRepository
+         * @var $answers AnswerRepository
          */
         $answers = app(AnswerRepository::class);
 
@@ -50,7 +50,7 @@ class FieldSerializer extends AbstractSerializer
         }
 
         /**
-         * @var AnswerRepository
+         * @var $answers AnswerRepository
          */
         $answers = app(AnswerRepository::class);
 

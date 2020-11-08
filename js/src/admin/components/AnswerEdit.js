@@ -5,15 +5,19 @@ import Component from 'flarum/Component';
 import Button from 'flarum/components/Button';
 import Switch from 'flarum/components/Switch';
 
+/* global m */
+
 export default class FieldEdit extends Component {
-    init() {
-        this.answer = this.props.answer;
+    oninit(vnode) {
+        super.oninit(vnode);
+
+        this.answer = this.attrs.answer;
         this.dirty = false;
         this.processing = false;
     }
 
     view() {
-        return m('form.Mason-Box', [
+        return m('.Mason-Box', [
             // Only suggested answers can be reordered
             (this.answer.is_suggested() ? [
                 m('span.fas.fa-arrows-alt.Mason-Box--handle.js-answer-handle'),
@@ -42,24 +46,19 @@ export default class FieldEdit extends Component {
                     // And the unsaved state won't be preserved because the AnswerEdit component changes its place
                     this.saveAnswer();
                 },
-                children: app.translator.trans('fof-mason.admin.fields.is_suggested'),
-            }),
+            }, app.translator.trans('fof-mason.admin.fields.is_suggested')),
             m('.ButtonGroup', [
                 Button.component({
-                    type: 'submit',
                     className: 'Button Button--primary',
-                    children: app.translator.trans('fof-mason.admin.buttons.save-answer'),
                     loading: this.processing,
                     disabled: !this.readyToSave(),
                     onclick: this.saveAnswer.bind(this),
-                }),
+                }, app.translator.trans('fof-mason.admin.buttons.save-answer')),
                 Button.component({
-                    type: 'submit',
                     className: 'Button Button--danger',
-                    children: app.translator.trans('fof-mason.admin.buttons.delete-answer'),
                     loading: this.processing,
                     onclick: this.deleteAnswer.bind(this),
-                }),
+                }, app.translator.trans('fof-mason.admin.buttons.delete-answer')),
             ]),
         ]);
     }
@@ -93,8 +92,8 @@ export default class FieldEdit extends Component {
 
     deleteAnswer() {
         if (!confirm(extractText(app.translator.trans('fof-mason.admin.messages.delete-answer-confirmation', {
-                content: this.answer.content(),
-            })))) {
+            content: this.answer.content(),
+        })))) {
             return;
         }
 
