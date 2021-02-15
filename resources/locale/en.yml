@@ -28,9 +28,6 @@ fof-mason:
             edit-answer: Edit Answer
             edit-answer-prompt: Edit content everywhere it is used
             show-user-answers: Show non-suggested answers ({count})
-        menu:
-            title: Mason
-            description: Configure custom discussion fields.
         fields:
             add: Add field {field}
             edit: Edit field {field}
@@ -102,7 +99,6 @@ fof-mason:
             field-settings: Field settings
             field-answers: Field answers
         permissions:
-            mason-heading: Mason
             see-own-fields: See fields on own existing discussions
             see-other-fields: See fields on all existing discussions
             fill-fields: Fill fields on new discussions

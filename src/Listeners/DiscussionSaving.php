@@ -1,6 +1,6 @@
 <?php
 
-namespace FoF\Mason\Handlers;
+namespace FoF\Mason\Listeners;
 
 use FoF\Mason\Field;
 use FoF\Mason\Repositories\AnswerRepository;
@@ -31,7 +31,7 @@ class DiscussionSaving
      * @throws \Illuminate\Validation\ValidationException
      * @throws ValidationException
      */
-    public function __invoke(Saving $event)
+    public function handle(Saving $event)
     {
         $hasAnswersData = isset($event->data['relationships']['masonAnswers']['data']);
 

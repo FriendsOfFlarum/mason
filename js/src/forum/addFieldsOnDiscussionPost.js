@@ -18,7 +18,17 @@ export default function () {
         this.subtree.check(() => {
             // Create a string with all answer ids
             // If answers change this string will be different
-            return this.attrs.post.discussion().masonAnswers().map(answer => answer.id()).join(',');
+            return this.attrs.post.discussion().masonAnswers().map(answer => {
+                // Sometimes answer will be undefined while the data is being saved in FieldsEditorModal
+                if (!answer) {
+                    return '';
+                }
+
+                // There is a time after discussion.save() is called but before the data included in response is parsed
+                // where Flarum will already have updated the relationship, but answer.field will be missing and this causes
+                // the field to be skipped in FieldsViewer. So we also need to check the load status of that relationship
+                return JSON.stringify([answer.id(), !!answer.field()]);
+            }).join(',');
         });
     });
 

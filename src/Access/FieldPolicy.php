@@ -2,14 +2,12 @@
 
 namespace FoF\Mason\Access;
 
+use Flarum\User\Access\AbstractPolicy;
 use FoF\Mason\Field;
-use Flarum\User\AbstractPolicy;
 use Flarum\User\User;
 
 class FieldPolicy extends AbstractPolicy
 {
-    protected $model = Field::class;
-
     /**
      * A custom answer can only be created if the field setting allow it (or admin)
      * @param User $user
@@ -18,7 +16,9 @@ class FieldPolicy extends AbstractPolicy
      */
     public function useCustomAnswer(User $user, Field $field)
     {
-        return $field->user_values_allowed;
+        if ($field->user_values_allowed) {
+            return $this->allow();
+        }
     }
 
     /**
@@ -29,6 +29,8 @@ class FieldPolicy extends AbstractPolicy
      */
     public function skipField(User $user, Field $field)
     {
-        return $field->min_answers_count === 0 || $user->can('fof-mason.skip-required-fields');
+        if ($field->min_answers_count === 0 || $user->can('fof-mason.skip-required-fields')) {
+            return $this->allow();
+        }
     }
 }

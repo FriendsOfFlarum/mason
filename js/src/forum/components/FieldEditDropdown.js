@@ -6,19 +6,14 @@ import sortByAttribute from './../../lib/helpers/sortByAttribute';
 /* global m */
 
 export default class FieldEditDropdown extends Component {
-    oninit(vnode) {
-        super.oninit(vnode);
+    view(vnode) {
+        // To be certain to not work on object copies, we always read the current one from vnode.attrs
+        const {field, answers, onchange} = vnode.attrs;
 
-        this.field = this.attrs.field;
-        this.answers = this.attrs.answers;
-        this.onchange = this.attrs.onchange;
-    }
-
-    view() {
         let selectedAnswerIdsForThisField = [];
 
-        this.field.suggested_answers().forEach(answer => {
-            const answerIndex = this.answers.findIndex(a => {
+        field.suggested_answers().forEach(answer => {
+            const answerIndex = answers.findIndex(a => {
                 // Temporary store entries seem to turn into undefined after saving
                 if (typeof a === 'undefined') {
                     return false;
@@ -34,7 +29,7 @@ export default class FieldEditDropdown extends Component {
 
         return m('span.Select', [
             m('select.Select-input.FormControl', {
-                multiple: this.field.multiple(),
+                multiple: field.multiple(),
                 onchange: event => {
                     let answers = [];
 
@@ -48,16 +43,16 @@ export default class FieldEditDropdown extends Component {
                         }
                     }
 
-                    this.onchange(answers);
+                    onchange(answers);
                 },
             }, [
-                (this.field.multiple() ? null : m('option', {
+                (field.multiple() ? null : m('option', {
                     value: 'none',
                     selected: selectedAnswerIdsForThisField.length === 0,
-                    disabled: this.field.required(),
-                    hidden: this.placeholderHidden(),
-                }, this.selectPlaceholder())),
-                sortByAttribute(this.field.suggested_answers()).map(
+                    disabled: field.required(),
+                    hidden: this.placeholderHidden(field),
+                }, this.selectPlaceholder(field))),
+                sortByAttribute(field.suggested_answers()).map(
                     answer => m('option', {
                         value: answer.id(),
                         selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,
@@ -68,30 +63,30 @@ export default class FieldEditDropdown extends Component {
         ]);
     }
 
-    placeholderHidden() {
+    placeholderHidden(field) {
         // If labels are hidden, we need to always show the default value (even if it can't be selected)
         // Otherwise when the field is "required" you can't find the name of the field anymore once something is selected
         if (app.forum.attribute('fof-mason.labels-as-placeholders')) {
             return false;
         }
 
-        return this.field.required();
+        return field.required();
     }
 
-    selectPlaceholder() {
+    selectPlaceholder(field) {
         let text = '';
 
         if (app.forum.attribute('fof-mason.labels-as-placeholders')) {
-            text += this.field.name();
+            text += field.name();
 
-            if (this.field.required()) {
-                text+= ' *';
+            if (field.required()) {
+                text += ' *';
             }
 
             text += ' - ';
         }
 
-        if (this.field.required()) {
+        if (field.required()) {
             text += app.translator.trans('fof-mason.forum.answers.choose-option');
         } else {
             text += app.translator.trans('fof-mason.forum.answers.no-option-selected');

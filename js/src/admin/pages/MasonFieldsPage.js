@@ -1,14 +1,14 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
 import app from 'flarum/app';
-import Page from 'flarum/components/Page';
+import ExtensionPage from 'flarum/components/ExtensionPage';
 import FieldEdit from './../components/FieldEdit';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 import MasonSettings from './../components/MasonSettings';
 
 /* global m, $ */
 
-export default class MasonFieldsPage extends Page {
+export default class MasonFieldsPage extends ExtensionPage {
     oninit(vnode) {
         super.oninit(vnode);
 
@@ -45,7 +45,7 @@ export default class MasonFieldsPage extends Page {
         this.configSortable();
     }
 
-    view() {
+    content() {
         const fields = app.store.all('mason-fields');
 
         let fieldsList = [];
@@ -61,7 +61,7 @@ export default class MasonFieldsPage extends Page {
                 })));
             });
 
-        return m('.container', [
+        return m('.ExtensionPage-settings', m('.container', [
             m('h2', app.translator.trans('fof-mason.admin.titles.fields')),
             m('.Mason-Container', [
                 m('.js-fields-container', fieldsList),
@@ -71,7 +71,7 @@ export default class MasonFieldsPage extends Page {
             ]),
             m('h2', app.translator.trans('fof-mason.admin.titles.settings')),
             MasonSettings.component(),
-        ]);
+        ]));
     }
 
     updateSort(sorting) {
