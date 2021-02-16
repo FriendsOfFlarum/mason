@@ -1,9 +1,15 @@
 import {extend} from 'flarum/extend';
 import app from 'flarum/app';
 import CommentPost from 'flarum/components/CommentPost';
+import DiscussionPage from 'flarum/components/DiscussionPage';
 import FieldsViewer from './components/FieldsViewer';
 
 function showFieldsOnPost(post) {
+    // The CommentPost component is also visible on the user profile, but we don't want to render the fields there
+    if (!app.current.matches(DiscussionPage)) {
+        return false;
+    }
+
     // We only add fields to the first post, and only if fields are not displayed in the hero
     // TODO: what if the first post is deleted ?
     return post.number() === 1 && !app.forum.attribute('fof-mason.fields-in-hero');
@@ -18,7 +24,7 @@ export default function () {
         this.subtree.check(() => {
             // Create a string with all answer ids
             // If answers change this string will be different
-            return this.attrs.post.discussion().masonAnswers().map(answer => {
+            return (this.attrs.post.discussion().masonAnswers() || []).map(answer => {
                 // Sometimes answer will be undefined while the data is being saved in FieldsEditorModal
                 if (!answer) {
                     return '';

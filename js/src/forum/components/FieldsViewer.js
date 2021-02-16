@@ -62,7 +62,7 @@ export default class FieldsViewer extends Component {
 
         this.fields.forEach(field => {
             // Discussion answers to this field
-            const answers = sortByAttribute(this.discussion.masonAnswers().filter(answer => {
+            const answers = sortByAttribute((this.discussion.masonAnswers() || []).filter(answer => {
                 // It's necessary to compare the field() relationship
                 // Because field.suggested_answers() won't contain new and user answers
                 return answer.field() && answer.field().id() === field.id();
