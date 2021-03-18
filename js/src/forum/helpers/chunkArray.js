@@ -7,9 +7,9 @@
  * @returns {Array}
  */
 export default function (items, itemsPerChunk) {
-    let R = [];
-    for (let i = 0; i < items.length; i += itemsPerChunk) {
-        R.push(items.slice(i, i + itemsPerChunk));
-    }
-    return R;
+  let R = [];
+  for (let i = 0; i < items.length; i += itemsPerChunk) {
+    R.push(items.slice(i, i + itemsPerChunk));
+  }
+  return R;
 }
