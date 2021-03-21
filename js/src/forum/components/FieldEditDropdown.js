@@ -27,12 +27,12 @@ export default class FieldEditDropdown extends Component {
       }
     });
 
-    return m('span.Select', [
-      m(
-        'select.Select-input.FormControl',
-        {
-          multiple: field.multiple(),
-          onchange: (event) => {
+    return (
+      <span class="Select">
+        <select
+          class="Select-input FormControl"
+          multiple={field.multiple()}
+          onchange={(event) => {
             let answers = [];
 
             for (let option of event.target.options) {
@@ -46,35 +46,27 @@ export default class FieldEditDropdown extends Component {
             }
 
             onchange(answers);
-          },
-        },
-        [
-          field.multiple()
-            ? null
-            : m(
-                'option',
-                {
-                  value: 'none',
-                  selected: selectedAnswerIdsForThisField.length === 0,
-                  disabled: field.required(),
-                  hidden: this.placeholderHidden(field),
-                },
-                this.selectPlaceholder(field)
-              ),
-          sortByAttribute(field.suggested_answers()).map((answer) =>
-            m(
-              'option',
-              {
-                value: answer.id(),
-                selected: selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1,
-              },
-              answer.content()
-            )
-          ),
-        ]
-      ),
-      icon('fas fa-caret-down', { className: 'Select-caret' }),
-    ]);
+          }}
+        >
+          {!field.multiple() && (
+            <option
+              value="none"
+              selected={selectedAnswerIdsForThisField.length === 0}
+              disabled={field.required()}
+              hidden={this.placeholderHidden(field)}
+            >
+              this.selectPlaceholder(field)
+            </option>
+          )}
+          {sortByAttribute(field.suggested_answers()).map((answer) => (
+            <option value={answer.id()} selected={selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1}>
+              {answer.content()}
+            </option>
+          ))}
+        </select>
+        {icon('fas fa-caret-down', { className: 'Select-caret' })}
+      </span>
+    );
   }
 
   placeholderHidden(field) {

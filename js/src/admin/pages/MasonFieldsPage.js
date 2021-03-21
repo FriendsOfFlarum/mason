@@ -52,16 +52,9 @@ export default class MasonFieldsPage extends ExtensionPage {
     sortByAttribute(fields).forEach((field) => {
       // Build array of fields to show.
       fieldsList.push(
-        m(
-          '.js-field-data',
-          {
-            key: field.id(),
-            'data-id': field.id(),
-          },
-          FieldEdit.component({
-            field,
-          })
-        )
+        <div class="js-field-data" key={field.id()} data-id={field.id()}>
+          <FieldEdit field={field} />
+        </div>
       );
     });
 

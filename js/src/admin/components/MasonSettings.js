@@ -26,90 +26,84 @@ export default class MasonSettings extends Component {
   }
 
   view() {
-    return m('.Mason-Container', [
-      m('.Form-group', [
-        m('label', app.translator.trans('fof-mason.admin.settings.fields-section-title')),
-        m('input.FormControl', {
-          value: this.fieldsSectionTitle,
-          placeholder: app.translator.trans('fof-mason.admin.settings.fields-section-title-placeholder'),
-          onchange: (event) => {
-            this.updateSetting('fieldsSectionTitle', 'fof-mason.fields-section-title', event.target.value);
-          },
-        }),
-        m('.helpText', app.translator.trans('fof-mason.admin.settings.fields-section-title-help')),
-      ]),
-      m('.Form-group', [
-        m('label', app.translator.trans('fof-mason.admin.settings.column-count')),
-        Select.component({
-          options: this.columnOptions,
-          value: this.columnCount,
-          onchange: this.updateSetting.bind(this, 'columnCount', 'fof-mason.column-count'),
-        }),
-      ]),
-      m('.Form-group', [
-        m(
-          'label',
-          Switch.component(
-            {
-              state: this.labelsAsPlaceholders,
-              onchange: this.updateSetting.bind(this, 'labelsAsPlaceholders', 'fof-mason.labels-as-placeholders'),
-            },
-            app.translator.trans('fof-mason.admin.settings.labels-as-placeholders')
-          )
-        ),
-        m('.helpText', app.translator.trans('fof-mason.admin.settings.labels-as-placeholders-help')),
-      ]),
-      m('.Form-group', [
-        m(
-          'label',
-          Switch.component(
-            {
-              state: this.fieldsInHero,
-              onchange: this.updateSetting.bind(this, 'fieldsInHero', 'fof-mason.fields-in-hero'),
-            },
-            app.translator.trans('fof-mason.admin.settings.fields-in-hero')
-          )
-        ),
-      ]),
-      m('.Form-group', [
-        m(
-          'label',
-          Switch.component(
-            {
-              state: this.hideEmptyFieldsSection,
-              onchange: this.updateSetting.bind(this, 'hideEmptyFieldsSection', 'fof-mason.hide-empty-fields-section'),
-            },
-            app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section')
-          )
-        ),
-        m('.helpText', app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section-help')),
-      ]),
-      m('.Form-group', [
-        m(
-          'label',
-          Switch.component(
-            {
-              state: this.tagsAsFields,
-              onchange: this.updateSetting.bind(this, 'tagsAsFields', 'fof-mason.tags-as-fields'),
-            },
-            app.translator.trans('fof-mason.admin.settings.tags-as-field')
-          )
-        ),
-        m('.helpText', app.translator.trans('fof-mason.admin.settings.tags-as-field-help')),
-      ]),
-      this.tagsAsFields
-        ? m('.Form-group', [
-            m('label', app.translator.trans('fof-mason.admin.settings.tags-field-name')),
-            m('input.FormControl', {
-              value: this.tagsFieldName,
-              placeholder: app.translator.trans('fof-mason.admin.settings.tags-field-name-placeholder'),
-              onchange: (event) => {
+    return (
+      <div class="Mason-Container">
+        <div class="Form-group">
+          <label>
+            {app.translator.trans('fof-mason.admin.settings.fields-section-title')}
+            <input
+              class="FormControl"
+              value={this.fieldsSectionTitle}
+              placeholder={app.translator.trans('fof-mason.admin.settings.fields-section-title-placeholder')}
+              onchange={(event) => {
+                this.updateSetting('fieldsSectionTitle', 'fof-mason.fields-section-title', event.target.value);
+              }}
+            />
+          </label>
+          <div class="helpText">{app.translator.trans('fof-mason.admin.settings.fields-section-title-help')}</div>
+        </div>
+        <div class="Form-group">
+          <label>
+            {app.translator.trans('fof-mason.admin.settings.column-count')},
+            <Select
+              options={this.columnOptions}
+              value={this.columnCount}
+              onchange={this.updateSetting.bind(this, 'columnCount', 'fof-mason.column-count')}
+            />
+          </label>
+        </div>
+        <div class="Form-group">
+          <label>
+            <Switch
+              state={this.labelsAsPlaceholders}
+              onchange={this.updateSetting.bind(this, 'labelsAsPlaceholders', 'fof-mason.labels-as-placeholders')}
+            >
+              {app.translator.trans('fof-mason.admin.settings.labels-as-placeholders')}
+            </Switch>
+          </label>
+          <div class="helpText">{app.translator.trans('fof-mason.admin.settings.labels-as-placeholders-help')}</div>
+        </div>
+        <div class="Form-group">
+          <label>
+            <Switch state={this.fieldsInHero} onchange={this.updateSetting.bind(this, 'fieldsInHero', 'fof-mason.fields-in-hero')}>
+              {app.translator.trans('fof-mason.admin.settings.fields-in-hero')}
+            </Switch>
+          </label>
+        </div>
+        <div class="Form-group">
+          <label>
+            <Switch
+              state={this.hideEmptyFieldsSection}
+              onchange={this.updateSetting.bind(this, 'hideEmptyFieldsSection', 'fof-mason.hide-empty-fields-section')}
+            >
+              {app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section')}
+            </Switch>
+          </label>
+          <div class="helpText">{app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section-help')}</div>
+        </div>
+        <div class="Form-group">
+          <label>
+            <Switch state={this.tagsAsFields} onchange={this.updateSetting.bind(this, 'tagsAsFields', 'fof-mason.tags-as-fields')}>
+              {app.translator.trans('fof-mason.admin.settings.tags-as-field')}
+            </Switch>
+          </label>
+          <div class="helpText">{app.translator.trans('fof-mason.admin.settings.tags-as-field-help')}</div>
+        </div>
+        {this.tagsAsFields && (
+          <div class="Form-group">
+            <label>app.translator.trans('fof-mason.admin.settings.tags-field-name')</label>
+            <input
+              class="FormControl"
+              value={this.tagsFieldName}
+              placeholder={app.translator.trans('fof-mason.admin.settings.tags-field-name-placeholder')}
+              onchange={(event) => {
                 this.updateSetting('tagsFieldName', 'fof-mason.tags-field-name', event.target.value);
-              },
-            }),
-          ])
-        : null,
-    ]);
+              }}
+            />
+          </div>
+        )}
+      </div>
+    );
   }
 
   /**
