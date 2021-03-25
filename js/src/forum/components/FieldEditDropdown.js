@@ -1,6 +1,6 @@
-import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import Component from 'flarum/Component';
+import app from 'flarum/forum/app';
+import icon from 'flarum/common/helpers/icon';
+import Component from 'flarum/common/Component';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 
 /* global m */

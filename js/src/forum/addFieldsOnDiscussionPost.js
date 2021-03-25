@@ -1,7 +1,7 @@
-import {extend} from 'flarum/extend';
-import app from 'flarum/app';
-import CommentPost from 'flarum/components/CommentPost';
-import DiscussionPage from 'flarum/components/DiscussionPage';
+import {extend} from 'flarum/common/extend';
+import app from 'flarum/forum/app';
+import CommentPost from 'flarum/forum/components/CommentPost';
+import DiscussionPage from 'flarum/forum/components/DiscussionPage';
 import FieldsViewer from './components/FieldsViewer';
 
 function showFieldsOnPost(post) {

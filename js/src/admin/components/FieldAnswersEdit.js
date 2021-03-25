@@ -1,9 +1,9 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
-import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import Component from 'flarum/Component';
-import Button from 'flarum/components/Button';
+import app from 'flarum/admin/app';
+import icon from 'flarum/common/helpers/icon';
+import Component from 'flarum/common/Component';
+import Button from 'flarum/common/components/Button';
 import AnswerEdit from './AnswerEdit';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 

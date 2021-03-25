@@ -1,9 +1,9 @@
-import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import extractText from 'flarum/utils/extractText';
-import Component from 'flarum/Component';
-import Button from 'flarum/components/Button';
-import Switch from 'flarum/components/Switch';
+import app from 'flarum/admin/app';
+import icon from 'flarum/common/helpers/icon';
+import extractText from 'flarum/common/utils/extractText';
+import Component from 'flarum/common/Component';
+import Button from 'flarum/common/components/Button';
+import Switch from 'flarum/common/components/Switch';
 
 /* global m */
 

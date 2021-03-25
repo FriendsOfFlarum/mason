@@ -1,6 +1,6 @@
-import {extend} from 'flarum/extend';
-import app from 'flarum/app';
-import DiscussionComposer from 'flarum/components/DiscussionComposer';
+import {extend} from 'flarum/common/extend';
+import app from 'flarum/forum/app';
+import DiscussionComposer from 'flarum/forum/components/DiscussionComposer';
 import FieldsEditor from './components/FieldsEditor';
 
 export default function () {

@@ -1,8 +1,8 @@
-import app from 'flarum/app';
-import saveSettings from "flarum/utils/saveSettings";
-import Component from 'flarum/Component';
-import Select from 'flarum/components/Select';
-import Switch from 'flarum/components/Switch';
+import app from 'flarum/admin/app';
+import saveSettings from "flarum/admin/utils/saveSettings";
+import Component from 'flarum/common/Component';
+import Select from 'flarum/common/components/Select';
+import Switch from 'flarum/common/components/Switch';
 
 /* global m */
 

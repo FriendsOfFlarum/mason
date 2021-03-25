@@ -1,7 +1,7 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
-import app from 'flarum/app';
-import ExtensionPage from 'flarum/components/ExtensionPage';
+import app from 'flarum/admin/app';
+import ExtensionPage from 'flarum/common/components/ExtensionPage';
 import FieldEdit from './../components/FieldEdit';
 import sortByAttribute from './../../lib/helpers/sortByAttribute';
 import MasonSettings from './../components/MasonSettings';

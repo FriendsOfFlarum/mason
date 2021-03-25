@@ -1,6 +1,6 @@
-import app from 'flarum/app';
-import Model from 'flarum/Model';
-import Component from 'flarum/Component';
+import app from 'flarum/forum/app';
+import Model from 'flarum/common/Model';
+import Component from 'flarum/common/Component';
 
 /* global m */
 

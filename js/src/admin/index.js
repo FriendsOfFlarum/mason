@@ -1,4 +1,4 @@
-import app from 'flarum/app';
+import app from 'flarum/admin/app';
 import Answer from './../lib/models/Answer';
 import Field from './../lib/models/Field';
 import MasonFieldsPage from './pages/MasonFieldsPage';

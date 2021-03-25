@@ -1,5 +1,5 @@
-import {override} from 'flarum/extend';
-import Model from 'flarum/Model';
+import {override} from 'flarum/common/extend';
+import Model from 'flarum/common/Model';
 import Answer from './../lib/models/Answer';
 
 export default function () {

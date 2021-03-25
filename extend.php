@@ -55,7 +55,7 @@ return [
         ->addInclude('masonAnswers.field'),
     (new Extend\ApiSerializer(DiscussionSerializer::class))
         ->hasMany('masonAnswers', AnswerSerializer::class)
-        ->mutate(function (DiscussionSerializer $serializer, Discussion $discussion): array {
+        ->attributes(function (DiscussionSerializer $serializer, Discussion $discussion): array {
             $canSee = $serializer->getActor()->can('seeMasonAnswers', $discussion);
 
             if (!$canSee) {

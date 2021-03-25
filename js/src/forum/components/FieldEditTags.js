@@ -1,7 +1,7 @@
-import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import Component from 'flarum/Component';
-import sortTags from 'flarum/tags/utils/sortTags';
+import app from 'flarum/forum/app';
+import icon from 'flarum/common/helpers/icon';
+import Component from 'flarum/common/Component';
+import sortTags from 'flarum/tags/common/utils/sortTags';
 
 /* global m */
 

@@ -1,5 +1,5 @@
-import app from 'flarum/app';
-import Component from 'flarum/Component';
+import app from 'flarum/forum/app';
+import Component from 'flarum/common/Component';
 import chunkArray from './../helpers/chunkArray';
 
 /* global m */

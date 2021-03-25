@@ -1,4 +1,4 @@
-import Model from 'flarum/Model';
+import Model from 'flarum/common/Model';
 
 export default class Answer extends Model {
     content = Model.attribute('content');
