@@ -32,9 +32,9 @@ class FieldSerializer extends AbstractSerializer
         /**
          * @var $answers AnswerRepository
          */
-        $answers = app(AnswerRepository::class);
+        $answers = resolve(AnswerRepository::class);
 
-        return new Relationship(new Collection($answers->suggested($model), app(AnswerSerializer::class)));
+        return new Relationship(new Collection($answers->suggested($model), resolve(AnswerSerializer::class)));
     }
 
     /**
@@ -52,8 +52,8 @@ class FieldSerializer extends AbstractSerializer
         /**
          * @var $answers AnswerRepository
          */
-        $answers = app(AnswerRepository::class);
+        $answers = resolve(AnswerRepository::class);
 
-        return new Relationship(new Collection($answers->all($model), app(AnswerSerializer::class)));
+        return new Relationship(new Collection($answers->all($model), resolve(AnswerSerializer::class)));
     }
 }

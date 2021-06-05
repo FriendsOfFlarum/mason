@@ -19,7 +19,7 @@ class LoadForumFieldsRelationship
         /**
          * @var FieldRepository $fields
          */
-        $fields = app(FieldRepository::class);
+        $fields = resolve(FieldRepository::class);
 
         // Fields need to be pre-loaded for the discussion composer, and also to be able to show empty fields on discussions
         // We first try the permissions the users are most likely to have
