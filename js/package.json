@@ -1,6 +1,7 @@
 {
-    "private": true,
     "name": "@fof/mason",
+    "private": true,
+    "license": "MIT",
     "dependencies": {
         "flarum-webpack-config": "1.0.0",
         "html5sortable": "^0.9.18",
