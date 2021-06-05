@@ -2,13 +2,18 @@
     "private": true,
     "name": "@fof/mason",
     "dependencies": {
-        "flarum-webpack-config": "0.1.0-beta.10",
-        "html5sortable": "^0.9.17",
-        "webpack": "^4.0.0",
-        "webpack-cli": "^3.0.7"
+        "flarum-webpack-config": "1.0.0",
+        "html5sortable": "^0.9.18",
+        "webpack": "^4.46.0",
+        "webpack-cli": "^4.7.0"
     },
     "scripts": {
         "dev": "webpack --mode development --watch",
-        "build": "webpack --mode production"
+        "build": "webpack --mode production",
+        "format": "prettier --write \"**/*.{ts,js,tsx,jsx,json}\""
+    },
+    "devDependencies": {
+        "flarum-tsconfig": "^1.0.0",
+        "prettier": "^2.3.0"
     }
 }
