@@ -7,6 +7,7 @@ use FoF\Mason\Repositories\AnswerRepository;
 use FoF\Mason\Repositories\FieldRepository;
 use FoF\Mason\Validators\OrderValidator;
 use Flarum\Api\Controller\AbstractShowController;
+use Flarum\Http\RequestUtil;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -32,7 +33,7 @@ class AnswerOrderController extends AbstractShowController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $attributes = $request->getParsedBody();
 

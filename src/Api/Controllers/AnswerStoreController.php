@@ -6,6 +6,7 @@ use FoF\Mason\Api\Serializers\FieldSerializer;
 use FoF\Mason\Repositories\AnswerRepository;
 use FoF\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractCreateController;
+use Flarum\Http\RequestUtil;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -29,7 +30,7 @@ class AnswerStoreController extends AbstractCreateController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $fieldId = Arr::get($request->getQueryParams(), 'id');
 
