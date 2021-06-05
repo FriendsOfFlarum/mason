@@ -31,7 +31,7 @@
     "extra": {
         "flarum-extension": {
             "title": "FoF Mason",
-            "category": "discussion",
+            "category": "feature",
             "icon": {
                 "name": "fas fa-dungeon",
                 "backgroundColor": "#e74c3c",
