@@ -14,7 +14,7 @@ class ForumAttributes
         /**
          * @var $settings SettingsRepositoryInterface
          */
-        $settings = app(SettingsRepositoryInterface::class);
+        $settings = resolve(SettingsRepositoryInterface::class);
 
         $actor = $serializer->getActor();
 

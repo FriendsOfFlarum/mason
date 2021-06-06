@@ -81,7 +81,7 @@ class DiscussionSaving
                 /**
                  * @var $answerValidator UserAnswerValidator
                  */
-                $answerValidator = app(UserAnswerValidator::class);
+                $answerValidator = resolve(UserAnswerValidator::class);
                 $answerValidator->setField($field);
                 $answerValidator->assertValid([
                     $field->name => $content,
