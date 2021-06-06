@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason;
 
 use Flarum\Api\Controller\CreateDiscussionController;
@@ -18,12 +27,12 @@ use FoF\Mason\Listeners\DiscussionSaving;
 
 return [
     (new Extend\Frontend('forum'))
-        ->css(__DIR__ . '/resources/less/forum.less')
-        ->js(__DIR__ . '/js/dist/forum.js'),
+        ->css(__DIR__.'/resources/less/forum.less')
+        ->js(__DIR__.'/js/dist/forum.js'),
 
     (new Extend\Frontend('admin'))
-        ->css(__DIR__ . '/resources/less/admin.less')
-        ->js(__DIR__ . '/js/dist/admin.js'),
+        ->css(__DIR__.'/resources/less/admin.less')
+        ->js(__DIR__.'/js/dist/admin.js'),
 
     (new Extend\Routes('api'))
         // Fields
@@ -39,7 +48,7 @@ return [
         ->patch('/fof/mason/answers/{id:[0-9]+}', 'fof-mason.api.answers.update', Api\Controllers\AnswerUpdateController::class)
         ->delete('/fof/mason/answers/{id:[0-9]+}', 'fof-mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
 
-    (new Extend\Locales(__DIR__ . '/resources/locale')),
+    (new Extend\Locales(__DIR__.'/resources/locale')),
 
     (new Extend\ApiController(ShowForumController::class))
         ->addInclude('masonFields.suggested_answers')
@@ -72,7 +81,7 @@ return [
             }
 
             return [
-                'canSeeMasonAnswers' => $canSee,
+                'canSeeMasonAnswers'    => $canSee,
                 'canUpdateMasonAnswers' => $serializer->getActor()->can('updateMasonAnswers', $discussion),
             ];
         }),

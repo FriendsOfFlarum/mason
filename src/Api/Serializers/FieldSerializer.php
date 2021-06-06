@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason\Api\Serializers;
 
+use Flarum\Api\Serializer\AbstractSerializer;
 use FoF\Mason\Field;
 use FoF\Mason\Repositories\AnswerRepository;
-use Flarum\Api\Serializer\AbstractSerializer;
 use Tobscure\JsonApi\Collection;
 use Tobscure\JsonApi\Relationship;
 
@@ -16,6 +25,7 @@ class FieldSerializer extends AbstractSerializer
      * Get the default set of serialized attributes for a model.
      *
      * @param Field|array $model
+     *
      * @return array
      */
     protected function getDefaultAttributes($model)
@@ -25,6 +35,7 @@ class FieldSerializer extends AbstractSerializer
 
     /**
      * @param Field $model
+     *
      * @return Relationship
      */
     public function suggested_answers($model)
@@ -39,6 +50,7 @@ class FieldSerializer extends AbstractSerializer
 
     /**
      * @param Field $model
+     *
      * @return Relationship
      */
     public function all_answers($model)

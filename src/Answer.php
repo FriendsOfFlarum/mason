@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason;
 
 use Carbon\Carbon;
@@ -7,14 +16,14 @@ use Flarum\Database\AbstractModel;
 use Flarum\Discussion\Discussion;
 
 /**
- * @property int $id
- * @property int $field_id
- * @property Field $field
- * @property string $content
- * @property bool $is_suggested
- * @property bool $sort
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int                                                   $id
+ * @property int                                                   $field_id
+ * @property Field                                                 $field
+ * @property string                                                $content
+ * @property bool                                                  $is_suggested
+ * @property bool                                                  $sort
+ * @property Carbon                                                $created_at
+ * @property Carbon                                                $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|Discussion[] $discussions
  */
 class Answer extends AbstractModel

@@ -1,14 +1,24 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason\Validators;
 
-use FoF\Mason\Field;
 use Flarum\Foundation\AbstractValidator;
+use FoF\Mason\Field;
 
 class UserAnswerValidator extends AbstractValidator
 {
     /**
      * @param Field $field
+     *
      * @return $this
      */
     public function setField(Field $field)

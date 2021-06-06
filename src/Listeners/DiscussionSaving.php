@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason\Listeners;
 
+use Flarum\Discussion\Event\Saving;
+use Flarum\Foundation\ValidationException;
+use Flarum\User\Exception\PermissionDeniedException;
 use FoF\Mason\Field;
 use FoF\Mason\Repositories\AnswerRepository;
 use FoF\Mason\Repositories\FieldRepository;
 use FoF\Mason\Validators\UserAnswerValidator;
-use Flarum\Discussion\Event\Saving;
-use Flarum\Foundation\ValidationException;
-use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Support\Arr;
 
@@ -27,6 +36,7 @@ class DiscussionSaving
 
     /**
      * @param Saving $event
+     *
      * @throws PermissionDeniedException
      * @throws \Illuminate\Validation\ValidationException
      * @throws ValidationException
@@ -42,22 +52,23 @@ class DiscussionSaving
                 if ($event->actor->can('updateMasonAnswers', $event->discussion)) {
                     $this->fillOrUpdateFields($event);
                 } else {
-                    throw new PermissionDeniedException;
+                    throw new PermissionDeniedException();
                 }
             }
         } else { // Discussion creation
             if ($event->actor->can('fillMasonAnswers', $event->discussion)) {
                 $this->fillOrUpdateFields($event);
-            } else if ($hasAnswersData) {
+            } elseif ($hasAnswersData) {
                 // Only throw a permission exception if fields data was included in the request
                 // Users not authorized to use the fields should not have a masonAnswers relationship at all
-                throw new PermissionDeniedException;
+                throw new PermissionDeniedException();
             }
         }
     }
 
     /**
      * @param Saving $event
+     *
      * @throws PermissionDeniedException
      * @throws \Illuminate\Validation\ValidationException
      * @throws ValidationException
@@ -74,7 +85,7 @@ class DiscussionSaving
 
             if ($id = Arr::get($answerRelation, 'id')) {
                 $answer = $this->answers->findOrFail($id);
-            } else if (Arr::has($answerRelation, 'attributes.content') && Arr::has($answerRelation, 'relationships.field.data.id')) {
+            } elseif (Arr::has($answerRelation, 'attributes.content') && Arr::has($answerRelation, 'relationships.field.data.id')) {
                 $field = $this->fields->findOrFail(Arr::get($answerRelation, 'relationships.field.data.id'));
                 $content = trim(Arr::get($answerRelation, 'attributes.content'));
 
@@ -99,7 +110,7 @@ class DiscussionSaving
             }
 
             if (!$event->actor->can('addToDiscussion', $answer)) {
-                throw new PermissionDeniedException;
+                throw new PermissionDeniedException();
             }
 
             $newAnswerIds[] = $answer->id;
@@ -125,13 +136,14 @@ class DiscussionSaving
     /**
      * @param Field $field
      * @param $count
+     *
      * @throws ValidationException
      */
     protected function validateAnswerCount(Field $field, $count)
     {
         $min = $field->min_answers_count;
         $max = $field->max_answers_count;
-        $key = 'Answer Count ' . $field->name;
+        $key = 'Answer Count '.$field->name;
 
         $validator = $this->validation->make(
             [$key => $count],

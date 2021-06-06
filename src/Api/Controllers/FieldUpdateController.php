@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason\Api\Controllers;
 
-use FoF\Mason\Api\Serializers\FieldSerializer;
-use FoF\Mason\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
+use FoF\Mason\Api\Serializers\FieldSerializer;
+use FoF\Mason\Repositories\FieldRepository;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
