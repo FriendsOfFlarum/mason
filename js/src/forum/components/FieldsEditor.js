@@ -104,7 +104,8 @@ export default class FieldsEditor extends Component {
                 >
                     <label>
                         {field.icon() ? <>{icon(field.icon())} </> : null}
-                        {(field.name(), field.required() ? ' *' : null)}
+                        {field.name()}
+                        {field.required() ? ' *' : null}
                     </label>
                     {input}
                     {field.description() ? <div className="helpText">{field.description()}</div> : null})
