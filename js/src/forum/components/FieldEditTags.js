@@ -3,7 +3,6 @@ import icon from 'flarum/common/helpers/icon';
 import Component from 'flarum/common/Component';
 import sortTags from 'flarum/tags/utils/sortTags';
 
-/* global m */
 
 export default class DiscussionFields extends Component {
     oninit(vnode) {
