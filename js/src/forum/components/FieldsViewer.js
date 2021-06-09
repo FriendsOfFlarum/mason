@@ -1,11 +1,11 @@
-import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import ItemList from 'flarum/utils/ItemList';
-import Component from 'flarum/Component';
-import Button from 'flarum/components/Button';
+import app from 'flarum/forum/app';
+import icon from 'flarum/common/helpers/icon';
+import ItemList from 'flarum/common/utils/ItemList';
+import Component from 'flarum/common/Component';
+import Button from 'flarum/common/components/Button';
 import FieldsEditorModal from './FieldsEditorModal';
 import FieldGrid from './FieldGrid';
-import sortByAttribute from './../../lib/helpers/sortByAttribute';
+import sortByAttribute from '@lib/helpers/sortByAttribute';
 
 /* global m */
 
@@ -41,13 +41,20 @@ export default class FieldsViewer extends Component {
         const items = new ItemList();
 
         if (this.discussion.canUpdateMasonAnswers()) {
-            items.add('edit', Button.component({
-                className: 'Button Mason-Fields--edit',
-                icon: 'fas fa-pen',
-                onclick: () => app.modal.show(FieldsEditorModal, {
-                    discussion: this.discussion,
-                }),
-            }, app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')));
+            items.add(
+                'edit',
+                Button.component(
+                    {
+                        className: 'Button Mason-Fields--edit',
+                        icon: 'fas fa-pen',
+                        onclick: () =>
+                            app.modal.show(FieldsEditorModal, {
+                                discussion: this.discussion,
+                            }),
+                    },
+                    app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')
+                )
+            );
         }
 
         if (app.forum.attribute('fof-mason.fields-section-title')) {
@@ -60,15 +67,17 @@ export default class FieldsViewer extends Component {
     fieldsItems() {
         const items = new ItemList();
 
-        this.fields.forEach(field => {
+        this.fields.forEach((field) => {
             // Discussion answers to this field
-            const answers = sortByAttribute((this.discussion.masonAnswers() || []).filter(answer => {
-                // It's necessary to compare the field() relationship
-                // Because field.suggested_answers() won't contain new and user answers
-                return answer.field() && answer.field().id() === field.id();
-            }));
+            const answers = sortByAttribute(
+                (this.discussion.masonAnswers() || []).filter((answer) => {
+                    // It's necessary to compare the field() relationship
+                    // Because field.suggested_answers() won't contain new and user answers
+                    return answer.field() && answer.field().id() === field.id();
+                })
+            );
 
-            let answer_list = answers.map(answer => m('span.Mason-Inline-Answer', answer.content()));
+            let answer_list = answers.map((answer) => m('span.Mason-Inline-Answer', answer.content()));
 
             if (answers.length === 0) {
                 if (field.show_when_empty()) {
@@ -79,13 +88,13 @@ export default class FieldsViewer extends Component {
                 }
             }
 
-            items.add('field-' + field.id(), m('.Mason-Field.Form-group', [
-                m('label', [
-                    (field.icon() ? [icon(field.icon()), ' '] : null),
-                    field.name(),
-                ]),
-                m('.FormControl.Mason-Inline-Answers', answer_list),
-            ]));
+            items.add(
+                'field-' + field.id(),
+                m('.Mason-Field.Form-group', [
+                    m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]),
+                    m('.FormControl.Mason-Inline-Answers', answer_list),
+                ])
+            );
         });
 
         return items;

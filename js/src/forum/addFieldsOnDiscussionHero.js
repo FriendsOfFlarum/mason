@@ -1,6 +1,6 @@
-import {extend} from 'flarum/extend';
-import app from 'flarum/app';
-import DiscussionHero from 'flarum/components/DiscussionHero';
+import { extend } from 'flarum/common/extend';
+import app from 'flarum/forum/app';
+import DiscussionHero from 'flarum/common/components/DiscussionHero';
 import FieldsViewer from './components/FieldsViewer';
 
 export default function () {
@@ -9,8 +9,11 @@ export default function () {
             return;
         }
 
-        items.add('mason-fields', FieldsViewer.component({
-            discussion: this.attrs.discussion,
-        }));
+        items.add(
+            'mason-fields',
+            FieldsViewer.component({
+                discussion: this.attrs.discussion,
+            })
+        );
     });
 }

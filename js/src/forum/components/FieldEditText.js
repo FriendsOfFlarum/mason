@@ -1,6 +1,6 @@
-import app from 'flarum/app';
-import Model from 'flarum/Model';
-import Component from 'flarum/Component';
+import app from 'flarum/forum/app';
+import Model from 'flarum/common/Model';
+import Component from 'flarum/common/Component';
 
 /* global m */
 
@@ -14,7 +14,7 @@ export default class FieldEditText extends Component {
 
         this.content = '';
 
-        const answersForThisField = this.answers.filter(answer => {
+        const answersForThisField = this.answers.filter((answer) => {
             // Temporary store entries seem to turn into undefined after saving
             if (typeof answer === 'undefined') {
                 return false;
@@ -33,7 +33,7 @@ export default class FieldEditText extends Component {
         return m('input.FormControl', {
             required: this.field.required(),
             value: this.content,
-            oninput: event => {
+            oninput: (event) => {
                 this.content = event.target.value;
 
                 if (this.content === '') {

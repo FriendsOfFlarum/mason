@@ -1,6 +1,6 @@
-import app from 'flarum/app';
-import Modal from 'flarum/components/Modal';
-import Button from 'flarum/components/Button';
+import app from 'flarum/forum/app';
+import Modal from 'flarum/common/components/Modal';
+import Button from 'flarum/common/components/Button';
 import FieldsEditor from './FieldsEditor';
 
 /* global m */
@@ -25,22 +25,28 @@ export default class FieldsEditorModal extends Modal {
 
     content() {
         return [
-            m('.Modal-body', FieldsEditor.component({
-                discussion: this.attrs.discussion, // Only for the tags feature
-                answers: this.answers,
-                onchange: this.answersChanged.bind(this),
-                ontagchange: tags => {
-                    this.tags = tags;
-                    this.dirty = true;
-                },
-            })),
+            m(
+                '.Modal-body',
+                FieldsEditor.component({
+                    discussion: this.attrs.discussion, // Only for the tags feature
+                    answers: this.answers,
+                    onchange: this.answersChanged.bind(this),
+                    ontagchange: (tags) => {
+                        this.tags = tags;
+                        this.dirty = true;
+                    },
+                })
+            ),
             m('.Modal-footer', [
-                Button.component({
-                    className: 'Button Button--primary',
-                    loading: this.processing,
-                    disabled: !this.dirty,
-                    onclick: this.saveAnswers.bind(this),
-                }, app.translator.trans('fof-mason.forum.answers-modal.save')),
+                Button.component(
+                    {
+                        className: 'Button Button--primary',
+                        loading: this.processing,
+                        disabled: !this.dirty,
+                        onclick: this.saveAnswers.bind(this),
+                    },
+                    app.translator.trans('fof-mason.forum.answers-modal.save')
+                ),
             ]),
         ];
     }
@@ -62,15 +68,18 @@ export default class FieldsEditorModal extends Modal {
             relationships.tags = this.tags;
         }
 
-        this.attrs.discussion.save({
-            relationships,
-        }).then(() => {
-            this.processing = false;
-            app.modal.close();
-            m.redraw();
-        }).catch(err => {
-            this.processing = false;
-            throw err;
-        });
+        this.attrs.discussion
+            .save({
+                relationships,
+            })
+            .then(() => {
+                this.processing = false;
+                app.modal.close();
+                m.redraw();
+            })
+            .catch((err) => {
+                this.processing = false;
+                throw err;
+            });
     }
 }
