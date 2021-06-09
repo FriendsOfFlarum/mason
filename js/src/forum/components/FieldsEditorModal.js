@@ -3,7 +3,6 @@ import Modal from 'flarum/common/components/Modal';
 import Button from 'flarum/common/components/Button';
 import FieldsEditor from './FieldsEditor';
 
-
 export default class FieldsEditorModal extends Modal {
     oninit(vnode) {
         super.oninit(vnode);
@@ -18,36 +17,31 @@ export default class FieldsEditorModal extends Modal {
 
     title() {
         return app.translator.trans('fof-mason.forum.answers-modal.edit-title', {
-            title: m('em', this.attrs.discussion.title()),
+            title: <em>this.attrs.discussion.title()</em>,
         });
     }
 
     content() {
-        return [
-            m(
-                '.Modal-body',
-                FieldsEditor.component({
-                    discussion: this.attrs.discussion, // Only for the tags feature
-                    answers: this.answers,
-                    onchange: this.answersChanged.bind(this),
-                    ontagchange: (tags) => {
-                        this.tags = tags;
-                        this.dirty = true;
-                    },
-                })
-            ),
-            m('.Modal-footer', [
-                Button.component(
-                    {
-                        className: 'Button Button--primary',
-                        loading: this.processing,
-                        disabled: !this.dirty,
-                        onclick: this.saveAnswers.bind(this),
-                    },
-                    app.translator.trans('fof-mason.forum.answers-modal.save')
-                ),
-            ]),
-        ];
+        return (
+            <>
+                <div className="Modal-body">
+                    <FieldsEditor
+                        discussion={this.attrs.discussion} // Only for the tags feature
+                        answers={this.answers}
+                        onchange={this.answersChanged.bind(this)}
+                        ontagchange={(tags) => {
+                            this.tags = tags;
+                            this.dirty = true;
+                        }}
+                    />
+                </div>
+                <div className="Modal-footer">
+                    <Button className="Button Button--primary" loading={this.processing} disabled={!this.dirty} onclick={this.saveAnswers.bind(this)}>
+                        {app.translator.trans('fof-mason.forum.answers-modal.save')}
+                    </Button>
+                </div>
+            </>
+        );
     }
 
     answersChanged(answers) {

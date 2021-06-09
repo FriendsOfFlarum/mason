@@ -2,8 +2,11 @@ import app from 'flarum/forum/app';
 import icon from 'flarum/common/helpers/icon';
 import Component from 'flarum/common/Component';
 import sortTags from 'flarum/tags/utils/sortTags';
+import classList from 'flarum/common/utils/classList';
 
 export default class DiscussionFields extends Component {
+    inputUuid;
+
     oninit(vnode) {
         super.oninit(vnode);
 
@@ -34,6 +37,8 @@ export default class DiscussionFields extends Component {
         }
 
         this.tags = sortTags(this.tags);
+
+        this.inputUuid = Math.random().toString(36).substring(2);
     }
 
     view() {
@@ -48,62 +53,51 @@ export default class DiscussionFields extends Component {
 
         const required = this.fieldRequired();
 
-        return m(
-            '.Mason-Field.Form-group',
-            {
-                className: app.forum.attribute('fof-mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
-            },
-            [
-                m('label', this.fieldLabel()),
-                m('span.Select', [
-                    m(
-                        'select.Select-input.FormControl',
-                        {
-                            onchange: (event) => {
-                                const id = event.target.value;
+        return (
+            <div
+                className={classList('Mason-Field Form-group', {
+                    ['Mason-Field--label-as-placeholder']: app.forum.attribute('fof-mason.labels-as-placeholders'),
+                })}
+            >
+                <label for={`fofMason-selectInput-${inputUuid}`}>{this.fieldLabel()}</label>
+                <span className="Select">
+                    <select
+                        className="Select-input FormControl"
+                        id={`fofMason-selectInput-${inputUuid}`}
+                        onchange={(event) => {
+                            const id = event.target.value;
 
-                                this.selectedTags = [];
+                            this.selectedTags = [];
 
-                                if (id !== 'none') {
-                                    this.selectedTags.push(this.tags.find((tag) => tag.id() === id));
+                            if (id !== 'none') {
+                                this.selectedTags.push(this.tags.find((tag) => tag.id() === id));
 
-                                    const parent = this.selectedTags[0].parent();
-                                    if (parent) {
-                                        this.selectedTags.push(parent);
-                                    }
+                                const parent = this.selectedTags[0].parent();
+                                if (parent) {
+                                    this.selectedTags.push(parent);
                                 }
+                            }
 
-                                this.attrs.onchange(this.selectedTags);
-                            },
-                        },
-                        [
-                            m(
-                                'option',
-                                {
-                                    value: 'none',
-                                    selected: this.selectedTags.length === 0,
-                                    disabled: required,
-                                    hidden: this.placeholderHidden(),
-                                },
-                                this.selectPlaceholder()
-                            ),
-                            this.tags.map((tag) => {
-                                const parent = tag.parent();
+                            this.attrs.onchange(this.selectedTags);
+                        }}
+                    >
+                        <option value="none" selected={this.selectedTags.length === 0} disabled={required} hidden={this.placeholderHidden()}>
+                            {this.selectPlaceholder()}
+                        </option>
+                        {this.tags.map((tag) => {
+                            const parent = tag.parent();
 
-                                return m(
-                                    'option',
-                                    {
-                                        value: tag.id(),
-                                        selected: tag.id() === currentSelectedChild,
-                                    },
-                                    (parent ? parent.name() + ' | ' : '') + tag.name()
-                                );
-                            }),
-                        ]
-                    ),
-                    icon('fas fa-caret-down', { className: 'Select-caret' }),
-                ]),
-            ]
+                            return (
+                                <option value={tag.id()} selected={tag.id() === currentSelectedChild}>
+                                    {(parent ? parent.name() + ' | ' : '') + tag.name()}
+                                </option>
+                            );
+                        })}
+                        ,
+                    </select>
+                    {icon('fas fa-caret-down', { className: 'Select-caret' })}
+                </span>
+            </div>
         );
     }
 

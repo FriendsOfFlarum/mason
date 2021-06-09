@@ -1,5 +1,5 @@
-import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
+import { extend } from 'flarum/common/extend';
 import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
 import Button from 'flarum/common/components/Button';
 import FieldsEditorModal from './components/FieldsEditorModal';
@@ -9,13 +9,9 @@ export default function () {
         if (discussion.canUpdateMasonAnswers()) {
             items.add(
                 'mason-update-answers',
-                Button.component(
-                    {
-                        icon: 'fas fa-tag',
-                        onclick: () => app.modal.show(FieldsEditorModal, { discussion }),
-                    },
-                    app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')
-                )
+                <Button icon="fas fa-tag" onclick={() => app.modal.show(FieldsEditorModal, { discussion })}>
+                    {app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')}
+                </Button>
             );
         }
     });

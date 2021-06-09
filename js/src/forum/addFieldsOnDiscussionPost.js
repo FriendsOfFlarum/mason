@@ -49,12 +49,6 @@ export default function () {
 
         // Insert the new content just after the header
         // or at the very beginning if the header is not found
-        content.splice(
-            postHeaderIndex === -1 ? 0 : postHeaderIndex + 1,
-            0,
-            FieldsViewer.component({
-                discussion: this.attrs.post.discussion(),
-            })
-        );
+        content.splice(postHeaderIndex === -1 ? 0 : postHeaderIndex + 1, 0, <FieldsViewer discussion={this.attrs.post.discussion()} />);
     });
 }

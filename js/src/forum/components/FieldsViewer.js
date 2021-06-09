@@ -7,7 +7,6 @@ import FieldsEditorModal from './FieldsEditorModal';
 import FieldGrid from './FieldGrid';
 import sortByAttribute from '@common/helpers/sortByAttribute';
 
-
 export default class FieldsViewer extends Component {
     oninit(vnode) {
         super.oninit(vnode);
@@ -25,15 +24,15 @@ export default class FieldsViewer extends Component {
         // We don't show the viewer
         if (!fields.length && (!head.length || app.forum.attribute('fof-mason.hide-empty-fields-section'))) {
             // We need to return an actual dom element or Flarum does not like it
-            return m('div');
+            return <div />;
         }
 
-        return m('.Mason-Fields.Mason-Fields--viewer', [
-            head,
-            FieldGrid.component({
-                items: fields,
-            }),
-        ]);
+        return (
+            <div className=".Mason-Fields.Mason-Fields--viewer">
+                {head}
+                <FieldGrid items={fields} />
+            </div>
+        );
     }
 
     headItems() {
@@ -42,22 +41,22 @@ export default class FieldsViewer extends Component {
         if (this.discussion.canUpdateMasonAnswers()) {
             items.add(
                 'edit',
-                Button.component(
-                    {
-                        className: 'Button Mason-Fields--edit',
-                        icon: 'fas fa-pen',
-                        onclick: () =>
-                            app.modal.show(FieldsEditorModal, {
-                                discussion: this.discussion,
-                            }),
-                    },
-                    app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')
-                )
+                <Button
+                    className="Button Mason-Fields--edit"
+                    icon="fas fa-pen"
+                    onclick={() =>
+                        app.modal.show(FieldsEditorModal, {
+                            discussion: this.discussion,
+                        })
+                    }
+                >
+                    {app.translator.trans('fof-mason.forum.discussion-controls.edit-answers')}
+                </Button>
             );
         }
 
         if (app.forum.attribute('fof-mason.fields-section-title')) {
-            items.add('title', m('h5.Mason-Field--title', app.forum.attribute('fof-mason.fields-section-title')));
+            items.add('title', <h5 className="Mason-Field--title">{app.forum.attribute('fof-mason.fields-section-title')}</h5>);
         }
 
         return items;
@@ -76,11 +75,11 @@ export default class FieldsViewer extends Component {
                 })
             );
 
-            let answer_list = answers.map((answer) => m('span.Mason-Inline-Answer', answer.content()));
+            let answer_list = answers.map((answer) => <span className="Mason-Inline-Answer">{answer.content()}</span>);
 
             if (answers.length === 0) {
                 if (field.show_when_empty()) {
-                    answer_list.push(m('em.Mason-Inline-Answer', app.translator.trans('fof-mason.forum.post-answers.no-answer')));
+                    answer_list.push(<em className="Mason-Inline-Answer">{app.translator.trans('fof-mason.forum.post-answers.no-answer')}</em>);
                 } else {
                     // If the field has no answer and the setting is off we don't show it
                     return;
@@ -88,11 +87,14 @@ export default class FieldsViewer extends Component {
             }
 
             items.add(
-                'field-' + field.id(),
-                m('.Mason-Field.Form-group', [
-                    m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name()]),
-                    m('.FormControl.Mason-Inline-Answers', answer_list),
-                ])
+                `field-${field.id()}`,
+                <div className="Mason-Field Form-group">
+                    <label>
+                        {field.icon() ? <>{icon(field.icon())} </> : null}
+                        {field.name()}
+                    </label>
+                    ,<div className="FormControl Mason-Inline-Answers">{answer_list}</div>,
+                </div>
             );
         });
 

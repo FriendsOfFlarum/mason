@@ -13,15 +13,15 @@ export default function () {
 
         items.add(
             'mason-fields',
-            FieldsEditor.component({
-                answers: this.masonAnswers,
-                onchange: (answers) => {
+            <FieldsEditor
+                answers={this.masonAnswers}
+                onchange={(answers) => {
                     this.masonAnswers = answers;
-                },
-                ontagchange: (tags) => {
+                }}
+                ontagchange={(tags) => {
                     this.composer.fields.tags = tags;
-                },
-            })
+                }}
+            />
         );
     });
 

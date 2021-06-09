@@ -9,11 +9,6 @@ export default function () {
             return;
         }
 
-        items.add(
-            'mason-fields',
-            FieldsViewer.component({
-                discussion: this.attrs.discussion,
-            })
-        );
+        items.add('mason-fields', <FieldsViewer discussion={this.attrs.discussion} />);
     });
 }

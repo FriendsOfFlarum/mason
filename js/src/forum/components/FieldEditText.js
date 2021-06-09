@@ -28,31 +28,34 @@ export default class FieldEditText extends Component {
     }
 
     view() {
-        return m('input.FormControl', {
-            required: this.field.required(),
-            value: this.content,
-            oninput: (event) => {
-                this.content = event.target.value;
+        return (
+            <input
+                className="FormControl"
+                required={this.field.required()}
+                value={this.content}
+                oninput={(e) => {
+                    this.content = e.target.value;
 
-                if (this.content === '') {
-                    this.onchange([]);
-                } else {
-                    const answer = app.store.createRecord('mason-answers', {
-                        attributes: {
-                            content: this.content,
-                        },
-                        relationships: {
-                            field: {
-                                data: Model.getIdentifier(this.field),
+                    if (this.content === '') {
+                        this.onchange([]);
+                    } else {
+                        const answer = app.store.createRecord('mason-answers', {
+                            attributes: {
+                                content: this.content,
                             },
-                        },
-                    });
+                            relationships: {
+                                field: {
+                                    data: Model.getIdentifier(this.field),
+                                },
+                            },
+                        });
 
-                    this.onchange([answer]);
-                }
-            },
-            placeholder: this.fieldPlaceholder(),
-        });
+                        this.onchange([answer]);
+                    }
+                }}
+                placeholder={this.fieldPlaceholder()}
+            />
+        );
     }
 
     fieldPlaceholder() {

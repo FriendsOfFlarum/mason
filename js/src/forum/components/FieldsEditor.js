@@ -26,7 +26,12 @@ export default class FieldsEditor extends Component {
     }
 
     view() {
-        return m('.Mason-Fields.Mason-Fields--editor', [this.headItems().toArray(), <FieldGrid items={this.fieldItems().toArray()} />]);
+        return (
+            <div className="Mason-Fields Mason-Fields--editor">
+                {this.headItems().toArray()}
+                <FieldGrid items={this.fieldItems().toArray()} />
+            </div>
+        );
     }
 
     updateSelection(field, fieldAnswers) {
@@ -85,21 +90,24 @@ export default class FieldsEditor extends Component {
             let input = null;
 
             if (field.user_values_allowed()) {
-                input = FieldEditText.component(inputAttrs);
+                input = <FieldEditText {...inputAttrs} />;
             } else {
-                input = FieldEditDropdown.component(inputAttrs);
+                input = <FieldEditDropdown {...inputAttrs} />;
             }
 
             items.add(
-                'field-' + field.id(),
+                `field-${field.id()}`,
                 <div
                     class={classList('Mason-Field Form-group', {
                         ['Mason-Field--label-as-placeholder']: app.forum.attribute('fof-mason.labels-as-placeholders'),
                     })}
                 >
-                    {m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null])}
+                    <label>
+                        {field.icon() ? <>{icon(field.icon())} </> : null}
+                        {(field.name(), field.required() ? ' *' : null)}
+                    </label>
                     {input}
-                    {field.description() ? m('.helpText', field.description()) : null})
+                    {field.description() ? <div className="helpText">{field.description()}</div> : null})
                 </div>
             );
         });
