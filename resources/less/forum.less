@@ -28,9 +28,10 @@
 
 .Mason-Field--title {
     line-height: 1;
-    margin: 0 0 20px;
     font-size: 1.1em;
     color: @muted-color;
+    margin: 0;
+    margin-bottom: 8px;
 }
 
 .Mason-Field--label-as-placeholder {
@@ -41,11 +42,11 @@
 
 .Mason-Inline-Answer {
     &::after {
-        content: ', ';
+        content: ", ";
     }
 
     &:last-of-type::after {
-        content: '';
+        content: "";
     }
 }
 
