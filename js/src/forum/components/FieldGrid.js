@@ -8,7 +8,7 @@ export default class FieldGrid extends Component {
             <div className="Mason-Grid-Wrapper">
                 <div className="Mason-Grid">
                     {chunkArray(this.attrs.items, app.forum.attribute('fof-mason.column-count')).map((row) => (
-                        <div className=".Mason-Row">
+                        <div className="Mason-Row">
                             {row.map((item) => (
                                 <div className="Mason-Column" {...item} />
                             ))}

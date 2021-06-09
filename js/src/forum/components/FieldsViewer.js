@@ -28,7 +28,7 @@ export default class FieldsViewer extends Component {
         }
 
         return (
-            <div className=".Mason-Fields.Mason-Fields--viewer">
+            <div className="Mason-Fields Mason-Fields--viewer">
                 {head}
                 <FieldGrid items={fields} />
             </div>
