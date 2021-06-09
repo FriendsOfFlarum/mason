@@ -93,10 +93,9 @@ export default class FieldsEditor extends Component {
             items.add(
                 'field-' + field.id(),
                 <div
-                    class={classList(
-                        '.Mason-Field.Form-group',
-                        app.forum.attribute('fof-mason.labels-as-placeholders') && 'Mason-Field--label-as-placeholder'
-                    )}
+                    class={classList('Mason-Field Form-group', {
+                        ['Mason-Field--label-as-placeholder']: app.forum.attribute('fof-mason.labels-as-placeholders'),
+                    })}
                 >
                     {m('label', [field.icon() ? [icon(field.icon()), ' '] : null, field.name(), field.required() ? ' *' : null])}
                     {input}
