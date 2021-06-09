@@ -1,5 +1,5 @@
 import app from 'flarum/forum/app';
-import icon from 'flarum/helpers/icon';
+import icon from 'flarum/common/helpers/icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import Component from 'flarum/common/Component';
 import classList from 'flarum/common/utils/classList';

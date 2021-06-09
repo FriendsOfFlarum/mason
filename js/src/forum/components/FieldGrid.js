@@ -1,8 +1,6 @@
 import app from 'flarum/forum/app';
 import Component from 'flarum/common/Component';
-import chunkArray from './../helpers/chunkArray';
-
-/* global m */
+import chunkArray from '../helpers/chunkArray';
 
 export default class FieldGrid extends Component {
     view() {

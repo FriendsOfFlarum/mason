@@ -1,4 +1,4 @@
-import { extend } from 'flarum/extend';
+import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
 import DiscussionComposer from 'flarum/common/components/DiscussionComposer';
 import FieldsEditor from './components/FieldsEditor';
