@@ -16,9 +16,9 @@ export default class FieldEdit extends Component {
 
     view() {
         return (
-            <div class="Mason-Box">
+            <div className="Mason-Box">
                 {/* Only suggested answers can be reordered */}
-                {this.answer.is_suggested() && [<span class="fas fa-arrows-alt Mason-Box--handle js-answer-handle" />, ' ']}
+                {this.answer.is_suggested() && [<span className="fas fa-arrows-alt Mason-Box--handle js-answer-handle" />, ' ']}
                 <span
                     onclick={() => {
                         const newContent = prompt(
@@ -46,7 +46,7 @@ export default class FieldEdit extends Component {
                 >
                     {app.translator.trans('fof-mason.admin.fields.is_suggested')}
                 </Switch>
-                <div class="ButtonGroup">
+                <div className="ButtonGroup">
                     <Button
                         className="Button Button--primary"
                         loading={this.processing}

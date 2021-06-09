@@ -45,15 +45,15 @@ export default class FieldEdit extends Component {
 
     view() {
         return (
-            <div class="Mason-Box">
-                {this.field.exists && <span class="fas fa-arrows-alt Mason-Box--handle js-field-handle" />}
+            <div className="Mason-Box">
+                {this.field.exists && <span className="fas fa-arrows-alt Mason-Box--handle js-field-handle" />}
                 <button
-                    class="Button Button--block Mason-Box-Header"
+                    className="Button Button--block Mason-Box-Header"
                     onclick={() => {
                         this.toggleFields = !this.toggleFields;
                     }}
                 >
-                    <div class="Mason-Box-Header-Title">{this.boxTitle()}</div>
+                    <div className="Mason-Box-Header-Title">{this.boxTitle()}</div>
                     <div>
                         {this.field.exists && app.translator.trans('fof-mason.admin.buttons.edit-field') + ' '}
                         {icon('fas fa-chevron-' + (this.toggleFields ? 'up' : 'down'))}
@@ -66,36 +66,36 @@ export default class FieldEdit extends Component {
 
     viewFields() {
         return [
-            <div class="Mason-Box--row">
-                <div class="Mason-Box--column">
+            <div className="Mason-Box--row">
+                <div className="Mason-Box--column">
                     <h4>{app.translator.trans('fof-mason.admin.titles.field-settings')}</h4>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             {app.translator.trans('fof-mason.admin.fields.name')}
                             <input
-                                class="FormControl"
+                                className="FormControl"
                                 value={this.field.name()}
                                 oninput={(event) => {
                                     this.updateAttribute('name', event.target.value);
                                 }}
                             />
-                            <div class="helpText">{app.translator.trans('fof-mason.admin.fields.name-help')}</div>
+                            <div className="helpText">{app.translator.trans('fof-mason.admin.fields.name-help')}</div>
                         </label>
                     </div>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             {app.translator.trans('fof-mason.admin.fields.description')}
                             <input
-                                class="FormControl"
+                                className="FormControl"
                                 value={this.field.description()}
                                 oninput={(event) => {
                                     this.updateAttribute('description', event.target.value);
                                 }}
                             />
-                            <div class="helpText">{app.translator.trans('fof-mason.admin.fields.description-help')}</div>
+                            <div className="helpText">{app.translator.trans('fof-mason.admin.fields.description-help')}</div>
                         </label>
                     </div>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             {/* multi-answers were never implemented so min_answers_count just switches between 0 and 1 for optional and required */}
                             <Switch
@@ -106,27 +106,27 @@ export default class FieldEdit extends Component {
                             </Switch>
                         </label>
                     </div>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             <Switch state={this.field.show_when_empty()} onchange={this.updateAttribute.bind(this, 'show_when_empty')}>
                                 {app.translator.trans('fof-mason.admin.fields.show_when_empty')}
                             </Switch>
                         </label>
-                        <div class="helpText">{app.translator.trans('fof-mason.admin.fields.show_when_empty-help')}</div>
+                        <div className="helpText">{app.translator.trans('fof-mason.admin.fields.show_when_empty-help')}</div>
                     </div>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             <Switch state={this.field.user_values_allowed()} onchange={this.updateAttribute.bind(this, 'user_values_allowed')}>
                                 {app.translator.trans('fof-mason.admin.fields.user_values_allowed')}
                             </Switch>
                         </label>
-                        <div class="helpText">{app.translator.trans('fof-mason.admin.fields.user_values_allowed-help')}</div>
+                        <div className="helpText">{app.translator.trans('fof-mason.admin.fields.user_values_allowed-help')}</div>
                     </div>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             {app.translator.trans('fof-mason.admin.fields.validation')}
                             <input
-                                class="FormControl"
+                                className="FormControl"
                                 disabled={!this.field.user_values_allowed()}
                                 placeholder={
                                     this.field.user_values_allowed()
@@ -138,40 +138,40 @@ export default class FieldEdit extends Component {
                                     this.updateAttribute('validation', e.target.value);
                                 }}
                             />
-                            <div class="helpText">
+                            <div className="helpText">
                                 {app.translator.trans('fof-mason.admin.fields.validation-help', {
                                     a: <a href="https://laravel.com/docs/6.x/validation#available-validation-rules" target="_blank" />,
                                 })}
                             </div>
                         </label>
                     </div>
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>
                             {app.translator.trans('fof-mason.admin.fields.icon')} {this.iconPreview(this.field.icon())}
                             <input
-                                class="FormControl"
+                                className="FormControl"
                                 value={this.field.icon()}
                                 oninput={(event) => {
                                     this.updateAttribute('icon', event.target.value);
                                 }}
                             />
                         </label>
-                        <div class="helpText">
+                        <div className="helpText">
                             {app.translator.trans('fof-mason.admin.fields.icon-help', {
                                 a: <a href="https://fontawesome.com/icons?m=free" target="_blank" />,
                             })}
                         </div>
                     </div>
                     ]),
-                    <div class="Mason-Box--column">
+                    <div className="Mason-Box--column">
                         <h4>{app.translator.trans('fof-mason.admin.titles.field-answers')}</h4>
-                        <div class="Form-group">
+                        <div className="Form-group">
                             <FieldAnswersEdit field={this.field} />
                         </div>
                     </div>
                 </div>
             </div>,
-            <div class="ButtonGroup">
+            <div className="ButtonGroup">
                 <Button
                     className="Button Button--primary"
                     loading={this.processing}

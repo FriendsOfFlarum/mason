@@ -26,9 +26,9 @@ export default class FieldEditDropdown extends Component {
         });
 
         return (
-            <span class="Select">
+            <span className="Select">
                 <select
-                    class="Select-input FormControl"
+                    className="Select-input FormControl"
                     multiple={field.multiple()}
                     onchange={(event) => {
                         let answers = [];

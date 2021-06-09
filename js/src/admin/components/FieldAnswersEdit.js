@@ -71,9 +71,9 @@ export default class FieldAnswersEdit extends Component {
 
         return [
             <div>
-                <div class="Mason-Container js-answers-container">
+                <div className="Mason-Container js-answers-container">
                     {sortByAttribute(suggestedAnswers).map((answer) => (
-                        <div class="js-answer-data" key={answer.id()} data-id={answer.id()}>
+                        <div className="js-answer-data" key={answer.id()} data-id={answer.id()}>
                             <AnswerEdit answer={answer} />
                         </div>
                     ))}
@@ -81,12 +81,12 @@ export default class FieldAnswersEdit extends Component {
                 {userAnswers.length && (
                     <>
                         <button
-                            class="Button Button--block Mason-Box-Header"
+                            className="Button Button--block Mason-Box-Header"
                             onclick={() => {
                                 this.showUserAnswers = !this.showUserAnswers;
                             }}
                         >
-                            <div class="Mason-Box-Header-Title">
+                            <div className="Mason-Box-Header-Title">
                                 {app.translator.trans('fof-mason.admin.buttons.show-user-answers', {
                                     count: userAnswers.length,
                                 })}
@@ -94,7 +94,7 @@ export default class FieldAnswersEdit extends Component {
                             <div>{icon('fas fa-chevron-' + (this.showUserAnswers ? 'up' : 'down'))}</div>
                         </button>
                         {this.showUserAnswers && (
-                            <div class="Mason-Container">
+                            <div className="Mason-Container">
                                 {sortByAttribute(userAnswers, 'content').map((answer) => (
                                     <div key={answer.id()}>
                                         <AnswerEdit answer={answer} />
@@ -105,11 +105,11 @@ export default class FieldAnswersEdit extends Component {
                     </>
                 )}
             </div>,
-            <div class="Form-group">
+            <div className="Form-group">
                 <label>
                     {app.translator.trans('fof-mason.admin.fields.new-answer')}
                     <input
-                        class="FormControl"
+                        className="FormControl"
                         value={this.new_content}
                         oninput={(e) => {
                             this.new_content = e.target.value;
@@ -118,7 +118,7 @@ export default class FieldAnswersEdit extends Component {
                     />
                 </label>
             </div>,
-            <div class="Form-group">
+            <div className="Form-group">
                 <Button className="Button Button--primary" loading={this.processing} disabled={!this.new_content} onclick={this.saveField.bind(this)}>
                     {app.translator.trans('fof-mason.admin.buttons.add-answer')}
                 </Button>

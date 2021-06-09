@@ -52,7 +52,7 @@ export default class FieldsEditor extends Component {
         const items = new ItemList();
 
         if (app.forum.attribute('fof-mason.fields-section-title')) {
-            items.add('title', <h5 class="Mason-Field--title">{app.forum.attribute('fof-mason.fields-section-title')}</h5>);
+            items.add('title', <h5 className="Mason-Field--title">{app.forum.attribute('fof-mason.fields-section-title')}</h5>);
         }
 
         return items;

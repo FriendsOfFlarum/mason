@@ -25,12 +25,12 @@ export default class MasonSettings extends Component {
 
     view() {
         return (
-            <div class="Mason-Container">
-                <div class="Form-group">
+            <div className="Mason-Container">
+                <div className="Form-group">
                     <label>
                         {app.translator.trans('fof-mason.admin.settings.fields-section-title')}
                         <input
-                            class="FormControl"
+                            className="FormControl"
                             value={this.fieldsSectionTitle}
                             placeholder={app.translator.trans('fof-mason.admin.settings.fields-section-title-placeholder')}
                             onchange={(event) => {
@@ -38,9 +38,9 @@ export default class MasonSettings extends Component {
                             }}
                         />
                     </label>
-                    <div class="helpText">{app.translator.trans('fof-mason.admin.settings.fields-section-title-help')}</div>
+                    <div className="helpText">{app.translator.trans('fof-mason.admin.settings.fields-section-title-help')}</div>
                 </div>
-                <div class="Form-group">
+                <div className="Form-group">
                     <label>
                         {app.translator.trans('fof-mason.admin.settings.column-count')},
                         <Select
@@ -50,7 +50,7 @@ export default class MasonSettings extends Component {
                         />
                     </label>
                 </div>
-                <div class="Form-group">
+                <div className="Form-group">
                     <label>
                         <Switch
                             state={this.labelsAsPlaceholders}
@@ -59,16 +59,16 @@ export default class MasonSettings extends Component {
                             {app.translator.trans('fof-mason.admin.settings.labels-as-placeholders')}
                         </Switch>
                     </label>
-                    <div class="helpText">{app.translator.trans('fof-mason.admin.settings.labels-as-placeholders-help')}</div>
+                    <div className="helpText">{app.translator.trans('fof-mason.admin.settings.labels-as-placeholders-help')}</div>
                 </div>
-                <div class="Form-group">
+                <div className="Form-group">
                     <label>
                         <Switch state={this.fieldsInHero} onchange={this.updateSetting.bind(this, 'fieldsInHero', 'fof-mason.fields-in-hero')}>
                             {app.translator.trans('fof-mason.admin.settings.fields-in-hero')}
                         </Switch>
                     </label>
                 </div>
-                <div class="Form-group">
+                <div className="Form-group">
                     <label>
                         <Switch
                             state={this.hideEmptyFieldsSection}
@@ -77,21 +77,21 @@ export default class MasonSettings extends Component {
                             {app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section')}
                         </Switch>
                     </label>
-                    <div class="helpText">{app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section-help')}</div>
+                    <div className="helpText">{app.translator.trans('fof-mason.admin.settings.hide-empty-fields-section-help')}</div>
                 </div>
-                <div class="Form-group">
+                <div className="Form-group">
                     <label>
                         <Switch state={this.tagsAsFields} onchange={this.updateSetting.bind(this, 'tagsAsFields', 'fof-mason.tags-as-fields')}>
                             {app.translator.trans('fof-mason.admin.settings.tags-as-field')}
                         </Switch>
                     </label>
-                    <div class="helpText">{app.translator.trans('fof-mason.admin.settings.tags-as-field-help')}</div>
+                    <div className="helpText">{app.translator.trans('fof-mason.admin.settings.tags-as-field-help')}</div>
                 </div>
                 {this.tagsAsFields && (
-                    <div class="Form-group">
+                    <div className="Form-group">
                         <label>app.translator.trans('fof-mason.admin.settings.tags-field-name')</label>
                         <input
-                            class="FormControl"
+                            className="FormControl"
                             value={this.tagsFieldName}
                             placeholder={app.translator.trans('fof-mason.admin.settings.tags-field-name-placeholder')}
                             onchange={(event) => {

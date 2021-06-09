@@ -50,18 +50,18 @@ export default class MasonFieldsPage extends ExtensionPage {
         sortByAttribute(fields).forEach((field) => {
             // Build array of fields to show.
             fieldsList.push(
-                <div class="js-field-data" key={field.id()} data-id={field.id()}>
+                <div className="js-field-data" key={field.id()} data-id={field.id()}>
                     <FieldEdit field={field} />
                 </div>
             );
         });
 
         return (
-            <div class="ExtensionPage-settings">
-                <div class="container">
+            <div className="ExtensionPage-settings">
+                <div className="container">
                     <h2>{app.translator.trans('fof-mason.admin.titles.fields')}</h2>
-                    <div class="Mason-Container">
-                        <div class="js-fields-container">{fieldsList}</div>
+                    <div className="Mason-Container">
+                        <div className="js-fields-container">{fieldsList}</div>
                         <FieldEdit />
                     </div>
                     <h2>{app.translator.trans('fof-mason.admin.titles.settings')}</h2>
