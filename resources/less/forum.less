@@ -1,17 +1,21 @@
 .ComposerBody-header .item-mason-fields {
     display: block;
-    padding: 10px 0;
+    padding: 8px 0;
 }
 
 .DiscussionHero .item-mason-fields {
     display: block;
-    margin-top: 15px; // Same as tags-title margin
+    margin-top: 12px;
 }
 
 .Mason-Fields {
     border: 1px solid #e8ecf3;
     border-radius: @border-radius;
-    padding: 20px;
+    padding: 12px 16px;
+
+    .helpText {
+        margin-bottom: 0;
+    }
 }
 
 .Mason-Fields--viewer {
@@ -19,7 +23,7 @@
 }
 
 .PostStream-item .Mason-Fields {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .Mason-Fields--edit {
@@ -61,10 +65,6 @@
 }
 
 @media (min-width: @screen-desktop) {
-    .Mason-Grid-Wrapper {
-        margin: 0 -10px;
-    }
-
     .Mason-Grid {
         display: table;
         width: 100%;
@@ -76,7 +76,7 @@
 
     .Mason-Column {
         display: table-cell;
-        padding: 5px 10px;
+        padding: 4px 8px;
     }
 
     .Mason-Row:last-of-type .Mason-Column {
