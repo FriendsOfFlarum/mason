@@ -3,7 +3,6 @@ import icon from 'flarum/common/helpers/icon';
 import Component from 'flarum/common/Component';
 import sortTags from 'flarum/tags/utils/sortTags';
 
-
 export default class DiscussionFields extends Component {
     oninit(vnode) {
         super.oninit(vnode);
@@ -39,7 +38,7 @@ export default class DiscussionFields extends Component {
 
     view() {
         if (this.maxPrimary > 1 || this.maxSecondary > 1) {
-            return m('.Alert', app.translator.trans('fof-mason.forum.tags.inadequate-settings'));
+            return <div className="Alert">{app.translator.trans('fof-mason.forum.tags.inadequate-settings')}</div>;
         }
 
         // We take the first child selected or if none, the first parent selected
