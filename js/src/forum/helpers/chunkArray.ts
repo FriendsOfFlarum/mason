@@ -4,13 +4,16 @@
  * Useful for grid layouts.
  *
  * @see https://stackoverflow.com/a/64777515/11091039
- * @param items Array of items
- * @param itemsPerChunk Number of items per array
+ * @param arr Array of items
+ * @param size Number of items per array
  */
-export default function chunkArray<T>(items: T[], itemsPerChunk: number): T[][] {
-    return [...Array(Math.ceil(items.length / itemsPerChunk))].map((_, i) => {
-        return items.slice(itemsPerChunk * i, itemsPerChunk + itemsPerChunk * i);
-    });
-    // Fix for sometimes having extra empty array(s) at the end
-    // .reduce((arr, itemGroup) => (itemGroup.length > 0 ? [...arr, itemGroup] : arr), [] as T[][]);
+export default function chunkArray<T>(arr: T[], size: number): T[][] {
+    return Array(Math.ceil(arr.length / size))
+        .fill(undefined)
+        .map((_, i) => {
+            const x = arr.slice(size * i, size + size * i);
+            console.log('a', x);
+
+            return x;
+        });
 }
