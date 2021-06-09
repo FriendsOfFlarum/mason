@@ -5,9 +5,8 @@ import Component from 'flarum/common/Component';
 import Button from 'flarum/common/components/Button';
 import FieldsEditorModal from './FieldsEditorModal';
 import FieldGrid from './FieldGrid';
-import sortByAttribute from '@lib/helpers/sortByAttribute';
+import sortByAttribute from '@common/helpers/sortByAttribute';
 
-/* global m */
 
 export default class FieldsViewer extends Component {
     oninit(vnode) {

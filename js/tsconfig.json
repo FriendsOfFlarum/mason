@@ -8,7 +8,7 @@
         "declarationDir": "./dist-typings",
         "paths": {
             "flarum/*": ["../vendor/flarum/core/js/dist-typings/*"],
-            "@lib/*": ["./src/lib/*"]
+            "@common/*": ["src/common/*"]
         }
     }
 }

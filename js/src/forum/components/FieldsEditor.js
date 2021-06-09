@@ -4,7 +4,7 @@ import ItemList from 'flarum/common/utils/ItemList';
 import Component from 'flarum/common/Component';
 import classList from 'flarum/common/utils/classList';
 
-import sortByAttribute from '@lib/helpers/sortByAttribute';
+import sortByAttribute from '@common/helpers/sortByAttribute';
 import FieldEditDropdown from './FieldEditDropdown';
 import FieldEditText from './FieldEditText';
 import FieldEditTags from './FieldEditTags';

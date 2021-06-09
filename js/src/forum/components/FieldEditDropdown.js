@@ -1,7 +1,7 @@
 import app from 'flarum/forum/app';
 import icon from 'flarum/common/helpers/icon';
 import Component from 'flarum/common/Component';
-import sortByAttribute from '@lib/helpers/sortByAttribute';
+import sortByAttribute from '@common/helpers/sortByAttribute';
 
 export default class FieldEditDropdown extends Component {
     view(vnode) {

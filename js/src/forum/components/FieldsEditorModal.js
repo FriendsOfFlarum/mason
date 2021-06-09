@@ -3,7 +3,6 @@ import Modal from 'flarum/common/components/Modal';
 import Button from 'flarum/common/components/Button';
 import FieldsEditor from './FieldsEditor';
 
-/* global m */
 
 export default class FieldsEditorModal extends Modal {
     oninit(vnode) {

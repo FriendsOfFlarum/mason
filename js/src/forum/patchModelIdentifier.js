@@ -1,6 +1,6 @@
 import { override } from 'flarum/common/extend';
 import Model from 'flarum/common/Model';
-import Answer from '@lib/models/Answer';
+import Answer from '@common/models/Answer';
 
 export default function () {
     override(Model, 'getIdentifier', function (original, model) {

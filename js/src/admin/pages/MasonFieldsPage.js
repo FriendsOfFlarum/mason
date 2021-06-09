@@ -6,7 +6,7 @@ import { debounce } from 'flarum/common/utils/throttleDebounce';
 
 import FieldEdit from '../components/FieldEdit';
 import MasonSettings from '../components/MasonSettings';
-import sortByAttribute from '@lib/helpers/sortByAttribute';
+import sortByAttribute from '@common/helpers/sortByAttribute';
 
 export default class MasonFieldsPage extends ExtensionPage {
     oninit(vnode) {

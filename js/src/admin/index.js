@@ -1,7 +1,7 @@
 import app from 'flarum/admin/app';
 
-import Answer from '@lib/models/Answer';
-import Field from '@lib/models/Field';
+import Answer from '@common/models/Answer';
+import Field from '@common/models/Field';
 import MasonFieldsPage from './pages/MasonFieldsPage';
 
 app.initializers.add('fof-mason', () => {

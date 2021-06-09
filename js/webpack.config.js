@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = merge(config(), {
     resolve: {
         alias: {
-            '@lib': path.resolve(__dirname, 'src/lib/'),
+            '@common': path.resolve(__dirname, 'src/common/'),
         },
     },
 });

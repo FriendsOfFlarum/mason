@@ -7,7 +7,7 @@ import Button from 'flarum/common/components/Button';
 import { debounce } from 'flarum/common/utils/throttleDebounce';
 
 import AnswerEdit from './AnswerEdit';
-import sortByAttribute from '@lib/helpers/sortByAttribute';
+import sortByAttribute from '@common/helpers/sortByAttribute';
 
 export default class FieldAnswersEdit extends Component {
     oninit(vnode) {
