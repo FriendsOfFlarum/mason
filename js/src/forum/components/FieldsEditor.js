@@ -108,7 +108,7 @@ export default class FieldsEditor extends Component {
                         {field.required() ? ' *' : null}
                     </label>
                     {input}
-                    {field.description() ? <div className="helpText">{field.description()}</div> : null})
+                    {field.description() ? <div className="helpText">{field.description()}</div> : null}
                 </div>
             );
         });
