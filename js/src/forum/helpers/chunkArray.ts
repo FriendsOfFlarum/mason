@@ -10,10 +10,5 @@
 export default function chunkArray<T>(arr: T[], size: number): T[][] {
     return Array(Math.ceil(arr.length / size))
         .fill(undefined)
-        .map((_, i) => {
-            const x = arr.slice(size * i, size + size * i);
-            console.log('a', x);
-
-            return x;
-        });
+        .map((_, i) => arr.slice(size * i, size + size * i));
 }
