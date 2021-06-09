@@ -53,7 +53,7 @@ export default class FieldEditDropdown extends Component {
                             disabled={field.required()}
                             hidden={this.placeholderHidden(field)}
                         >
-                            this.selectPlaceholder(field)
+                            {this.selectPlaceholder(field)}
                         </option>
                     )}
                     {sortByAttribute(field.suggested_answers()).map((answer) => (
