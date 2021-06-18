@@ -1,5 +1,5 @@
-import Model from 'flarum/Model';
-import computed from 'flarum/utils/computed';
+import Model from 'flarum/common/Model';
+import computed from 'flarum/common/utils/computed';
 
 export default class Field extends Model {
     name = Model.attribute('name');
@@ -14,8 +14,8 @@ export default class Field extends Model {
     deleted_at = Model.attribute('deleted_at', Model.transformDate);
     all_answers = Model.hasMany('all_answers');
     suggested_answers = Model.hasMany('suggested_answers');
-    required = computed('min_answers_count', min_answers_count => min_answers_count > 0);
-    multiple = computed('max_answers_count', max_answers_count => max_answers_count > 1);
+    required = computed('min_answers_count', (min_answers_count) => min_answers_count > 0);
+    multiple = computed('max_answers_count', (max_answers_count) => max_answers_count > 1);
 
     apiEndpoint() {
         return '/fof/mason/fields' + (this.exists ? '/' + this.data.id : '');

@@ -1,11 +1,12 @@
-import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import Component from 'flarum/Component';
+import app from 'flarum/forum/app';
+import icon from 'flarum/common/helpers/icon';
+import Component from 'flarum/common/Component';
 import sortTags from 'flarum/tags/utils/sortTags';
-
-/* global m */
+import classList from 'flarum/common/utils/classList';
 
 export default class DiscussionFields extends Component {
+    inputUuid;
+
     oninit(vnode) {
         super.oninit(vnode);
 
@@ -13,11 +14,11 @@ export default class DiscussionFields extends Component {
         this.selectedTags = [];
 
         if (this.attrs.discussion) {
-            this.tags = this.tags.filter(tag => tag.canAddToDiscussion() || this.attrs.discussion.tags().indexOf(tag) !== -1);
+            this.tags = this.tags.filter((tag) => tag.canAddToDiscussion() || this.attrs.discussion.tags().indexOf(tag) !== -1);
 
             this.selectedTags = this.attrs.discussion.tags();
         } else {
-            this.tags = this.tags.filter(tag => tag.canStartDiscussion());
+            this.tags = this.tags.filter((tag) => tag.canStartDiscussion());
         }
 
         this.minPrimary = app.forum.attribute('minPrimaryTags');
@@ -27,72 +28,77 @@ export default class DiscussionFields extends Component {
 
         // If primary tags are disabled, don't offer them
         if (this.maxPrimary <= 0) {
-            this.tags = this.tags.filter(tag => !tag.isPrimary());
+            this.tags = this.tags.filter((tag) => !tag.isPrimary());
         }
 
         // If secondary tags are disabled, don't offer them
         if (this.maxSecondary <= 0) {
-            this.tags = this.tags.filter(tag => tag.isPrimary());
+            this.tags = this.tags.filter((tag) => tag.isPrimary());
         }
 
         this.tags = sortTags(this.tags);
+
+        this.inputUuid = Math.random().toString(36).substring(2);
     }
 
     view() {
         if (this.maxPrimary > 1 || this.maxSecondary > 1) {
-            return m('.Alert', app.translator.trans('fof-mason.forum.tags.inadequate-settings'));
+            return <div className="Alert">{app.translator.trans('fof-mason.forum.tags.inadequate-settings')}</div>;
         }
 
         // We take the first child selected or if none, the first parent selected
         // Of course this only works if a single tag or tag+parent is selected
         // Multiple tags are not supported on this selector
-        const currentSelectedChild = this.selectedTags.length ? this.selectedTags.sort(tag => tag.parent() ? -1 : 1)[0].id() : null;
+        const currentSelectedChild = this.selectedTags.length ? this.selectedTags.sort((tag) => (tag.parent() ? -1 : 1))[0].id() : null;
 
         const required = this.fieldRequired();
 
-        return m('.Mason-Field.Form-group', {
-            className: app.forum.attribute('fof-mason.labels-as-placeholders') ? 'Mason-Field--label-as-placeholder' : '',
-        }, [
-            m('label', this.fieldLabel()),
-            m('span.Select', [
-                m('select.Select-input.FormControl', {
-                    onchange: event => {
-                        const id = event.target.value;
+        return (
+            <div
+                className={classList('Mason-Field Form-group', {
+                    ['Mason-Field--label-as-placeholder']: app.forum.attribute('fof-mason.labels-as-placeholders'),
+                })}
+            >
+                <label for={`fofMason-selectInput-${inputUuid}`}>{this.fieldLabel()}</label>
+                <span className="Select">
+                    <select
+                        className="Select-input FormControl"
+                        id={`fofMason-selectInput-${inputUuid}`}
+                        onchange={(event) => {
+                            const id = event.target.value;
 
-                        this.selectedTags = [];
+                            this.selectedTags = [];
 
-                        if (id !== 'none') {
-                            this.selectedTags.push(this.tags.find(tag => tag.id() === id));
+                            if (id !== 'none') {
+                                this.selectedTags.push(this.tags.find((tag) => tag.id() === id));
 
-                            const parent = this.selectedTags[0].parent();
-                            if (parent) {
-                                this.selectedTags.push(parent);
+                                const parent = this.selectedTags[0].parent();
+                                if (parent) {
+                                    this.selectedTags.push(parent);
+                                }
                             }
-                        }
 
-                        this.attrs.onchange(this.selectedTags);
-                    },
-                }, [
-                    m('option', {
-                        value: 'none',
-                        selected: this.selectedTags.length === 0,
-                        disabled: required,
-                        hidden: this.placeholderHidden(),
-                    }, this.selectPlaceholder()),
-                    this.tags.map(
-                        tag => {
+                            this.attrs.onchange(this.selectedTags);
+                        }}
+                    >
+                        <option value="none" selected={this.selectedTags.length === 0} disabled={required} hidden={this.placeholderHidden()}>
+                            {this.selectPlaceholder()}
+                        </option>
+                        {this.tags.map((tag) => {
                             const parent = tag.parent();
 
-                            return m('option', {
-                                value: tag.id(),
-                                selected: tag.id() === currentSelectedChild,
-                            }, (parent ? parent.name() + ' | ' : '') + tag.name());
-                        }
-                    ),
-                ]),
-                icon('fas fa-caret-down', {className: 'Select-caret'}),
-            ]),
-        ]);
+                            return (
+                                <option value={tag.id()} selected={tag.id() === currentSelectedChild}>
+                                    {(parent ? parent.name() + ' | ' : '') + tag.name()}
+                                </option>
+                            );
+                        })}
+                        ,
+                    </select>
+                    {icon('fas fa-caret-down', { className: 'Select-caret' })}
+                </span>
+            </div>
+        );
     }
 
     fieldRequired() {
