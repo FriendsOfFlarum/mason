@@ -89,7 +89,7 @@ export default class MasonSettings extends Component {
                 </div>
                 {this.tagsAsFields && (
                     <div className="Form-group">
-                        <label>app.translator.trans('fof-mason.admin.settings.tags-field-name')</label>
+                        <label>{app.translator.trans('fof-mason.admin.settings.tags-field-name')}</label>
                         <input
                             className="FormControl"
                             value={this.tagsFieldName}

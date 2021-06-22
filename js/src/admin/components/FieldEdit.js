@@ -162,7 +162,6 @@ export default class FieldEdit extends Component {
                             })}
                         </div>
                     </div>
-                    ]),
                     <div className="Mason-Box--column">
                         <h4>{app.translator.trans('fof-mason.admin.titles.field-answers')}</h4>
                         <div className="Form-group">
