@@ -5,8 +5,6 @@ import sortTags from 'flarum/tags/utils/sortTags';
 import classList from 'flarum/common/utils/classList';
 
 export default class DiscussionFields extends Component {
-    inputUuid;
-
     oninit(vnode) {
         super.oninit(vnode);
 
@@ -50,7 +48,7 @@ export default class DiscussionFields extends Component {
         // Of course this only works if a single tag or tag+parent is selected
         // Multiple tags are not supported on this selector
         const currentSelectedChild = this.selectedTags.length ? this.selectedTags.sort((tag) => (tag.parent() ? -1 : 1))[0].id() : null;
-
+        const inputUuid = this.inputUuid;
         const required = this.fieldRequired();
 
         return (
