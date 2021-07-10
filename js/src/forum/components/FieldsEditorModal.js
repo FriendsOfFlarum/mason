@@ -17,7 +17,7 @@ export default class FieldsEditorModal extends Modal {
 
     title() {
         return app.translator.trans('fof-mason.forum.answers-modal.edit-title', {
-            title: <em>this.attrs.discussion.title()</em>,
+            title: <em>{this.attrs.discussion.title()}</em>,
         });
     }
 
