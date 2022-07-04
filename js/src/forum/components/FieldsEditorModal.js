@@ -61,7 +61,15 @@ export default class FieldsEditorModal extends Modal {
             relationships.tags = this.tags;
         }
 
-        this.attrs.discussion
+        // Use a temporary discussion object
+        // Otherwise Flarum persists the relationships to the model while the request is still processing
+        // Which causes errors with components outside of the modal redrawing and reading non-persisted data
+        // The real discussion will be updated automatically by the store once the request completes which is all we need
+        const temporaryDiscussion = app.store.createRecord('discussions');
+        temporaryDiscussion.pushData({ id: this.attrs.discussion.id() });
+        temporaryDiscussion.exists = true;
+
+        temporaryDiscussion
             .save({
                 relationships,
             })

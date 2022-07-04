@@ -19,7 +19,18 @@ export default class FieldsEditor extends Component {
         // Index to quickly do a reverse lookup from answer to field
         this.answerToFieldIndex = [];
         this.fields.forEach((field) => {
-            field.suggested_answers().forEach((answer) => {
+            const answers = field.suggestedAnswers();
+
+            // Since we silenced the error everywhere else using `|| []`, we'll keep just one place here
+            // where we log a warning if the relationship appears to be missing
+            // This should help troubleshooting what happens if no answers are offered
+            if (!Array.isArray(answers)) {
+                console.warn('[mason] Missing suggestedAnswers relationship for field', field);
+
+                return;
+            }
+
+            answers.forEach((answer) => {
                 this.answerToFieldIndex[answer.id()] = field.id();
             });
         });

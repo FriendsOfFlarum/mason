@@ -51,7 +51,7 @@ return [
     (new Extend\Locales(__DIR__.'/resources/locale')),
 
     (new Extend\ApiController(ShowForumController::class))
-        ->addInclude('masonFields.suggested_answers')
+        ->addInclude('masonFields.suggestedAnswers')
         ->prepareDataForSerialization(LoadForumFieldsRelationship::class),
 
     (new Extend\ApiSerializer(ForumSerializer::class))

@@ -26,7 +26,7 @@ class AnswerOrderController extends AbstractShowController
     public $serializer = FieldSerializer::class;
 
     public $include = [
-        'all_answers',
+        'allAnswers',
     ];
 
     protected $validator;

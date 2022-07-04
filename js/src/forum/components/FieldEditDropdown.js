@@ -10,7 +10,7 @@ export default class FieldEditDropdown extends Component {
 
         let selectedAnswerIdsForThisField = [];
 
-        field.suggested_answers().forEach((answer) => {
+        (field.suggestedAnswers() || []).forEach((answer) => {
             const answerIndex = answers.findIndex((a) => {
                 // Temporary store entries seem to turn into undefined after saving
                 if (typeof a === 'undefined') {
@@ -56,7 +56,7 @@ export default class FieldEditDropdown extends Component {
                             {this.selectPlaceholder(field)}
                         </option>
                     )}
-                    {sortByAttribute(field.suggested_answers()).map((answer) => (
+                    {sortByAttribute(field.suggestedAnswers() || []).map((answer) => (
                         <option value={answer.id()} selected={selectedAnswerIdsForThisField.indexOf(answer.id()) !== -1}>
                             {answer.content()}
                         </option>
