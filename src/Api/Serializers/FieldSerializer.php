@@ -38,7 +38,7 @@ class FieldSerializer extends AbstractSerializer
      *
      * @return Relationship
      */
-    public function suggested_answers($model)
+    public function suggestedAnswers($model)
     {
         /**
          * @var $answers AnswerRepository
@@ -53,7 +53,7 @@ class FieldSerializer extends AbstractSerializer
      *
      * @return Relationship
      */
-    public function all_answers($model)
+    public function allAnswers($model)
     {
         $actor = $this->getActor();
 

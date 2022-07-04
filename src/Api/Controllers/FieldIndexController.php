@@ -23,7 +23,7 @@ class FieldIndexController extends AbstractListController
     public $serializer = FieldSerializer::class;
 
     public $include = [
-        'all_answers',
+        'allAnswers',
     ];
 
     protected $fields;

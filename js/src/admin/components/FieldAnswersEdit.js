@@ -55,7 +55,7 @@ export default class FieldAnswersEdit extends Component {
         let suggestedAnswers = [];
         let userAnswers = [];
 
-        this.field.all_answers().forEach((answer) => {
+        (this.field.allAnswers() || []).forEach((answer) => {
             // When answers are deleted via store.delete() they stay as an "undefined" relationship
             // We ignore these deleted answers
             if (typeof answer === 'undefined') {

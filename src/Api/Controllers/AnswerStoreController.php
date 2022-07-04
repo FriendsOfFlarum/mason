@@ -25,7 +25,7 @@ class AnswerStoreController extends AbstractCreateController
     public $serializer = FieldSerializer::class;
 
     public $include = [
-        'all_answers',
+        'allAnswers',
     ];
 
     protected $fields;

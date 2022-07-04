@@ -70,7 +70,7 @@ export default class FieldsViewer extends Component {
             const answers = sortByAttribute(
                 (this.discussion.masonAnswers() || []).filter((answer) => {
                     // It's necessary to compare the field() relationship
-                    // Because field.suggested_answers() won't contain new and user answers
+                    // Because field.suggestedAnswers() won't contain new and user answers
                     return answer.field() && answer.field().id() === field.id();
                 })
             );
@@ -93,7 +93,7 @@ export default class FieldsViewer extends Component {
                         {field.icon() ? <>{icon(field.icon())} </> : null}
                         {field.name()}
                     </label>
-                    ,<div className="FormControl Mason-Inline-Answers">{answer_list}</div>,
+                    <div className="FormControl Mason-Inline-Answers">{answer_list}</div>
                 </div>
             );
         });
