@@ -48,7 +48,7 @@ return [
         ->patch('/fof/mason/answers/{id:[0-9]+}', 'fof-mason.api.answers.update', Api\Controllers\AnswerUpdateController::class)
         ->delete('/fof/mason/answers/{id:[0-9]+}', 'fof-mason.api.answers.delete', Api\Controllers\AnswerDeleteController::class),
 
-    (new Extend\Locales(__DIR__.'/resources/locale')),
+    new Extend\Locales(__DIR__.'/resources/locale'),
 
     (new Extend\ApiController(ShowForumController::class))
         ->addInclude('masonFields.suggestedAnswers')
