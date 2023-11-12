@@ -16,7 +16,6 @@ use FoF\Mason\Validators\FieldValidator;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class FieldRepository
 {
@@ -39,16 +38,13 @@ class FieldRepository
     /**
      * @param $id
      *
-     * @return Field|Model
+     * @return Field
      */
     public function findOrFail($id): Field
     {
         return $this->field->newQuery()->findOrFail($id);
     }
 
-    /**
-     * @return Collection|Field[]
-     */
     public function all(): Collection
     {
         return $this->query()->get();

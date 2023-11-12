@@ -24,7 +24,7 @@ class FieldSerializer extends AbstractSerializer
     /**
      * Get the default set of serialized attributes for a model.
      *
-     * @param Field|array $model
+     * @param Field $model
      *
      * @return array
      */
@@ -41,7 +41,7 @@ class FieldSerializer extends AbstractSerializer
     public function suggestedAnswers($model)
     {
         /**
-         * @var $answers AnswerRepository
+         * @var AnswerRepository $answers
          */
         $answers = resolve(AnswerRepository::class);
 
@@ -51,18 +51,18 @@ class FieldSerializer extends AbstractSerializer
     /**
      * @param Field $model
      *
-     * @return Relationship
+     * @return Relationship|null
      */
     public function allAnswers($model)
     {
         $actor = $this->getActor();
 
-        if (!$actor || !$actor->isAdmin()) {
+        if (!$actor->isAdmin()) {
             return null;
         }
 
         /**
-         * @var $answers AnswerRepository
+         * @var AnswerRepository $answers
          */
         $answers = resolve(AnswerRepository::class);
 
