@@ -22,8 +22,6 @@ class FieldPolicy extends AbstractPolicy
      *
      * @param User  $user
      * @param Field $field
-     *
-     * @return bool
      */
     public function useCustomAnswer(User $user, Field $field)
     {
@@ -37,8 +35,6 @@ class FieldPolicy extends AbstractPolicy
      *
      * @param User  $user
      * @param Field $field
-     *
-     * @return bool
      */
     public function skipField(User $user, Field $field)
     {

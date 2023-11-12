@@ -87,10 +87,10 @@ class DiscussionSaving
                 $answer = $this->answers->findOrFail($id);
             } elseif (Arr::has($answerRelation, 'attributes.content') && Arr::has($answerRelation, 'relationships.field.data.id')) {
                 $field = $this->fields->findOrFail(Arr::get($answerRelation, 'relationships.field.data.id'));
-                $content = trim(Arr::get($answerRelation, 'attributes.content'));
+                $content = trim(Arr::get($answerRelation, 'attributes.content', ''));
 
                 /**
-                 * @var $answerValidator UserAnswerValidator
+                 * @var UserAnswerValidator $answerValidator
                  */
                 $answerValidator = resolve(UserAnswerValidator::class);
                 $answerValidator->setField($field);
@@ -100,7 +100,7 @@ class DiscussionSaving
 
                 // If the field is empty, we skip the findOrCreate part
                 // It will also not be counted towards the field answers count
-                if ($content === null || $content === '') {
+                if ($content === '') {
                     continue;
                 }
 

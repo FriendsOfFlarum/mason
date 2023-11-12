@@ -39,16 +39,13 @@ class FieldRepository
     /**
      * @param $id
      *
-     * @return Field|Model
+     * @return Field
      */
     public function findOrFail($id): Field
     {
         return $this->field->newQuery()->findOrFail($id);
     }
 
-    /**
-     * @return Collection|Field[]
-     */
     public function all(): Collection
     {
         return $this->query()->get();
