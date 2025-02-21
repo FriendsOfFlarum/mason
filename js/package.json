@@ -7,7 +7,7 @@
         "flarum-webpack-config": "^2.0.0",
         "html5sortable": "^0.9.18",
         "prettier": "^3.0.3",
-        "webpack": "^5.89.0",
+        "webpack": "^5.98.0",
         "webpack-cli": "^5.1.4",
         "webpack-merge": "^5.8.0"
     },
