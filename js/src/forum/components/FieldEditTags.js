@@ -1,7 +1,7 @@
 import app from 'flarum/forum/app';
 import icon from 'flarum/common/helpers/icon';
 import Component from 'flarum/common/Component';
-import sortTags from 'flarum/tags/utils/sortTags';
+import sortTags from 'ext:flarum/tags/utils/sortTags';
 import classList from 'flarum/common/utils/classList';
 
 export default class DiscussionFields extends Component {
