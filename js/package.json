@@ -1,20 +1,20 @@
 {
-    "name": "@fof/mason",
-    "private": true,
-    "license": "MIT",
-    "devDependencies": {
-        "flarum-tsconfig": "^1.0.2",
-        "flarum-webpack-config": "^2.0.0",
-        "html5sortable": "^0.9.18",
-        "prettier": "^3.0.3",
-        "webpack": "^5.98.0",
-        "webpack-cli": "^5.1.4",
-        "webpack-merge": "^5.8.0"
-    },
-    "scripts": {
-        "dev": "webpack --mode development --watch",
-        "build": "webpack --mode production",
-        "format": "prettier --write src",
-        "format-check": "prettier --check src"
-    }
+  "name": "@fof/mason",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "flarum-tsconfig": "^2.0.0",
+    "flarum-webpack-config": "^3.0.0",
+    "html5sortable": "^0.9.18",
+    "prettier": "^3.0.3",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-merge": "^5.8.0"
+  },
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "format": "prettier --write src",
+    "format-check": "prettier --check src"
+  }
 }
