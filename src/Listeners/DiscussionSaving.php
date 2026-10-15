@@ -23,15 +23,8 @@ use Illuminate\Support\Arr;
 
 class DiscussionSaving
 {
-    private $validation;
-    private $fields;
-    private $answers;
-
-    public function __construct(Factory $validation, FieldRepository $fields, AnswerRepository $answers)
+    public function __construct(private Factory $validation, private FieldRepository $fields, private AnswerRepository $answers)
     {
-        $this->validation = $validation;
-        $this->fields = $fields;
-        $this->answers = $answers;
     }
 
     /**

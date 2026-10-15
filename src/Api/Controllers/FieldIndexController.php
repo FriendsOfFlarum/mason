@@ -26,11 +26,8 @@ class FieldIndexController extends AbstractListController
         'allAnswers',
     ];
 
-    protected $fields;
-
-    public function __construct(FieldRepository $fields)
+    public function __construct(protected FieldRepository $fields)
     {
-        $this->fields = $fields;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)

@@ -28,13 +28,8 @@ class AnswerStoreController extends AbstractCreateController
         'allAnswers',
     ];
 
-    protected $fields;
-    protected $answers;
-
-    public function __construct(FieldRepository $fields, AnswerRepository $answers)
+    public function __construct(protected FieldRepository $fields, protected AnswerRepository $answers)
     {
-        $this->fields = $fields;
-        $this->answers = $answers;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)

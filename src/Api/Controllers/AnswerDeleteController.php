@@ -19,14 +19,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class AnswerDeleteController extends AbstractDeleteController
 {
-    protected $answers;
-
-    public function __construct(AnswerRepository $answers)
+    public function __construct(protected AnswerRepository $answers)
     {
-        $this->answers = $answers;
     }
 
-    protected function delete(ServerRequestInterface $request)
+    protected function delete(ServerRequestInterface $request): void
     {
         RequestUtil::getActor($request)->assertAdmin();
 

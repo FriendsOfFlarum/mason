@@ -19,15 +19,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class FieldRepository
 {
-    protected $field;
-    protected $validator;
-    protected $cache;
-
-    public function __construct(Field $field, FieldValidator $validator, Repository $cache)
+    public function __construct(protected Field $field, protected FieldValidator $validator, protected Repository $cache)
     {
-        $this->field = $field;
-        $this->validator = $validator;
-        $this->cache = $cache;
     }
 
     protected function query(): Builder

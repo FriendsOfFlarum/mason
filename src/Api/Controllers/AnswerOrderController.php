@@ -29,15 +29,8 @@ class AnswerOrderController extends AbstractShowController
         'allAnswers',
     ];
 
-    protected $validator;
-    protected $answers;
-    protected $fields;
-
-    public function __construct(OrderValidator $validator, AnswerRepository $answers, FieldRepository $fields)
+    public function __construct(protected OrderValidator $validator, protected AnswerRepository $answers, protected FieldRepository $fields)
     {
-        $this->validator = $validator;
-        $this->answers = $answers;
-        $this->fields = $fields;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)

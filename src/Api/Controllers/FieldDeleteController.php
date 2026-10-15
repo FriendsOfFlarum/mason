@@ -19,14 +19,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class FieldDeleteController extends AbstractDeleteController
 {
-    protected $fields;
-
-    public function __construct(FieldRepository $fields)
+    public function __construct(protected FieldRepository $fields)
     {
-        $this->fields = $fields;
     }
 
-    protected function delete(ServerRequestInterface $request)
+    protected function delete(ServerRequestInterface $request): void
     {
         RequestUtil::getActor($request)->assertAdmin();
 

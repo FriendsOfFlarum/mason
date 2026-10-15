@@ -23,13 +23,8 @@ class FieldOrderController extends AbstractListController
 {
     public $serializer = FieldSerializer::class;
 
-    protected $validator;
-    protected $fields;
-
-    public function __construct(OrderValidator $validator, FieldRepository $fields)
+    public function __construct(protected OrderValidator $validator, protected FieldRepository $fields)
     {
-        $this->validator = $validator;
-        $this->fields = $fields;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)

@@ -19,13 +19,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AnswerRepository
 {
-    protected $answer;
-    protected $validator;
-
-    public function __construct(Answer $answer, AnswerValidator $validator)
+    public function __construct(protected Answer $answer, protected AnswerValidator $validator)
     {
-        $this->answer = $answer;
-        $this->validator = $validator;
     }
 
     protected function query(Field $field)

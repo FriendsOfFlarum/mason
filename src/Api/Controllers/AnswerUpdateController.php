@@ -23,11 +23,8 @@ class AnswerUpdateController extends AbstractShowController
 {
     public $serializer = AnswerSerializer::class;
 
-    protected $answers;
-
-    public function __construct(AnswerRepository $answers)
+    public function __construct(protected AnswerRepository $answers)
     {
-        $this->answers = $answers;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)
