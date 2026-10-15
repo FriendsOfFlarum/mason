@@ -8,7 +8,7 @@
  * @param size Number of items per array
  */
 export default function chunkArray<T>(arr: T[], size: number): T[][] {
-    return Array(Math.ceil(arr.length / size))
-        .fill(undefined)
-        .map((_, i) => arr.slice(size * i, size + size * i));
+  return Array(Math.ceil(arr.length / size))
+    .fill(undefined)
+    .map((_, i) => arr.slice(size * i, size + size * i));
 }
