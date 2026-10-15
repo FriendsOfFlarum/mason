@@ -1,5 +1,5 @@
 import app from 'flarum/forum/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import Component from 'flarum/common/Component';
 import classList from 'flarum/common/utils/classList';
@@ -114,7 +114,11 @@ export default class FieldsEditor extends Component {
           })}
         >
           <label>
-            {field.icon() ? <>{icon(field.icon())} </> : null}
+            {field.icon() ? (
+              <>
+                <Icon name={field.icon()} />{' '}
+              </>
+            ) : null}
             {field.name()}
             {field.required() ? ' *' : null}
           </label>

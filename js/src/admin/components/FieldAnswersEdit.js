@@ -1,7 +1,7 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
 import app from 'flarum/admin/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import Component from 'flarum/common/Component';
 import Button from 'flarum/common/components/Button';
 import { debounce } from 'flarum/common/utils/throttleDebounce';
@@ -91,7 +91,9 @@ export default class FieldAnswersEdit extends Component {
                   count: userAnswers.length,
                 })}
               </div>
-              <div>{icon('fas fa-chevron-' + (this.showUserAnswers ? 'up' : 'down'))}</div>
+              <div>
+                <Icon name={'fas fa-chevron-' + (this.showUserAnswers ? 'up' : 'down')} />
+              </div>
             </button>
             {this.showUserAnswers && (
               <div className="Mason-Container">

@@ -1,5 +1,5 @@
 import app from 'flarum/forum/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import Component from 'flarum/common/Component';
 import sortTags from 'ext:flarum/tags/utils/sortTags';
 import classList from 'flarum/common/utils/classList';
@@ -93,7 +93,7 @@ export default class DiscussionFields extends Component {
             })}
             ,
           </select>
-          {icon('fas fa-caret-down', { className: 'Select-caret' })}
+          <Icon name="fas fa-caret-down" className="Select-caret" />
         </span>
       </div>
     );

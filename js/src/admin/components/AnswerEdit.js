@@ -1,5 +1,5 @@
 import app from 'flarum/admin/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import extractText from 'flarum/common/utils/extractText';
 import Component from 'flarum/common/Component';
 import Button from 'flarum/common/components/Button';
@@ -29,7 +29,7 @@ export default class FieldEdit extends Component {
           }}
           title={extractText(app.translator.trans('fof-mason.admin.buttons.edit-answer'))}
         >
-          {this.answer.content()} {icon('fas fa-pen')}
+          {this.answer.content()} <Icon name="fas fa-pen" />
         </span>
         <Switch
           state={this.answer.is_suggested()}

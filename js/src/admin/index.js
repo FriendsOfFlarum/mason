@@ -8,7 +8,7 @@ app.initializers.add('fof-mason', () => {
   app.store.models['mason-fields'] = Field;
   app.store.models['mason-answers'] = Answer;
 
-  app.extensionData
+  app.registry
     .for('fof-mason')
     .registerPage(MasonFieldsPage)
     .registerPermission(

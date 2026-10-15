@@ -1,5 +1,5 @@
 import app from 'flarum/forum/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import Component from 'flarum/common/Component';
 import sortByAttribute from '@common/helpers/sortByAttribute';
 
@@ -62,7 +62,7 @@ export default class FieldEditDropdown extends Component {
             </option>
           ))}
         </select>
-        {icon('fas fa-caret-down', { className: 'Select-caret' })}
+        <Icon name="fas fa-caret-down" className="Select-caret" />
       </span>
     );
   }

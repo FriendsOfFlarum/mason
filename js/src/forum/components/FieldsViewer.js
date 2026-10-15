@@ -1,5 +1,5 @@
 import app from 'flarum/forum/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import Component from 'flarum/common/Component';
 import Button from 'flarum/common/components/Button';
@@ -90,7 +90,11 @@ export default class FieldsViewer extends Component {
         `field-${field.id()}`,
         <div className="Mason-Field Form-group">
           <label>
-            {field.icon() ? <>{icon(field.icon())} </> : null}
+            {field.icon() ? (
+              <>
+                <Icon name={field.icon()} />{' '}
+              </>
+            ) : null}
             {field.name()}
           </label>
           <div className="FormControl Mason-Inline-Answers">{answer_list}</div>

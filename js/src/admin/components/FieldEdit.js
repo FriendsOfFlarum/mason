@@ -1,5 +1,5 @@
 import app from 'flarum/admin/app';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import extractText from 'flarum/common/utils/extractText';
 import Component from 'flarum/common/Component';
 import Button from 'flarum/common/components/Button';
@@ -56,7 +56,7 @@ export default class FieldEdit extends Component {
           <div className="Mason-Box-Header-Title">{this.boxTitle()}</div>
           <div>
             {this.field.exists && app.translator.trans('fof-mason.admin.buttons.edit-field') + ' '}
-            {icon('fas fa-chevron-' + (this.toggleFields ? 'up' : 'down'))}
+            <Icon name={'fas fa-chevron-' + (this.toggleFields ? 'up' : 'down')} />
           </div>
         </button>
         {this.toggleFields && this.viewFields()}
@@ -252,7 +252,7 @@ export default class FieldEdit extends Component {
     return [
       ' (',
       app.translator.trans('fof-mason.admin.fields.icon-preview', {
-        preview: icon(value),
+        preview: <Icon name={value} />,
       }),
       ')',
     ];
