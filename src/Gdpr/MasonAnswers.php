@@ -77,6 +77,7 @@ class MasonAnswers extends Type
 
     /**
      * @param Collection<int, Answer> $answers
+     *
      * @return array<int, array{field: string, answers: string[]}>
      */
     protected function fieldsOf(Collection $answers): array
