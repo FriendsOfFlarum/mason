@@ -31,11 +31,11 @@ class AnswersRelationship extends ToMany
 {
     public function deserializeValue(mixed $value, Context $context): mixed
     {
-        if (! is_array($value) || ! array_key_exists('data', $value)) {
+        if (!is_array($value) || !array_key_exists('data', $value)) {
             throw new BadRequestException('relationship does not include data key');
         }
 
-        if (! is_array($value['data']) || ! array_is_list($value['data'])) {
+        if (!is_array($value['data']) || !array_is_list($value['data'])) {
             throw (new BadRequestException('relationship data must be a list of identifier objects'))
                 ->setSource(['pointer' => '/data']);
         }
@@ -67,7 +67,7 @@ class AnswersRelationship extends ToMany
         $fieldId = Arr::get($identifier, 'relationships.field.data.id');
         $content = Arr::get($identifier, 'attributes.content');
 
-        if (! is_string($content) || ! is_scalar($fieldId)) {
+        if (!is_string($content) || !is_scalar($fieldId)) {
             throw new BadRequestException('answer must have an id, or content and a field');
         }
 

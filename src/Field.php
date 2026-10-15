@@ -18,19 +18,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property int                                               $id
- * @property string                                            $name
- * @property string|null                                       $description
- * @property int                                               $min_answers_count
- * @property int                                               $max_answers_count
- * @property bool                                              $show_when_empty
- * @property bool                                              $user_values_allowed
- * @property string|null                                       $validation
- * @property string|null                                       $icon
- * @property int|null                                          $sort
- * @property Carbon                                            $created_at
- * @property Carbon                                            $updated_at
- * @property Carbon|null                                       $deleted_at
+ * @property int                                                   $id
+ * @property string                                                $name
+ * @property string|null                                           $description
+ * @property int                                                   $min_answers_count
+ * @property int                                                   $max_answers_count
+ * @property bool                                                  $show_when_empty
+ * @property bool                                                  $user_values_allowed
+ * @property string|null                                           $validation
+ * @property string|null                                           $icon
+ * @property int|null                                              $sort
+ * @property Carbon                                                $created_at
+ * @property Carbon                                                $updated_at
+ * @property Carbon|null                                           $deleted_at
  * @property \Illuminate\Database\Eloquent\Collection<int, Answer> $answers
  * @property \Illuminate\Database\Eloquent\Collection<int, Answer> $suggestedAnswers
  * @property \Illuminate\Database\Eloquent\Collection<int, Answer> $allAnswers

@@ -65,7 +65,7 @@ class AnswerResourceTest extends MasonTestCase
     public function test_admin_can_update_answer(): void
     {
         $r = $this->json('PATCH', '/api/mason-answers/1', 1, [
-            'type' => 'mason-answers', 'id' => '1',
+            'type'       => 'mason-answers', 'id' => '1',
             'attributes' => ['content' => 'Changed', 'is_suggested' => true],
         ]);
 

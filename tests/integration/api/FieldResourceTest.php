@@ -12,8 +12,6 @@
 namespace FoF\Mason\Tests\integration\api;
 
 use FoF\Mason\Tests\integration\MasonTestCase;
-use Illuminate\Database\ConnectionInterface;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class FieldResourceTest extends MasonTestCase
 {

@@ -67,7 +67,7 @@ class ForumResourceFields
                 ->type('mason-fields')
                 ->includable()
                 ->get(function ($forum, Context $context) {
-                    if (! $this->canFill($context->getActor()) && ! $this->canSee($context->getActor())) {
+                    if (!$this->canFill($context->getActor()) && !$this->canSee($context->getActor())) {
                         return [];
                     }
 

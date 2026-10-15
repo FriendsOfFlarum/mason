@@ -19,14 +19,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @property int                                                   $id
- * @property int                                                   $field_id
- * @property Field|null                                            $field
- * @property string                                                $content
- * @property bool                                                  $is_suggested
- * @property int|null                                              $sort
- * @property Carbon                                                $created_at
- * @property Carbon                                                $updated_at
+ * @property int                                                       $id
+ * @property int                                                       $field_id
+ * @property Field|null                                                $field
+ * @property string                                                    $content
+ * @property bool                                                      $is_suggested
+ * @property int|null                                                  $sort
+ * @property Carbon                                                    $created_at
+ * @property Carbon                                                    $updated_at
  * @property \Illuminate\Database\Eloquent\Collection<int, Discussion> $discussions
  */
 class Answer extends AbstractModel

@@ -89,7 +89,7 @@ class DiscussionResourceFields
 
         $discussion->afterSave(function (Discussion $discussion) use ($answers) {
             foreach ($answers as $answer) {
-                if (! $answer->exists) {
+                if (!$answer->exists) {
                     $answer->save();
                 }
             }

@@ -24,7 +24,7 @@ class AnswerRepository
     {
         $answer = $field->answers()->where('content', $content)->first();
 
-        if (! $answer) {
+        if (!$answer) {
             $answer = new Answer(['content' => $content]);
             $answer->field()->associate($field);
         }
