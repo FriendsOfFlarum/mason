@@ -17,7 +17,7 @@ use Flarum\User\User;
 
 class DiscussionPolicy extends AbstractPolicy
 {
-    public function seeMasonAnswers(User $actor, Discussion $discussion)
+    public function seeMasonAnswers(User $actor, Discussion $discussion): ?string
     {
         if ($actor->can('fof-mason.see-other-fields')) {
             return $this->allow();
@@ -26,16 +26,20 @@ class DiscussionPolicy extends AbstractPolicy
         if ($actor->can('fof-mason.see-own-fields') && $discussion->user_id == $actor->id) {
             return $this->allow();
         }
+
+        return null;
     }
 
-    public function fillMasonAnswers(User $actor, Discussion $discussion)
+    public function fillMasonAnswers(User $actor, Discussion $discussion): ?string
     {
         if ($actor->can('fof-mason.fill-fields')) {
             return $this->allow();
         }
+
+        return null;
     }
 
-    public function updateMasonAnswers(User $actor, Discussion $discussion)
+    public function updateMasonAnswers(User $actor, Discussion $discussion): ?string
     {
         if ($actor->can('fof-mason.update-other-fields')) {
             return $this->allow();
@@ -44,5 +48,7 @@ class DiscussionPolicy extends AbstractPolicy
         if ($actor->can('fof-mason.update-own-fields') && $discussion->user_id == $actor->id) {
             return $this->allow();
         }
+
+        return null;
     }
 }

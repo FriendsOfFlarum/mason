@@ -23,11 +23,13 @@ class FieldPolicy extends AbstractPolicy
      * @param User  $user
      * @param Field $field
      */
-    public function useCustomAnswer(User $user, Field $field)
+    public function useCustomAnswer(User $user, Field $field): ?string
     {
         if ($field->user_values_allowed) {
             return $this->allow();
         }
+
+        return null;
     }
 
     /**
@@ -36,10 +38,12 @@ class FieldPolicy extends AbstractPolicy
      * @param User  $user
      * @param Field $field
      */
-    public function skipField(User $user, Field $field)
+    public function skipField(User $user, Field $field): ?string
     {
         if ($field->min_answers_count === 0 || $user->can('fof-mason.skip-required-fields')) {
             return $this->allow();
         }
+
+        return null;
     }
 }

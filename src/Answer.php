@@ -13,33 +13,33 @@ namespace FoF\Mason;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\Discussion\Discussion;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @property int                                                   $id
- * @property int                                                   $field_id
- * @property Field                                                 $field
- * @property string                                                $content
- * @property bool                                                  $is_suggested
- * @property bool                                                  $sort
- * @property Carbon                                                $created_at
- * @property Carbon                                                $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|Discussion[] $discussions
+ * @property int                                                       $id
+ * @property int                                                       $field_id
+ * @property Field|null                                                $field
+ * @property string                                                    $content
+ * @property bool                                                      $is_suggested
+ * @property int|null                                                  $sort
+ * @property Carbon                                                    $created_at
+ * @property Carbon                                                    $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection<int, Discussion> $discussions
  */
 class Answer extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     public $timestamps = true;
 
     protected $table = 'fof_mason_answers';
 
     protected $casts = [
         'is_suggested' => 'boolean',
-    ];
-
-    protected $visible = [
-        'content',
-        'is_suggested',
-        'sort',
+        'sort'         => 'integer',
     ];
 
     protected $fillable = [
@@ -48,18 +48,18 @@ class Answer extends AbstractModel
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo<Field, $this>
      */
-    public function field()
+    public function field(): BelongsTo
     {
         return $this->belongsTo(Field::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany<Discussion, $this>
      */
-    public function discussions()
+    public function discussions(): BelongsToMany
     {
-        return $this->belongsToMany(Discussion::class);
+        return $this->belongsToMany(Discussion::class, 'fof_mason_discussion_answer', 'answer_id', 'discussion_id');
     }
 }

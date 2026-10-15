@@ -60,23 +60,6 @@ The extension comes with several permissions to choose who can interact with cus
 The custom fields form will display on the discussion composer, on the first post of the discussion and as an option in the discussion edit menu.
 The layout can be customized via the settings available in the Mason page of the admin panel.
 
-## Updating from Flagrow
-
-This extension replaces [Flagrow Mason](https://packagist.org/packages/flagrow/mason).
-
-**Please backup your data before attempting the update!**
-
-You can upgrade from any of the older versions of the Flagrow extension.
-
-Then upgrade from the old extension to the new one:
-
-```sh
-composer remove flagrow/mason
-composer require fof/mason
-```
-
-When you enable the new extension, the permissions, settings and the data from Flagrow Mason will be moved to FoF Mason.
-
 ## Links
 
 - [Flarum Discuss post](https://discuss.flarum.org/d/7028)

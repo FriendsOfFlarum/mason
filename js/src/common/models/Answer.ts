@@ -1,13 +1,18 @@
 import Model from 'flarum/common/Model';
-import Field from './Field';
+import type Field from './Field';
 
 export default class Answer extends Model {
-    content = Model.attribute<string>('content');
-    is_suggested = Model.attribute<boolean>('is_suggested');
-    sort = Model.attribute<number | null>('sort');
-    field = Model.hasOne<Field>('field');
+  content() {
+    return Model.attribute<string>('content').call(this);
+  }
+  is_suggested() {
+    return Model.attribute<boolean>('is_suggested').call(this);
+  }
+  sort() {
+    return Model.attribute<number | null>('sort').call(this);
+  }
 
-    apiEndpoint() {
-        return '/fof/mason/answers' + (this.exists ? '/' + this.data.id : '');
-    }
+  field() {
+    return Model.hasOne<Field>('field').call(this);
+  }
 }

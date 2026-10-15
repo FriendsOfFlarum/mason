@@ -11,40 +11,32 @@
 
 namespace FoF\Mason\Api\Controllers;
 
-use Flarum\Api\Controller\AbstractListController;
-use FoF\Mason\Api\Serializers\FieldSerializer;
+use Flarum\Http\RequestUtil;
 use FoF\Mason\Repositories\FieldRepository;
 use FoF\Mason\Validators\OrderValidator;
-use Illuminate\Support\Arr;
+use Laminas\Diactoros\Response\EmptyResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class FieldOrderController extends AbstractListController
+class FieldOrderController implements RequestHandlerInterface
 {
-    public $serializer = FieldSerializer::class;
-
-    protected $validator;
-    protected $fields;
-
-    public function __construct(OrderValidator $validator, FieldRepository $fields)
-    {
-        $this->validator = $validator;
-        $this->fields = $fields;
+    public function __construct(
+        protected OrderValidator $validator,
+        protected FieldRepository $fields
+    ) {
     }
 
-    protected function data(ServerRequestInterface $request, Document $document)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
-        $attributes = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
 
-        $this->validator->assertValid($attributes);
+        $this->validator->assertValid($body);
 
-        $order = Arr::get($attributes, 'sort');
+        $this->fields->sorting($body['sort']);
 
-        $this->fields->sorting($order);
-
-        // Return updated sorting values
-        return $this->fields->all();
+        return new EmptyResponse(204);
     }
 }

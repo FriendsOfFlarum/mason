@@ -12,73 +12,30 @@
 namespace FoF\Mason\Repositories;
 
 use FoF\Mason\Field;
-use FoF\Mason\Validators\FieldValidator;
-use Illuminate\Cache\Repository;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class FieldRepository
 {
-    protected $field;
-    protected $validator;
-    protected $cache;
-
-    public function __construct(Field $field, FieldValidator $validator, Repository $cache)
+    public function findOrFail(int|string|null $id): Field
     {
-        $this->field = $field;
-        $this->validator = $validator;
-        $this->cache = $cache;
-    }
-
-    protected function query(): Builder
-    {
-        return $this->field->newQuery()->orderBy('sort', 'desc');
+        return Field::query()->findOrFail($id);
     }
 
     /**
-     * @param $id
-     *
-     * @return Field
+     * @return Collection<int, Field>
      */
-    public function findOrFail($id): Field
-    {
-        return $this->field->newQuery()->findOrFail($id);
-    }
-
     public function all(): Collection
     {
-        return $this->query()->get();
+        return Field::query()->orderBy('sort', 'desc')->get();
     }
 
-    public function store(array $attributes): Field
-    {
-        $this->validator->assertValid($attributes);
-
-        $field = new Field($attributes);
-        $field->save();
-
-        return $field;
-    }
-
-    public function update(Field $field, array $attributes): Field
-    {
-        $this->validator->assertValid($attributes);
-
-        $field->fill($attributes);
-        $field->save();
-
-        return $field;
-    }
-
-    public function delete(Field $field)
-    {
-        $field->delete();
-    }
-
-    public function sorting(array $sorting)
+    /**
+     * @param array<int, int|string> $sorting field ids, in display order
+     */
+    public function sorting(array $sorting): void
     {
         foreach ($sorting as $i => $fieldId) {
-            $this->field->newQuery()->where('id', $fieldId)->update(['sort' => $i]);
+            Field::query()->where('id', $fieldId)->update(['sort' => $i]);
         }
     }
 }

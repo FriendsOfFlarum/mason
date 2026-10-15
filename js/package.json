@@ -1,20 +1,36 @@
 {
-    "name": "@fof/mason",
-    "private": true,
-    "license": "MIT",
-    "devDependencies": {
-        "flarum-tsconfig": "^1.0.2",
-        "flarum-webpack-config": "^2.0.0",
-        "html5sortable": "^0.9.18",
-        "prettier": "^3.0.3",
-        "webpack": "^5.98.0",
-        "webpack-cli": "^5.1.4",
-        "webpack-merge": "^5.8.0"
-    },
-    "scripts": {
-        "dev": "webpack --mode development --watch",
-        "build": "webpack --mode production",
-        "format": "prettier --write src",
-        "format-check": "prettier --check src"
-    }
+  "name": "@fof/mason",
+  "private": true,
+  "license": "MIT",
+  "prettier": "@flarum/prettier-config",
+  "devDependencies": {
+    "@flarum/jest-config": "^2.0.2",
+    "@flarum/prettier-config": "^1.0.0",
+    "@types/node": "^22.0.0",
+    "flarum-tsconfig": "^2.0.0",
+    "flarum-webpack-config": "^3.0.6",
+    "prettier": "^3.0.3",
+    "typescript": "^4.9.5",
+    "typescript-coverage-report": "^0.6.1",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-merge": "^5.8.0"
+  },
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "analyze": "cross-env ANALYZER=true npm run build",
+    "format": "prettier --write src tests",
+    "format-check": "prettier --check src tests",
+    "clean-typings": "npx rimraf dist-typings && mkdir dist-typings",
+    "build-typings": "npm run clean-typings && ([ -e src/@types ] && cp -r src/@types dist-typings/@types || true) && tsc && npm run post-build-typings",
+    "post-build-typings": "find dist-typings -type f -name '*.d.ts' -print0 | xargs -0 sed -i 's,../src/@types,@types,g'",
+    "check-typings": "tsc --noEmit --emitDeclarationOnly false && tsc --noEmit --emitDeclarationOnly false -p tsconfig.test.json",
+    "check-typings-coverage": "typescript-coverage-report",
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest)"
+  },
+  "resolutions": {
+    "@types/node": "^22.0.0"
+  },
+  "type": "module"
 }

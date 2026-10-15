@@ -11,51 +11,37 @@
 
 namespace FoF\Mason\Api\Controllers;
 
-use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
-use FoF\Mason\Api\Serializers\FieldSerializer;
 use FoF\Mason\Repositories\AnswerRepository;
 use FoF\Mason\Repositories\FieldRepository;
 use FoF\Mason\Validators\OrderValidator;
 use Illuminate\Support\Arr;
+use Laminas\Diactoros\Response\EmptyResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class AnswerOrderController extends AbstractShowController
+class AnswerOrderController implements RequestHandlerInterface
 {
-    public $serializer = FieldSerializer::class;
-
-    public $include = [
-        'allAnswers',
-    ];
-
-    protected $validator;
-    protected $answers;
-    protected $fields;
-
-    public function __construct(OrderValidator $validator, AnswerRepository $answers, FieldRepository $fields)
-    {
-        $this->validator = $validator;
-        $this->answers = $answers;
-        $this->fields = $fields;
+    public function __construct(
+        protected OrderValidator $validator,
+        protected FieldRepository $fields,
+        protected AnswerRepository $answers
+    ) {
     }
 
-    protected function data(ServerRequestInterface $request, Document $document)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
 
-        $attributes = $request->getParsedBody();
+        $field = $this->fields->findOrFail(Arr::get($request->getQueryParams(), 'id'));
 
-        $this->validator->assertValid($attributes);
+        $body = (array) $request->getParsedBody();
 
-        $order = Arr::get($attributes, 'sort');
+        $this->validator->assertValid($body);
 
-        $this->answers->sorting($order);
+        $this->answers->sorting($field, $body['sort']);
 
-        $fieldId = Arr::get($request->getQueryParams(), 'id');
-
-        // Return updated sorting values
-        // Return the field instead of individual answers as it's easier to update the store client-side
-        return $this->fields->findOrFail($fieldId);
+        return new EmptyResponse(204);
     }
 }
