@@ -40,13 +40,33 @@ class AuditLogTest extends MasonTestCase
     }
 
     /**
+     * Key-sorted (see sortKeys()).
+     *
      * @return array<int, array{actor_id: int|null, payload: array<string, mixed>}>
      */
     protected function logs(string $action): array
     {
-        return $this->database()->table('audit_log')->where('action', $action)->orderBy('id')->get()
+        return $this->sortKeys($this->database()->table('audit_log')->where('action', $action)->orderBy('id')->get()
             ->map(fn ($log) => ['actor_id' => $log->actor_id, 'payload' => json_decode($log->payload, true)])
-            ->all();
+            ->all());
+    }
+
+    /**
+     * MySQL's JSON columns store object keys in their own order, so payloads are compared by key.
+     * Lists (e.g. `keys`) keep their order: it is part of the payload.
+     */
+    protected function sortKeys(array $value): array
+    {
+        if (!array_is_list($value)) {
+            ksort($value);
+        }
+
+        return array_map(fn ($item) => is_array($item) ? $this->sortKeys($item) : $item, $value);
+    }
+
+    protected function assertLogs(array $expected, string $action): void
+    {
+        $this->assertSame($this->sortKeys($expected), $this->logs($action));
     }
 
     protected function assertSuccessful(ResponseInterface $response): void
@@ -91,7 +111,7 @@ class AuditLogTest extends MasonTestCase
         $logs = $this->logs('mason_field.updated');
 
         $this->assertCount(1, $logs);
-        $this->assertSame([
+        $this->assertSame($this->sortKeys([
             'field_id' => 1,
             'name'     => 'OS',
             'keys'     => ['name', 'min_answers_count'],
@@ -99,7 +119,7 @@ class AuditLogTest extends MasonTestCase
                 'name'              => ['old' => 'Operating system', 'new' => 'OS'],
                 'min_answers_count' => ['old' => 0, 'new' => 1],
             ],
-        ], $logs[0]['payload']);
+        ]), $logs[0]['payload']);
     }
 
     #[Test]
@@ -119,7 +139,7 @@ class AuditLogTest extends MasonTestCase
     {
         $this->assertSuccessful($this->json('DELETE', '/api/mason-fields/1', 1));
 
-        $this->assertSame([['actor_id' => 1, 'payload' => ['field_id' => 1, 'name' => 'Operating system']]], $this->logs('mason_field.deleted'));
+        $this->assertLogs([['actor_id' => 1, 'payload' => ['field_id' => 1, 'name' => 'Operating system']]], 'mason_field.deleted');
     }
 
     #[Test]
@@ -134,7 +154,7 @@ class AuditLogTest extends MasonTestCase
         $logs = $this->logs('mason_answer.created');
 
         $this->assertCount(1, $logs);
-        $this->assertSame(['field_id' => 1, 'key' => 'Operating system', 'name' => 'macOS'], array_diff_key($logs[0]['payload'], ['answer_id' => 0]));
+        $this->assertSame($this->sortKeys(['field_id' => 1, 'key' => 'Operating system', 'name' => 'macOS']), array_diff_key($logs[0]['payload'], ['answer_id' => 0]));
     }
 
     #[Test]
@@ -146,7 +166,7 @@ class AuditLogTest extends MasonTestCase
             'attributes' => ['content' => 'Microsoft Windows', 'is_suggested' => true],
         ]));
 
-        $this->assertSame([[
+        $this->assertLogs([[
             'actor_id' => 1,
             'payload'  => [
                 'answer_id' => 11,
@@ -157,7 +177,7 @@ class AuditLogTest extends MasonTestCase
                 'keys'      => ['content'],
                 'changes'   => ['content' => ['old' => 'Windows', 'new' => 'Microsoft Windows']],
             ],
-        ]], $this->logs('mason_answer.updated'));
+        ]], 'mason_answer.updated');
     }
 
     #[Test]
@@ -165,10 +185,10 @@ class AuditLogTest extends MasonTestCase
     {
         $this->assertSuccessful($this->json('DELETE', '/api/mason-answers/12', 1));
 
-        $this->assertSame([[
+        $this->assertLogs([[
             'actor_id' => 1,
             'payload'  => ['answer_id' => 12, 'field_id' => 1, 'key' => 'Operating system', 'name' => 'Linux'],
-        ]], $this->logs('mason_answer.deleted'));
+        ]], 'mason_answer.deleted');
     }
 
     #[Test]
@@ -176,7 +196,7 @@ class AuditLogTest extends MasonTestCase
     {
         $this->assertSuccessful($this->setAnswers(2, [['type' => 'mason-answers', 'id' => '12']]));
 
-        $this->assertSame([[
+        $this->assertLogs([[
             'actor_id' => 2,
             'payload'  => [
                 'discussion_id' => 1,
@@ -185,7 +205,7 @@ class AuditLogTest extends MasonTestCase
                 'new_value'     => 'Operating system: Linux',
                 'changes'       => ['Operating system' => ['old' => ['Windows'], 'new' => ['Linux']]],
             ],
-        ]], $this->logs('discussion.mason_answers_changed'));
+        ]], 'discussion.mason_answers_changed');
     }
 
     #[Test]
