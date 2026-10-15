@@ -12,8 +12,8 @@
 namespace FoF\Mason;
 
 use Flarum\Api\Endpoint;
-use Flarum\Audit\Extend\Audit as AuditExtend;
 use Flarum\Api\Resource;
+use Flarum\Audit\Extend\Audit as AuditExtend;
 use Flarum\Discussion\Discussion;
 use Flarum\Extend;
 use Flarum\Gdpr\Extend\UserData as GdprUserData;

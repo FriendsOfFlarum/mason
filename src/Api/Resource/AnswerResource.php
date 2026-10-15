@@ -15,11 +15,11 @@ use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
+use FoF\Mason\Answer;
 use FoF\Mason\Api\Resource\Concerns\ReportsChanges;
 use FoF\Mason\Event\AnswerCreated;
 use FoF\Mason\Event\AnswerDeleted;
 use FoF\Mason\Event\AnswerUpdated;
-use FoF\Mason\Answer;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
@@ -84,7 +84,7 @@ class AnswerResource extends AbstractDatabaseResource
     }
 
     /**
-     * @param Answer $model
+     * @param Answer  $model
      * @param Context $context
      */
     public function created(object $model, OriginalContext $context): ?object
@@ -95,7 +95,7 @@ class AnswerResource extends AbstractDatabaseResource
     }
 
     /**
-     * @param Answer $model
+     * @param Answer  $model
      * @param Context $context
      */
     public function updated(object $model, OriginalContext $context): ?object
@@ -108,7 +108,7 @@ class AnswerResource extends AbstractDatabaseResource
     }
 
     /**
-     * @param Answer $model
+     * @param Answer  $model
      * @param Context $context
      */
     public function deleted(object $model, OriginalContext $context): void

@@ -117,7 +117,7 @@ class FieldResource extends AbstractDatabaseResource
     }
 
     /**
-     * @param Field $model
+     * @param Field   $model
      * @param Context $context
      */
     public function created(object $model, OriginalContext $context): ?object
@@ -128,7 +128,7 @@ class FieldResource extends AbstractDatabaseResource
     }
 
     /**
-     * @param Field $model
+     * @param Field   $model
      * @param Context $context
      */
     public function updated(object $model, OriginalContext $context): ?object
@@ -141,7 +141,7 @@ class FieldResource extends AbstractDatabaseResource
     }
 
     /**
-     * @param Field $model
+     * @param Field   $model
      * @param Context $context
      */
     public function deleted(object $model, OriginalContext $context): void
