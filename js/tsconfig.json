@@ -1,20 +1,11 @@
 {
   "extends": "flarum-tsconfig",
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*", "../vendor/flarum/core/js/dist-typings/@types/**/*", "../vendor/flarum/tags/js/dist-typings/@types/**/*", "@types/**/*"],
   "compilerOptions": {
     "declarationDir": "./dist-typings",
     "paths": {
-      "flarum/*": [
-        "../vendor/flarum/core/js/dist-typings/*"
-      ],
-      "@common/*": [
-        "src/common/*"
-      ],
-      "ext:flarum/tags": [
-        "../vendor/flarum/tags/js/dist-typings/*"
-      ]
+      "flarum/*": ["../vendor/flarum/core/js/dist-typings/*"],
+      "ext:flarum/tags/*": ["../vendor/flarum/tags/js/dist-typings/*"]
     }
   }
 }
