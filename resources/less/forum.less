@@ -10,7 +10,7 @@
 
 .Mason-Fields {
     border: 1px solid #e8ecf3;
-    border-radius: @border-radius;
+    border-radius: var(--border-radius);
     padding: 12px 16px;
 
     .helpText {
@@ -19,7 +19,7 @@
 }
 
 .Mason-Fields--viewer {
-    background-color: @body-bg; // Force background color so it can be read when in .DiscussionHero
+    background-color: var(--body-bg); // Force background color so it can be read when in .DiscussionHero
 }
 
 .PostStream-item .Mason-Fields {
@@ -33,7 +33,7 @@
 .Mason-Field--title {
     line-height: 1;
     font-size: 1.1em;
-    color: @muted-color;
+    color: var(--muted-color);
     margin: 0;
     margin-bottom: 8px;
 }
