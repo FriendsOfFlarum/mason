@@ -121,3 +121,18 @@ flarum-gdpr:
                 export_description: The custom field answers on discussions you started.
                 anonymize_description: Your custom field answers stay with your discussions.
                 delete_description: Custom field answers are removed from discussions you started, and answers you typed that no other discussion uses are deleted.
+
+# Labels for the audit log entries Mason produces, rendered by the (optional) flarum/audit browser.
+flarum-audit:
+    lib:
+        browser:
+            mason_field:
+                created: Created custom field {name}
+                updated: Updated custom field {name} ({keys})
+                deleted: Deleted custom field {name}
+            mason_answer:
+                created: Added answer {name} to custom field {key}
+                updated: Updated answer {old_name} to {new_name} in custom field {key} ({keys})
+                deleted: Deleted answer {name} from custom field {key}
+            discussion:
+                mason_answers_changed: Changed {keys} on {discussion} from {old_value} to {new_value}

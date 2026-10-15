@@ -16,6 +16,10 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use FoF\Mason\Answer;
+use FoF\Mason\Api\Resource\Concerns\ReportsChanges;
+use FoF\Mason\Event\AnswerCreated;
+use FoF\Mason\Event\AnswerDeleted;
+use FoF\Mason\Event\AnswerUpdated;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
@@ -26,6 +30,8 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
  */
 class AnswerResource extends AbstractDatabaseResource
 {
+    use ReportsChanges;
+
     public function type(): string
     {
         return 'mason-answers';
@@ -75,5 +81,38 @@ class AnswerResource extends AbstractDatabaseResource
                 ->requiredOnCreate()
                 ->writableOnCreate(),
         ];
+    }
+
+    /**
+     * @param Answer  $model
+     * @param Context $context
+     */
+    public function created(object $model, OriginalContext $context): ?object
+    {
+        $this->events->dispatch(new AnswerCreated($model, $context->getActor()));
+
+        return $model;
+    }
+
+    /**
+     * @param Answer  $model
+     * @param Context $context
+     */
+    public function updated(object $model, OriginalContext $context): ?object
+    {
+        if ($changes = $this->changesOf($model)) {
+            $this->events->dispatch(new AnswerUpdated($model, $context->getActor(), $changes));
+        }
+
+        return $model;
+    }
+
+    /**
+     * @param Answer  $model
+     * @param Context $context
+     */
+    public function deleted(object $model, OriginalContext $context): void
+    {
+        $this->events->dispatch(new AnswerDeleted($model, $context->getActor()));
     }
 }

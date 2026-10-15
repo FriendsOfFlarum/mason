@@ -15,6 +15,10 @@ use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
+use FoF\Mason\Api\Resource\Concerns\ReportsChanges;
+use FoF\Mason\Event\FieldCreated;
+use FoF\Mason\Event\FieldDeleted;
+use FoF\Mason\Event\FieldUpdated;
 use FoF\Mason\Field;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as OriginalContext;
@@ -26,6 +30,8 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
  */
 class FieldResource extends AbstractDatabaseResource
 {
+    use ReportsChanges;
+
     public function type(): string
     {
         return 'mason-fields';
@@ -108,5 +114,38 @@ class FieldResource extends AbstractDatabaseResource
                 ->includable()
                 ->visible(fn (Field $field, Context $context) => $context->getActor()->isAdmin()),
         ];
+    }
+
+    /**
+     * @param Field   $model
+     * @param Context $context
+     */
+    public function created(object $model, OriginalContext $context): ?object
+    {
+        $this->events->dispatch(new FieldCreated($model, $context->getActor()));
+
+        return $model;
+    }
+
+    /**
+     * @param Field   $model
+     * @param Context $context
+     */
+    public function updated(object $model, OriginalContext $context): ?object
+    {
+        if ($changes = $this->changesOf($model)) {
+            $this->events->dispatch(new FieldUpdated($model, $context->getActor(), $changes));
+        }
+
+        return $model;
+    }
+
+    /**
+     * @param Field   $model
+     * @param Context $context
+     */
+    public function deleted(object $model, OriginalContext $context): void
+    {
+        $this->events->dispatch(new FieldDeleted($model, $context->getActor()));
     }
 }

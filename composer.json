@@ -30,7 +30,8 @@
             "category": "feature",
             "optional-dependencies": [
                 "flarum/tags",
-                "flarum/gdpr"
+                "flarum/gdpr",
+                "flarum/audit"
             ],
             "icon": {
                 "name": "fas fa-dungeon",
@@ -53,7 +54,8 @@
         "flarum/phpstan": "^2.0.0",
         "flarum/testing": "^2.0",
         "flarum/tags": "*",
-        "flarum/gdpr": "*"
+        "flarum/gdpr": "*",
+        "flarum/audit": "*"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
