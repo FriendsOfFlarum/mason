@@ -24,6 +24,10 @@ use Flarum\Extend;
 use FoF\Mason\Api\Serializers\AnswerSerializer;
 use FoF\Mason\Api\Serializers\FieldSerializer;
 use FoF\Mason\Listeners\DiscussionSaving;
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
+use Flarum\Api\Resource;
+use Flarum\Api\Schema;
 
 return [
     (new Extend\Frontend('forum'))
@@ -50,26 +54,33 @@ return [
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ShowForumController::class))
         ->addInclude('masonFields.suggestedAnswers')
         ->prepareDataForSerialization(LoadForumFieldsRelationship::class),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiSerializer(ForumSerializer::class))
         ->hasMany('masonFields', FieldSerializer::class)
         ->attributes(ForumAttributes::class),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ListDiscussionsController::class))
         ->addInclude('masonAnswers.field'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ShowDiscussionController::class))
         ->addInclude('masonAnswers.field'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(CreateDiscussionController::class))
         ->addInclude('masonAnswers.field'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(UpdateDiscussionController::class))
         ->addInclude('masonAnswers.field'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiSerializer(DiscussionSerializer::class))
         ->hasMany('masonAnswers', AnswerSerializer::class)
         ->attributes(function (DiscussionSerializer $serializer, Discussion $discussion): array {
@@ -83,6 +94,8 @@ return [
             return [
                 'canSeeMasonAnswers'    => $canSee,
                 'canUpdateMasonAnswers' => $serializer->getActor()->can('updateMasonAnswers', $discussion),
+                new Extend\ApiResource(Api\Resource\AnswerResource::class),
+                new Extend\ApiResource(Api\Resource\FieldResource::class),
             ];
         }),
 
@@ -103,4 +116,6 @@ return [
         ->modelPolicy(Answer::class, Access\AnswerPolicy::class)
         ->modelPolicy(Discussion::class, Access\DiscussionPolicy::class)
         ->modelPolicy(Field::class, Access\FieldPolicy::class),
+    new Extend\ApiResource(Api\Resource\AnswerResource::class),
+    new Extend\ApiResource(Api\Resource\FieldResource::class),
 ];
