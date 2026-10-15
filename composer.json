@@ -29,7 +29,8 @@
             "title": "FoF Mason",
             "category": "feature",
             "optional-dependencies": [
-                "flarum/tags"
+                "flarum/tags",
+                "flarum/gdpr"
             ],
             "icon": {
                 "name": "fas fa-dungeon",
@@ -51,7 +52,8 @@
     "require-dev": {
         "flarum/phpstan": "^2.0.0",
         "flarum/testing": "^2.0",
-        "flarum/tags": "*"
+        "flarum/tags": "*",
+        "flarum/gdpr": "*"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",

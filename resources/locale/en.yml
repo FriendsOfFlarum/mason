@@ -112,3 +112,12 @@ fof-mason:
             update-own-fields: Update fields of own discussion
             update-other-fields: Update fields of any discussion
             skip-required-fields: Allowed to skip required fields
+
+# Shown by flarum/gdpr when describing what it does with a member's Mason answers.
+flarum-gdpr:
+    lib:
+        data:
+            masonanswers:
+                export_description: The custom field answers on discussions you started.
+                anonymize_description: Your custom field answers stay with your discussions.
+                delete_description: Custom field answers are removed from discussions you started, and answers you typed that no other discussion uses are deleted.

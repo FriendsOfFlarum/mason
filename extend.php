@@ -15,6 +15,7 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
 use Flarum\Discussion\Discussion;
 use Flarum\Extend;
+use Flarum\Gdpr\Extend\UserData as GdprUserData;
 
 return [
     (new Extend\Frontend('forum'))
@@ -60,4 +61,10 @@ return [
         ->modelPolicy(Answer::class, Access\AnswerPolicy::class)
         ->modelPolicy(Discussion::class, Access\DiscussionPolicy::class)
         ->modelPolicy(Field::class, Access\FieldPolicy::class),
+
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-gdpr', fn () => [
+            (new GdprUserData())
+                ->addType(Gdpr\MasonAnswers::class),
+        ]),
 ];
