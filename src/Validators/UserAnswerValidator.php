@@ -16,12 +16,7 @@ use FoF\Mason\Field;
 
 class UserAnswerValidator extends AbstractValidator
 {
-    /**
-     * @param Field $field
-     *
-     * @return $this
-     */
-    public function setField(Field $field)
+    public function setField(Field $field): static
     {
         $rules = [];
 

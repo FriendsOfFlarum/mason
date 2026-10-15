@@ -1,20 +1,30 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason\Api\Resource;
 
 use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
-use Flarum\Api\Resource;
+use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
-use Flarum\Api\Sort\SortColumn;
 use FoF\Mason\Field;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
 /**
- * @extends Resource\AbstractDatabaseResource<Field>
+ * Attribute names stay snake_case: they are the 1.x wire format the frontend models read.
+ *
+ * @extends AbstractDatabaseResource<Field>
  */
-class FieldResource extends Resource\AbstractDatabaseResource
+class FieldResource extends AbstractDatabaseResource
 {
     public function type(): string
     {
@@ -26,6 +36,9 @@ class FieldResource extends Resource\AbstractDatabaseResource
         return Field::class;
     }
 
+    /**
+     * @param Context $context
+     */
     public function scope(Builder $query, OriginalContext $context): void
     {
         $query->whereVisibleTo($context->getActor());
@@ -34,33 +47,66 @@ class FieldResource extends Resource\AbstractDatabaseResource
     public function endpoints(): array
     {
         return [
+            Endpoint\Index::make()
+                ->admin()
+                ->defaultInclude(['allAnswers']),
+            Endpoint\Create::make()
+                ->admin()
+                ->defaultInclude(['allAnswers']),
+            Endpoint\Update::make()
+                ->admin()
+                ->defaultInclude(['allAnswers']),
+            Endpoint\Delete::make()
+                ->admin(),
         ];
     }
 
     public function fields(): array
     {
         return [
-
-            /**
-             * @todo migrate logic from old serializer and controllers to this API Resource.
-             * @see https://docs.flarum.org/2.x/extend/api#api-resources
-             */
-
-            // Example:
             Schema\Str::make('name')
                 ->requiredOnCreate()
-                ->minLength(3)
-                ->maxLength(255)
+                ->writable()
+                ->maxLength(255),
+            Schema\Str::make('description')
+                ->nullable()
+                ->writable()
+                ->maxLength(255),
+            // Multiple answers were never implemented: min only toggles optional/required, max is fixed at 1.
+            Schema\Integer::make('min_answers_count')
+                ->requiredOnCreate()
+                ->writable()
+                ->min(0)
+                ->max(1),
+            Schema\Integer::make('max_answers_count')
+                ->requiredOnCreate()
+                ->writable()
+                ->min(1)
+                ->max(1),
+            Schema\Boolean::make('show_when_empty')
+                ->requiredOnCreate()
                 ->writable(),
+            Schema\Boolean::make('user_values_allowed')
+                ->requiredOnCreate()
+                ->writable(),
+            Schema\Str::make('validation')
+                ->nullable()
+                ->writable()
+                ->maxLength(255),
+            Schema\Str::make('icon')
+                ->nullable()
+                ->writable()
+                ->maxLength(255),
+            Schema\Integer::make('sort')
+                ->nullable(),
 
-
-        ];
-    }
-
-    public function sorts(): array
-    {
-        return [
-            // SortColumn::make('createdAt'),
+            Schema\Relationship\ToMany::make('suggestedAnswers')
+                ->type('mason-answers')
+                ->includable(),
+            Schema\Relationship\ToMany::make('allAnswers')
+                ->type('mason-answers')
+                ->includable()
+                ->visible(fn (Field $field, Context $context) => $context->getActor()->isAdmin()),
         ];
     }
 }

@@ -17,10 +17,12 @@ use FoF\Mason\Answer;
 
 class AnswerPolicy extends AbstractPolicy
 {
-    public function addToDiscussion(User $user, Answer $answer)
+    public function addToDiscussion(User $user, Answer $answer): ?string
     {
         if ($answer->is_suggested || $user->can('useCustomAnswer', $answer->field)) {
             return $this->allow();
         }
+
+        return null;
     }
 }

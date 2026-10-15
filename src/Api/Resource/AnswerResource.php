@@ -1,20 +1,30 @@
 <?php
 
+/*
+ * This file is part of fof/mason.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Mason\Api\Resource;
 
 use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
-use Flarum\Api\Resource;
+use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
-use Flarum\Api\Sort\SortColumn;
 use FoF\Mason\Answer;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
 /**
- * @extends Resource\AbstractDatabaseResource<Answer>
+ * Attribute names stay snake_case: they are the 1.x wire format the frontend models read.
+ *
+ * @extends AbstractDatabaseResource<Answer>
  */
-class AnswerResource extends Resource\AbstractDatabaseResource
+class AnswerResource extends AbstractDatabaseResource
 {
     public function type(): string
     {
@@ -26,6 +36,9 @@ class AnswerResource extends Resource\AbstractDatabaseResource
         return Answer::class;
     }
 
+    /**
+     * @param Context $context
+     */
     public function scope(Builder $query, OriginalContext $context): void
     {
         $query->whereVisibleTo($context->getActor());
@@ -34,37 +47,33 @@ class AnswerResource extends Resource\AbstractDatabaseResource
     public function endpoints(): array
     {
         return [
+            // The admin UI renders answers from `field.allAnswers`, so return the refreshed list.
+            Endpoint\Create::make()
+                ->admin()
+                ->defaultInclude(['field', 'field.allAnswers']),
+            Endpoint\Update::make()
+                ->admin(),
+            Endpoint\Delete::make()
+                ->admin(),
         ];
     }
 
     public function fields(): array
     {
         return [
-
-            /**
-             * @todo migrate logic from old serializer and controllers to this API Resource.
-             * @see https://docs.flarum.org/2.x/extend/api#api-resources
-             */
-
-            // Example:
-            Schema\Str::make('name')
+            Schema\Str::make('content')
                 ->requiredOnCreate()
-                ->minLength(3)
-                ->maxLength(255)
                 ->writable(),
-
+            Schema\Boolean::make('is_suggested')
+                ->writable(),
+            Schema\Integer::make('sort')
+                ->nullable(),
 
             Schema\Relationship\ToOne::make('field')
+                ->type('mason-fields')
                 ->includable()
-                // ->inverse('?') // the inverse relationship name if any.
-                ->type('fields'), // the serialized type of this relation (type of the relation model's API resource).
-        ];
-    }
-
-    public function sorts(): array
-    {
-        return [
-            // SortColumn::make('createdAt'),
+                ->requiredOnCreate()
+                ->writableOnCreate(),
         ];
     }
 }
