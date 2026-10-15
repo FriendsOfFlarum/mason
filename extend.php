@@ -12,6 +12,7 @@
 namespace FoF\Mason;
 
 use Flarum\Api\Endpoint;
+use Flarum\Audit\Extend\Audit as AuditExtend;
 use Flarum\Api\Resource;
 use Flarum\Discussion\Discussion;
 use Flarum\Extend;
@@ -66,5 +67,15 @@ return [
         ->whenExtensionEnabled('flarum-gdpr', fn () => [
             (new GdprUserData())
                 ->addType(Gdpr\MasonAnswers::class),
+        ])
+        ->whenExtensionEnabled('flarum-audit', fn () => [
+            (new AuditExtend())
+                ->listen(Event\FieldCreated::class, 'mason_field.created', Audit\Payloads::fieldCreated(...))
+                ->listen(Event\FieldUpdated::class, 'mason_field.updated', Audit\Payloads::fieldUpdated(...))
+                ->listen(Event\FieldDeleted::class, 'mason_field.deleted', Audit\Payloads::fieldDeleted(...))
+                ->listen(Event\AnswerCreated::class, 'mason_answer.created', Audit\Payloads::answerCreated(...))
+                ->listen(Event\AnswerUpdated::class, 'mason_answer.updated', Audit\Payloads::answerUpdated(...))
+                ->listen(Event\AnswerDeleted::class, 'mason_answer.deleted', Audit\Payloads::answerDeleted(...))
+                ->listen(Event\DiscussionAnswersChanged::class, 'discussion.mason_answers_changed', Audit\Payloads::discussionAnswersChanged(...)),
         ]),
 ];

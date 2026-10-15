@@ -16,9 +16,11 @@ use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\Exception\PermissionDeniedException;
+use Flarum\User\User;
 use FoF\Mason\Answer;
 use FoF\Mason\Api\Schema\AnswersRelationship;
 use FoF\Mason\DiscussionAnswersRelationship;
+use FoF\Mason\Event\DiscussionAnswersChanged;
 use FoF\Mason\Field;
 use FoF\Mason\Repositories\FieldRepository;
 use Illuminate\Contracts\Validation\Factory;
@@ -87,6 +89,10 @@ class DiscussionResourceFields
             $this->validateAnswerCount($field, $answersPerField[$field->id] ?? 0);
         }
 
+        if ($discussion->exists) {
+            $this->raiseIfChanged($discussion, $answers, $actor);
+        }
+
         $discussion->afterSave(function (Discussion $discussion) use ($answers) {
             foreach ($answers as $answer) {
                 if (!$answer->exists) {
@@ -97,6 +103,25 @@ class DiscussionResourceFields
             (new DiscussionAnswersRelationship())($discussion)->sync(array_map(fn (Answer $answer) => $answer->id, $answers));
             $discussion->unsetRelation('masonAnswers');
         });
+    }
+
+    /**
+     * @param Answer[] $answers
+     */
+    protected function raiseIfChanged(Discussion $discussion, array $answers, User $actor): void
+    {
+        $oldAnswers = (new DiscussionAnswersRelationship())($discussion)->with('field')->get();
+        // An unsaved (new free-text) answer has no id, so it always counts as a change.
+        $newIds = array_map(fn (Answer $answer) => $answer->id, $answers);
+
+        $unchanged = !in_array(null, $newIds, true)
+            && count($newIds) === $oldAnswers->count()
+            && !array_diff($newIds, $oldAnswers->modelKeys());
+
+        if (!$unchanged) {
+            // Raised events are dispatched after the save, once new free-text answers exist.
+            $discussion->raise(new DiscussionAnswersChanged($discussion, $actor, $oldAnswers->all(), $answers));
+        }
     }
 
     protected function validateAnswerCount(Field $field, int $count): void
