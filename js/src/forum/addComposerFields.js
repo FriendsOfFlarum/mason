@@ -1,10 +1,9 @@
 import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
-import DiscussionComposer from 'flarum/common/components/DiscussionComposer';
 import FieldsEditor from './components/FieldsEditor';
 
 export default function () {
-  extend(DiscussionComposer.prototype, 'headerItems', function (items) {
+  extend('flarum/common/components/DiscussionComposer', 'headerItems', function (items) {
     if (!app.forum.canFillMasonFields()) {
       return;
     }
@@ -23,7 +22,7 @@ export default function () {
     );
   });
 
-  extend(DiscussionComposer.prototype, 'data', function (data) {
+  extend('flarum/common/components/DiscussionComposer', 'data', function (data) {
     if (!app.forum.canFillMasonFields() || !this.composer.fields.masonAnswers) {
       return;
     }
