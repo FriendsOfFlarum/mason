@@ -1,4 +1,3 @@
-/// <reference types="mithril" />
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import type Discussion from 'flarum/common/models/Discussion';
 import type Tag from 'ext:flarum/tags/common/models/Tag';

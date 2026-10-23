@@ -1,4 +1,3 @@
-/// <reference types="mithril" />
 import Component from 'flarum/common/Component';
 import type Field from '../../common/models/Field';
 export declare function editField(field?: Field): Promise<void>;
