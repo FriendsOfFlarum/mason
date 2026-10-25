@@ -42,10 +42,17 @@
 
 .Mason-Editor {
   column-gap: 16px;
+  // Core's form gap; the modal has no .Form to supply it
+  row-gap: 24px;
 
   .Select {
     display: block;
   }
+}
+
+// Same gap as the admin field list
+.Mason-Field > label .icon {
+  margin-right: 6px;
 }
 
 .Mason-required,
